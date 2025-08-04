@@ -6,7 +6,7 @@ import router from "./Routers/Router.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <div className="font-inter">
+    <div className="font-poppins">
       <RouterProvider router={router} />
     </div>
   </StrictMode>
