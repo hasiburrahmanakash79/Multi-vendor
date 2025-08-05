@@ -1,5 +1,6 @@
 import { Outlet } from "react-router";
 import Navbar from "../Pages/Shared/Navbar";
+import Footer from "../Pages/Shared/Footer";
 
 const Main = () => {
   return (
@@ -8,6 +9,7 @@ const Main = () => {
       <div className="container mx-auto">
         <Outlet />
       </div>
+      <Footer />
     </div>
   );
 };

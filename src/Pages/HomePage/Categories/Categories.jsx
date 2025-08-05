@@ -125,11 +125,11 @@ const Categories = () => {
   };
 
   return (
-    <div className="py-16">
+    <div className="py-7">
       <div className="px-4">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
-          <h2 className="text-3xl font-bold text-gray-900">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
             Explore Categories
           </h2>
 
@@ -160,9 +160,9 @@ const Categories = () => {
             }}
           >
             {categories.map((category, index) => (
-              <div key={`${category.id}-${index}`} className="flex-shrink-0 w-56 px-2">
+              <div key={`${category.id}-${index}`} className="flex-shrink-0 w-36 md:w-56 px-2">
                 <div
-                  className={`${category.bgColor} rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 cursor-pointer group`}
+                  className={`${category.bgColor} rounded-2xl p-6 h-48 shadow-sm hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 cursor-pointer group`}
                 >
                   <div
                     className={`w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300`}

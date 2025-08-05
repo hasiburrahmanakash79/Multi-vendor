@@ -12,7 +12,7 @@ import { RiStarFill } from "react-icons/ri";
 import { Heart } from "lucide-react";
 
 const PopularServices = () => {
-  const products = [
+  const services = [
   {
     id: 1,
     thumbnail: image1,
@@ -97,35 +97,35 @@ const PopularServices = () => {
 
 
   return (
-    <div className="py-10">
+    <div className="py-7 px-4">
       {/* Title & See All (Desktop) */}
-      <div className="my-5 py-5 flex justify-between items-center">
-        <h1 className="text-xl md:text-4xl font-bold text-left">
+      <div className="py-5 flex justify-between items-center">
+        <h1 className="text-2xl md:text-4xl font-bold text-left">
           Popular Services
         </h1>
         <Link
           to="/"
-          className="hidden md:inline text-[#1E40AF] underline text-base"
+          className="text-[#1E40AF] underline text-base"
         >
           See All
         </Link>
       </div>
 
-      {/* Products Grid */}
+      {/* services Grid */}
       <div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {products.map((product) => (
+          {services.map((service) => (
             <div
-              key={product.id}
+              key={service.id}
               className="relative border border-gray-200 rounded-lg p-3"
             >
               <div className="absolute top-3 left-3 bg-white/40 text-black text-sm font-semibold px-3 py-2 rounded-br-xl flex items-center gap-1">
                 <RiStarFill className="inline text-yellow-400" />{" "}
-                {product.rating}
+                {service.rating}
               </div>
               <img
-                src={product.thumbnail}
-                alt={product.title}
+                src={service.thumbnail}
+                alt={service.title}
                 className="w-full h-48 object-cover rounded-lg"
               />
               <div className="flex items-center justify-between mt-2 border-b pb-2 border-gray-200">
@@ -135,19 +135,19 @@ const PopularServices = () => {
                     className="w-5 h-5 rounded-full object-cover"
                     alt=""
                   />
-                  <p>{product.name}</p>
+                  <p>{service.name}</p>
                 </div>
                 <span className="flex items-center gap-2">
                   <img src={location} alt="" />
-                  <p className="text-sm md:text-base">{product.distance}</p>
+                  <p className="text-sm md:text-base">{service.distance}</p>
                 </span>
               </div>
               <div className="mt-2">
-                <p className="font-semibold">{product.title}</p>
+                <p className="font-semibold">{service.title}</p>
               </div>
               <div className="flex items-center justify-between mt-2">
                 <span className="flex items-baseline">
-                  <p className="text-xl font-bold">${product.price}</p>
+                  <p className="font-semibold">${service.price}</p>
                   <span className="text-gray-400 text-xs font-light">/hr</span>
                 </span>
                 <span className="bg-gray-100 p-2 rounded-full hover:shadow transition-shadow duration-300">

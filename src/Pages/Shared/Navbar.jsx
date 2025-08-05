@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import logo from '../../assets/logo/logo.png'; // Adjust the path as necessary
-import { Search, Bell, Heart, MessageSquare, ShoppingCart, User, Menu, X } from 'lucide-react';
+import logo from '../../assets/logo/logo.png';
+import { Search, Bell, Heart, ShoppingCart, User, Menu, X, MessageCircleMore } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 // Navbar Component
@@ -41,7 +41,7 @@ const Navbar = () => {
               <Heart className="w-5 h-5" />
             </button>
             <button className="p-2 text-gray-600 hover:text-purple-600 transition-colors">
-              <MessageSquare className="w-5 h-5" />
+              <MessageCircleMore className="w-5 h-5" />
             </button>
             <button className="p-2 text-gray-600 hover:text-purple-600 transition-colors">
               <ShoppingCart className="w-5 h-5" />
@@ -90,7 +90,7 @@ const Navbar = () => {
                 <span>Favorites</span>
               </button>
               <button className="flex items-center space-x-3 text-gray-600 hover:text-purple-600 transition-colors">
-                <MessageSquare className="w-5 h-5" />
+                <MessageCircleMore className="w-5 h-5" />
                 <span>Messages</span>
               </button>
               <button className="flex items-center space-x-3 text-gray-600 hover:text-purple-600 transition-colors">
