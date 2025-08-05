@@ -3,6 +3,7 @@ import Signup from "../Pages/Authentication/Signup";
 import SignIn from "../Pages/Authentication/SignIn";
 import Main from "../Layouts/Main";
 import Homepage from "../Pages/HomePage/Homepage";
+import ServiceDetailPage from "../Pages/Services/ServiceDetailPage";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -11,7 +12,12 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Homepage/>
-      }
+      },
+      {
+        path: "/serviceDetails/:id",
+        element: <ServiceDetailPage />
+      },
+      
 
     ],
   },

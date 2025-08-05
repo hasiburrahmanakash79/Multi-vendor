@@ -115,7 +115,8 @@ const PopularServices = () => {
       <div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {services.map((service) => (
-            <div
+            <Link
+                to={`/serviceDetails/${service.id}`}
               key={service.id}
               className="relative border border-gray-200 rounded-lg p-3"
             >
@@ -154,7 +155,7 @@ const PopularServices = () => {
                     <Heart className="w-5 h-5 text-gray-400 hover:text-red-500 cursor-pointer transition-colors duration-300" />
                 </span>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
