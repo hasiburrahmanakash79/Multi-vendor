@@ -32,7 +32,7 @@ const Hero = () => {
           <div className="flex flex-col md:flex-row flex-wrap">
             {/* Where Dropdown */}
             <div className="flex-1 px-4 sm:px-6 py-4 border-b md:border-b-0 md:border-r border-gray-200">
-              <p className="text-left text-sm font-medium text-gray-700 mb-1">
+              <p className="text-left text-sm font-medium text-gray-700 mb-1 ms-1">
                 Where
               </p>
               <select

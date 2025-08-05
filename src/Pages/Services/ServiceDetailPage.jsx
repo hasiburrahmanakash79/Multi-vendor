@@ -11,6 +11,8 @@ import { useState, useRef } from "react";
 import DatePicker from "react-datepicker";
 import event from "../../assets/videos/event.mp4";
 import "react-datepicker/dist/react-datepicker.css";
+import MobileAppSection from "../HomePage/MobileAppSection/MobileAppSection";
+import ServicesPackages from "../HomePage/ServicesPackages/ServicesPackages";
 
 const ServiceDetailPage = () => {
   const [bookingDate, setBookingDate] = useState(new Date("2025-09-05")); // Initialize as Date object
@@ -297,7 +299,7 @@ const ServiceDetailPage = () => {
 
           {/* Right Column - Booking Card */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg p-6 shadow-sm sticky top-7">
+            <div className="bg-white border border-gray-200 rounded-lg p-6 sticky top-7">
               {/* Provider Info */}
               <div className="flex items-center space-x-3 mb-6">
                 <img
@@ -308,7 +310,7 @@ const ServiceDetailPage = () => {
                 <div>
                   <h3 className="font-medium text-gray-900">Robert Carlone</h3>
                   <p className="text-sm text-gray-500">
-                    Available 2:00 AM - 10:00 PM
+                    Available 9:00 AM - 10:00 PM
                   </p>
                 </div>
                 <div className="ml-auto flex items-center space-x-1">
@@ -380,6 +382,12 @@ const ServiceDetailPage = () => {
           </div>
         </div>
       </div>
+
+      <div className="py-10">
+        <ServicesPackages/>
+      </div>
+
+      <MobileAppSection/>
     </div>
   );
 };
