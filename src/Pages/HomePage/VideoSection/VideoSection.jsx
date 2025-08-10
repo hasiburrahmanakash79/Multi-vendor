@@ -17,9 +17,7 @@ const VideoSection = () => {
     <div className="py-7 px-4">
       <div className="">
         <div className="relative md:rounded-3xl rounded-xl overflow-hidden shadow-xl">
-          {/* Video Background/Thumbnail */}
           <div className="relative h-64 sm:h-80 lg:h-96">
-            {/* Thumbnail Image */}
             {!isPlaying && (
               <img
                 src="https://images.unsplash.com/photo-1511578314322-379afb476865?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80"
@@ -28,7 +26,6 @@ const VideoSection = () => {
               />
             )}
             
-            {/* Video Element */}
             <video
               ref={videoRef}
               className={`w-full h-full object-cover ${!isPlaying ? 'hidden' : ''}`}
@@ -38,10 +35,8 @@ const VideoSection = () => {
               Your browser does not support the video tag.
             </video>
             
-            {/* Video Overlay */}
             {!isPlaying && <div className="absolute inset-0 bg-black/20"></div>}
             
-            {/* Play Button */}
             {!isPlaying && (
               <div className="absolute inset-0 flex items-center justify-center">
                 <button

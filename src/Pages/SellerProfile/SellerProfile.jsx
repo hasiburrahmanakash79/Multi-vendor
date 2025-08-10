@@ -111,7 +111,6 @@ const SellerProfile = () => {
 
   return (
     <div className="py-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-      {/* Header Section */}
       <div className="border border-gray-200 p-4 sm:p-8 rounded-4xl">
         <div
           className="rounded-xl p-6 flex items-center justify-between h-40 sm:h-52"
@@ -165,7 +164,6 @@ const SellerProfile = () => {
         </div>
       </div>
 
-      {/* Reviews */}
       <div className="mt-8">
         <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-6">
           {profile.name} Reviews
@@ -207,7 +205,6 @@ const SellerProfile = () => {
         </div>
       </div>
 
-      {/* Services */}
       <div className="mt-10">
         <h1 className="text-lg sm:text-xl font-semibold text-gray-800 mb-6">
           {profile.name} Services

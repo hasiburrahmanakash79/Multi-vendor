@@ -30,7 +30,6 @@ const ServiceDetailPage = () => {
   return (
     <div className="min-h-screen">
       <div className="px-4 py-8">
-        {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-gray-900">
             Wedding Photography
@@ -47,11 +46,9 @@ const ServiceDetailPage = () => {
           </div>
         </div>
 
-        {/* Image Gallery */}
         <div className="space-y-4">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h-96">
             <div className="lg:col-span-2 rounded-xl overflow-hidden relative group cursor-pointer">
-              {/* Thumbnail Image */}
               {!isPlaying && (
                 <img
                   src="https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"
@@ -59,8 +56,6 @@ const ServiceDetailPage = () => {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
               )}
-
-              {/* Video Element */}
               <video
                 ref={videoRef}
                 className={`w-full h-full object-cover ${
@@ -71,8 +66,6 @@ const ServiceDetailPage = () => {
                 <source src={event} type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
-
-              {/* Video Overlay and Play Button */}
               {!isPlaying && (
                 <>
                   <div className="absolute inset-0 bg-black/20"></div>
@@ -90,12 +83,8 @@ const ServiceDetailPage = () => {
                 </>
               )}
             </div>
-
-            {/* Right Grid - 2x2 layout */}
             <div className="lg:col-span-1 grid grid-cols-2 lg:grid-cols-1 gap-4">
-              {/* Top Row */}
               <div className="grid grid-cols-2 gap-4">
-                {/* Top Left */}
                 <div className="rounded-xl overflow-hidden group cursor-pointer">
                   <img
                     src="https://images.unsplash.com/photo-1606216794074-735e91aa2c92?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
@@ -105,7 +94,6 @@ const ServiceDetailPage = () => {
                   />
                 </div>
 
-                {/* Top Right */}
                 <div className="rounded-xl overflow-hidden group cursor-pointer">
                   <img
                     src="https://images.unsplash.com/photo-1537633552985-df8429e8048b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
@@ -116,9 +104,7 @@ const ServiceDetailPage = () => {
                 </div>
               </div>
 
-              {/* Bottom Row */}
               <div className="grid grid-cols-2 gap-4">
-                {/* Bottom Left */}
                 <div className="rounded-xl overflow-hidden group cursor-pointer">
                   <img
                     src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
@@ -127,8 +113,6 @@ const ServiceDetailPage = () => {
                     style={{ height: "180px" }}
                   />
                 </div>
-
-                {/* Bottom Right */}
                 <div className="rounded-xl overflow-hidden group cursor-pointer">
                   <img
                     src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
@@ -144,7 +128,6 @@ const ServiceDetailPage = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 pt-7">
           <div className="lg:col-span-2 space-y-8">
-            {/* Description */}
             <div className="">
               <h2 className="text-xl font-semibold mb-4">Description</h2>
               <p className="text-gray-600 leading-relaxed">
@@ -178,8 +161,6 @@ const ServiceDetailPage = () => {
             </div>
 
             <div className="divider"></div>
-
-            {/* Reviews */}
             <h2 className="text-xl font-semibold my-6">Reviews</h2>
             <div className="space-y-6">
               <div className="bg-white rounded-lg p-6 border border-gray-200">
@@ -297,10 +278,8 @@ const ServiceDetailPage = () => {
             </div>
           </div>
 
-          {/* Right Column - Booking Card */}
           <div className="lg:col-span-1">
             <div className="bg-white border border-gray-200 rounded-lg p-6 sticky top-7">
-              {/* Provider Info */}
               <div className="flex items-center space-x-3 mb-6">
                 <img
                   src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80"
@@ -324,7 +303,6 @@ const ServiceDetailPage = () => {
                 <span className="text-sm text-gray-500">/hr</span>
               </div>
 
-              {/* Booking Form */}
               <div className="space-y-4 mb-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">

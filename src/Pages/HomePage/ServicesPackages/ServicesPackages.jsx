@@ -54,7 +54,6 @@ const ServicesPackages = () => {
 
   return (
     <div className="py-5 px-4" >
-      {/* Title & See All (Desktop) */}
       <div className="pb-5 flex justify-between items-center">
         <h1 className="text-2xl md:text-4xl font-bold text-left">
           Services Packages
@@ -66,8 +65,6 @@ const ServicesPackages = () => {
           See All
         </Link>
       </div>
-
-      {/* packages Grid */}
       <div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {packages.map((pack) => (

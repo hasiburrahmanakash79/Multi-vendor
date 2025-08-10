@@ -50,14 +50,12 @@ const Notification = () => {
   return (
     <div>
       <div className=" bg-white rounded-lg shadow-lg border border-gray-200">
-        {/* Header */}
         <div className="p-4 border-b border-gray-100">
           <h3 className="text-sm font-medium text-gray-900">
             Notification ({notifications.length})
           </h3>
         </div>
 
-        {/* Notification List */}
         <div className="py-2">
           {notifications.map((notification) => (
             <div
@@ -65,18 +63,15 @@ const Notification = () => {
               className="px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-50 last:border-b-0"
             >
               <div className="flex items-start space-x-3">
-                {/* Avatar */}
                 <div className="relative flex-shrink-0">
                   <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-orange-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
                     {notification.avatar}
                   </div>
-                  {/* Online status */}
                   {notification.isOnline && (
                     <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></div>
                   )}
                 </div>
 
-                {/* Notification Content */}
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-gray-900 mb-1">
                     {notification.type}
@@ -92,8 +87,6 @@ const Notification = () => {
             </div>
           ))}
         </div>
-
-        {/* Footer */}
         <div className="p-3 border-t border-gray-100 text-center">
           <button className="text-sm text-purple-600 hover:text-purple-700 font-medium">
             View All Notifications

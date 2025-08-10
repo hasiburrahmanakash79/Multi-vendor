@@ -10,7 +10,7 @@ import icon6 from "../../../assets/icons/icon6.png";
 const Categories = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   
-  // Removed duplicate categories and ensured unique IDs
+  
   const categories = [
     {
       id: 1,
@@ -98,15 +98,12 @@ const Categories = () => {
     },
   ];
 
-  // Number of cards visible at a time (adjust based on your design)
   const visibleCards = 6;
 
-  // Calculate the maximum index to prevent blank spaces
   const maxIndex = Math.max(0, categories.length - visibleCards);
 
   const nextSlide = () => {
     setCurrentIndex((prevIndex) => {
-      // If at the last set of cards, loop back to start
       if (prevIndex >= maxIndex) {
         return 0;
       }
@@ -116,7 +113,6 @@ const Categories = () => {
 
   const prevSlide = () => {
     setCurrentIndex((prevIndex) => {
-      // If at the start, loop to the last set of cards
       if (prevIndex <= 0) {
         return maxIndex;
       }
@@ -127,13 +123,11 @@ const Categories = () => {
   return (
     <div className="py-7">
       <div className="px-4">
-        {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
             Explore Categories
           </h2>
 
-          {/* Navigation Arrows */}
           <div className="flex space-x-2">
             <button
               onClick={prevSlide}
@@ -150,7 +144,6 @@ const Categories = () => {
           </div>
         </div>
 
-        {/* Categories Grid */}
         <div className="overflow-hidden">
           <div
             className="flex transition-transform duration-300 ease-in-out"

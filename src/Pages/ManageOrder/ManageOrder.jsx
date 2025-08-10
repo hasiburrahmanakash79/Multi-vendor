@@ -9,7 +9,6 @@ import image7 from "../../assets/images/cardImage7.png";
 import image8 from "../../assets/images/cardImage8.png";
 
 const ManageOrder = () => {
-  // Sample order data with different details and random avatars
   const initialOrders = [
     {
       id: 1,
@@ -105,7 +104,6 @@ const ManageOrder = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
-  // Filter orders based on status and calculate counts
   const filteredOrders = currentFilter === "All"
     ? initialOrders
     : initialOrders.filter((order) => order.status === currentFilter);
@@ -115,7 +113,6 @@ const ManageOrder = () => {
   const completedCount = initialOrders.filter((order) => order.status === "Complete").length;
   const cancelledCount = initialOrders.filter((order) => order.status === "Cancelled").length;
 
-  // Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentOrders = filteredOrders.slice(indexOfFirstItem, indexOfLastItem);
@@ -143,11 +140,7 @@ const ManageOrder = () => {
 
   return (
     <div className="p-4">
-      
-
       <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-4">Manage Order</h2>
-      
-      {/* Filter Buttons */}
       <div className="flex flex-wrap gap-2 mb-6">
         <button
           onClick={() => { setCurrentFilter("All"); setCurrentPage(1); }}
@@ -180,8 +173,6 @@ const ManageOrder = () => {
           Cancelled ({cancelledCount})
         </button>
       </div>
-
-      {/* Responsive Table */}
       <div className="bg-white rounded-lg shadow-md overflow-x-auto">
         <table className="w-full min-w-[600px] text-left">
           <thead className="bg-gray-50">
@@ -199,7 +190,7 @@ const ManageOrder = () => {
                 <td className="px-4 py-2 sm:px-6 sm:py-4">
                   <div className="flex items-center">
                     <img
-                      src={order.bannerImage} // Replace with actual service image
+                      src={order.bannerImage}
                       alt={order.service}
                       className="w-24 h-16 object-cover mr-2 sm:mr-3 rounded-xl hidden sm:block"
                     />

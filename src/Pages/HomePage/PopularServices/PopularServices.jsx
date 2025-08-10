@@ -98,7 +98,6 @@ const PopularServices = () => {
 
   return (
     <div className="py-7 px-4">
-      {/* Title & See All (Desktop) */}
       <div className="py-5 flex justify-between items-center">
         <h1 className="text-2xl md:text-4xl font-bold text-left">
           Popular Services
@@ -110,8 +109,6 @@ const PopularServices = () => {
           See All
         </Link>
       </div>
-
-      {/* services Grid */}
       <div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {services.map((service) => (

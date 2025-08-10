@@ -18,20 +18,16 @@ const SignIn = () => {
 
   const onSubmit = (data) => {
     console.log("Form Data:", data);
-    // Perform login API call here
   };
 
   return (
     <div className="grid grid-cols-7 min-h-screen bg-base-200">
-      {/* Left Side */}
       <div className="col-span-3 bg-blue-500 flex items-center p-8">
         <h2 className="text-white text-4xl font-bold leading-relaxed">
           Welcome Back! Verify Your <br /> Email to Access Your <br /> Learning
           Portal!
         </h2>
       </div>
-
-      {/* Right Side */}
       <div className="col-span-4 flex items-center justify-center ">
         <div className="max-w-lg w-full bg-white rounded-3xl border border-blue-200 shadow-md p-16">
           <h2 className="text-2xl font-bold text-center mb-2">
@@ -43,8 +39,6 @@ const SignIn = () => {
               Sign Up Free
             </Link>
           </p>
-
-          {/* Form */}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
               <label className="block text-sm font-medium mb-1">
@@ -116,9 +110,7 @@ const SignIn = () => {
             </button>
           </form>
 
-          {/* Divider */}
           <div className="divider">Or Login with</div>
-          {/* Social Login */}
           <div className="flex space-x-4">
             <button className="flex-1 flex items-center justify-center border border-base-300 rounded-md py-2 hover:bg-gray-100">
               <img
@@ -137,8 +129,6 @@ const SignIn = () => {
               Facebook
             </button>
           </div>
-
-          {/* Bottom Signup */}
           <p className="text-center text-sm mt-6">
             Don’t have an account?{" "}
             <Link to='/signup' className="text-blue-500 hover:underline">

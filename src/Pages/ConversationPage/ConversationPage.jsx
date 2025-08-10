@@ -318,7 +318,6 @@ export default function ConversationPage() {
   const businessTypes = ['All', ...new Set(contacts.map(contact => contact.business.type))];
   const currentContact = contactsData.find(contact => contact.id === selectedContact);
 
-  // Handle clicks outside dropdown to close it
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -396,7 +395,7 @@ export default function ConversationPage() {
       if (window.confirm(`Are you sure you want to delete the chat with ${currentContact.name}?`)) {
         setContactsData(prevContacts => prevContacts.filter(contact => contact.id !== selectedContact));
         setSelectedContact(contactsData[0]?.id || null);
-        setShowSidebar(false); // Close sidebar on mobile after deletion
+        setShowSidebar(false);
       }
     }
     setShowDropdown(false);
@@ -408,7 +407,6 @@ export default function ConversationPage() {
 
   return (
     <div className="flex h-[93vh] bg-white border-b border-gray-300">
-      {/* Sidebar Toggle Button (Visible on Mobile) */}
       <button 
         className="lg:hidden fixed top-4 left-4 z-20 p-2 bg-[#C8C1F5] text-black rounded-full"
         onClick={toggleSidebar}
@@ -416,13 +414,11 @@ export default function ConversationPage() {
         {showSidebar ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
       </button>
 
-      {/* Left Sidebar - Contacts List */}
       <div 
         className={`${
           showSidebar ? 'translate-x-0' : '-translate-x-full'
         } lg:translate-x-0 fixed lg:static w-64 sm:w-72 lg:w-80 h-full bg-white border-r border-gray-200 flex flex-col transition-transform duration-300 ease-in-out z-10 lg:z-auto`}
       >
-        {/* Header */}
         <div className="p-3 sm:p-4 border-b border-gray-200">
           <div className="flex items-center justify-between mb-3 sm:mb-4">
             <select 
@@ -447,8 +443,6 @@ export default function ConversationPage() {
             </div>
           </div>
         </div>
-
-        {/* Contacts List */}
         <div className="flex-1 overflow-y-auto">
           {filteredContacts.length > 0 ? (
             filteredContacts.map((contact) => (
@@ -456,7 +450,7 @@ export default function ConversationPage() {
                 key={contact.id}
                 onClick={() => {
                   setSelectedContact(contact.id);
-                  setShowSidebar(false); // Close sidebar on mobile after selection
+                  setShowSidebar(false);
                 }}
                 className={`flex items-center p-3 sm:p-4 hover:bg-gray-50 cursor-pointer border-b border-gray-100 ${selectedContact === contact.id ? 'bg-gray-50' : ''}`}
               >
@@ -491,10 +485,7 @@ export default function ConversationPage() {
           )}
         </div>
       </div>
-
-      {/* Right Side - Chat Area */}
       <div className="flex-1 flex flex-col">
-        {/* Chat Header */}
         {currentContact ? (
           <>
             <div className="p-3 sm:p-4 border-b border-gray-200 bg-white relative">
@@ -545,7 +536,6 @@ export default function ConversationPage() {
               )}
             </div>
 
-            {/* Messages Area */}
             <div className="flex-1 p-2 sm:p-4 overflow-y-auto bg-gray-50">
               {currentContact.messages.map((msg) => (
                 <div key={msg.id} className={`mb-4 sm:mb-6 ${msg.type === 'outgoing' ? 'flex justify-end' : ''}`}>
@@ -577,8 +567,6 @@ export default function ConversationPage() {
                 </div>
               ))}
             </div>
-
-            {/* Message Input */}
             <div className="p-3 sm:p-4 border-t border-gray-200 bg-white">
               <div className="flex items-center gap-2 sm:gap-3">
                 <div className="flex-1 relative">

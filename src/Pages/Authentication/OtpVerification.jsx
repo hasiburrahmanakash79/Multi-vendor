@@ -14,7 +14,6 @@ const OtpVerification = () => {
 
   const onSubmit = (data) => {
     console.log("OTP Entered:", data);
-    // Perform OTP verification API call
   };
 
 
@@ -35,20 +34,17 @@ const OtpVerification = () => {
       console.log("Resend OTP triggered");
       setTimer(60);
       setResendEnabled(false);
-      // Call resend OTP API here
     }
   };
 
 return (
     <div className="grid grid-cols-7 min-h-screen">
-        {/* Left Side */}
         <div className="col-span-3 bg-blue-500 flex items-center justify-center p-8">
             <h2 className="text-white text-4xl font-bold leading-relaxed">
                 Confirm Your Email to Access Educational Resources!
             </h2>
         </div>
 
-        {/* Right Side */}
         <div className="col-span-4 flex items-center justify-center p-8">
             <div className="max-w-xl w-full bg-white border border-blue-200 rounded-lg shadow-md p-20 relative">
                 
@@ -60,7 +56,6 @@ return (
                     We have sent a 6-digit verification code to your email.
                 </p>
 
-                {/* Form */}
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                     <div className="flex space-x-4 justify-center">
                         {[1, 2, 3, 4, 5, 6].map((_, index) => (
@@ -79,7 +74,6 @@ return (
                         </p>
                     )}
 
-                    {/* Resend OTP with Timer */}
                     <p className="text-center text-sm mt-6">
                         {resendEnabled ? (
                             <button
@@ -103,7 +97,6 @@ return (
                         Verify OTP
                     </button>
                 </form>
-                {/* Back Button */}
                 <div className="flex items-center justify-center text-blue-500 mt-4 hover:underline">
                    <button
                     onClick={() => window.history.back()}

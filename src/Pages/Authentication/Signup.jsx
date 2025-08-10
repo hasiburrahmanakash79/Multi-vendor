@@ -18,22 +18,17 @@ const Signup = () => {
 
   const onSubmit = (data) => {
     console.log("Form Data:", data);
-    // Perform signup API call here
-    // After successful signup, redirect to OTP route
     window.location.href = "/otp";
   };
 
   return (
     <div className="grid grid-cols-7 min-h-screen bg-base-200">
-      {/* Left Side */}
       <div className="col-span-3 bg-blue-500 flex items-center p-8">
         <h2 className="text-white text-4xl font-bold leading-relaxed">
           Welcome Back! Verify Your <br /> Email to Access Your <br /> Learning
           Portal!
         </h2>
       </div>
-
-      {/* Right Side */}
       <div className="col-span-4 flex items-center justify-center ">
         <div className="max-w-lg w-full bg-white rounded-3xl border border-blue-200 shadow-md p-16">
           <h2 className="text-2xl font-bold text-center mb-2">
@@ -45,8 +40,6 @@ const Signup = () => {
               Sign In
             </Link>
           </p>
-
-          {/* Form */}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -165,9 +158,7 @@ const Signup = () => {
             </button>
           </form>
 
-          {/* Divider */}
           <div className="divider">Or Sign Up with</div>
-          {/* Social SignUp */}
           <div className="flex space-x-4">
             <button className="flex-1 flex items-center justify-center border border-base-300 rounded-md py-2 hover:bg-gray-100">
               <img

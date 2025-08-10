@@ -3,13 +3,11 @@ import logo from '../../assets/logo/logo.png';
 import { Search, Bell, Heart, ShoppingCart, User, Menu, X, MessageCircleMore } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-// Navbar Component
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const notificationRef = useRef(null);
 
-  // Sample notification data based on the image
   const notifications = [
     {
       id: 1,
@@ -58,7 +56,6 @@ const Navbar = () => {
     }
   ];
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (notificationRef.current && !notificationRef.current.contains(event.target)) {
@@ -72,7 +69,6 @@ const Navbar = () => {
     };
   }, []);
 
-  // Function to close mobile menu
   const closeMobileMenu = () => {
     setIsMenuOpen(false);
   };
@@ -81,14 +77,11 @@ const Navbar = () => {
     <nav className="fixed -top-0.5 left-0 w-full bg-white shadow-sm z-50">
       <div className="container mx-auto px-2">
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
           <div className='h-8 w-32'>
             <Link to="/">
               <img src={logo} alt="" />
             </Link>
           </div>
-
-          {/* Search Bar - Hidden on mobile */}
           <div className="hidden md:flex flex-1 max-w-md mx-8">
             <div className="relative w-full">
               <input
@@ -102,48 +95,36 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* Desktop Navigation Icons */}
           <div className="hidden md:flex items-center space-x-4">
-            {/* Notification Bell with Dropdown */}
             <div className="relative" ref={notificationRef}>
               <button 
                 onClick={() => setIsNotificationOpen(!isNotificationOpen)}
                 className="relative p-2 text-gray-600 hover:text-purple-600 transition-colors"
               >
                 <Bell className="w-5 h-5" />
-                {/* Notification badge */}
                 <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                   {notifications.length}
                 </span>
               </button>
-
-              {/* Notification Dropdown */}
               {isNotificationOpen && (
                 <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 max-h-96 overflow-y-auto">
-                  {/* Header */}
                   <div className="p-4 border-b border-gray-100">
                     <h3 className="text-sm font-medium text-gray-900">
                       Notification ({notifications.length})
                     </h3>
                   </div>
-                  
-                  {/* Notification List */}
                   <div className="py-2">
                     {notifications.map((notification) => (
                       <div key={notification.id} className="px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-50 last:border-b-0">
                         <div className="flex items-start space-x-3">
-                          {/* Avatar */}
                           <div className="relative flex-shrink-0">
                             <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-orange-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
                               {notification.avatar}
                             </div>
-                            {/* Online status */}
                             {notification.isOnline && (
                               <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></div>
                             )}
                           </div>
-                          
-                          {/* Notification Content */}
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-medium text-gray-900 mb-1">
                               {notification.type}
@@ -159,8 +140,6 @@ const Navbar = () => {
                       </div>
                     ))}
                   </div>
-                  
-                  {/* Footer */}
                   <div className="p-3 border-t border-gray-100 text-center">
                     <button className="text-sm text-purple-600 hover:text-purple-700 font-medium">
                       View All Notifications
@@ -185,8 +164,6 @@ const Navbar = () => {
               </Link>
             </div>
           </div>
-
-          {/* Mobile menu button */}
           <div className="md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -196,8 +173,6 @@ const Navbar = () => {
             </button>
           </div>
         </div>
-
-        {/* Mobile Search Bar */}
         <div className="md:hidden pb-4">
           <div className="relative">
             <input
@@ -208,8 +183,6 @@ const Navbar = () => {
             <Search className="absolute right-3 top-2.5 w-5 h-5 text-gray-400" />
           </div>
         </div>
-
-        {/* Mobile Menu */}
         {isMenuOpen && (
           <div className="md:hidden border-t border-gray-200 py-4">
             <div className="flex flex-col space-y-4">
