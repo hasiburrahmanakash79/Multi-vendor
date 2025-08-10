@@ -7,6 +7,7 @@ import ServiceDetailPage from "../Pages/Services/ServiceDetailPage";
 import ConversationPage from "../Pages/ConversationPage/ConversationPage";
 import Notification from "../Pages/Notification/Notification";
 import SaveItems from "../Pages/SaveItems/SaveItems";
+import SellerProfile from "../Pages/SellerProfile/SellerProfile";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -31,6 +32,10 @@ const router = createBrowserRouter([
       {
         path: "/saved",
         element: <SaveItems />
+      },
+      {
+        path: "/profile",
+        element: <SellerProfile />
       },
       
 

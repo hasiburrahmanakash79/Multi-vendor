@@ -180,10 +180,9 @@ const Navbar = () => {
               <ShoppingCart className="w-5 h-5" /> 
             </button>
             <div className="relative">
-              <button className="flex items-center space-x-1 p-2 text-gray-600 hover:text-purple-600 transition-colors">
+              <Link to='/profile' className="flex items-center space-x-1 p-2 text-gray-600 hover:text-purple-600 transition-colors">
                 <User className="w-5 h-5" />
-                <span className="text-sm">Account</span>
-              </button>
+              </Link>
             </div>
           </div>
 
@@ -252,13 +251,13 @@ const Navbar = () => {
                 <ShoppingCart className="w-5 h-5" />
                 <span>Cart</span>
               </button>
-              <button
+              <Link
+              to="/profile"
                 onClick={closeMobileMenu}
                 className="flex items-center space-x-3 text-gray-600 hover:text-purple-600 transition-colors"
               >
                 <User className="w-5 h-5" />
-                <span>Account</span>
-              </button>
+              </Link>
             </div>
           </div>
         )}
