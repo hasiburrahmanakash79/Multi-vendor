@@ -5,6 +5,8 @@ import Main from "../Layouts/Main";
 import Homepage from "../Pages/HomePage/Homepage";
 import ServiceDetailPage from "../Pages/Services/ServiceDetailPage";
 import ConversationPage from "../Pages/ConversationPage/ConversationPage";
+import Notification from "../Pages/Notification/Notification";
+import SaveItems from "../Pages/SaveItems/SaveItems";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -21,6 +23,14 @@ const router = createBrowserRouter([
       {
         path: "/conversation",
         element: <ConversationPage />
+      },
+      {
+        path: "/notification",
+        element: <Notification />
+      },
+      {
+        path: "/saved",
+        element: <SaveItems />
       },
       
 

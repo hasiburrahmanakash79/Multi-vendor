@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import logo from '../../assets/logo/logo.png';
 import { Search, Bell, Heart, ShoppingCart, User, Menu, X, MessageCircleMore } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -6,6 +6,76 @@ import { Link } from 'react-router-dom';
 // Navbar Component
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const notificationRef = useRef(null);
+
+  // Sample notification data based on the image
+  const notifications = [
+    {
+      id: 1,
+      type: 'Wedding Photography',
+      location: 'Overland Park, KS',
+      fullLocation: 'Overland Park, KS Overland Park, KS',
+      time: '5m',
+      avatar: 'WP',
+      isOnline: true
+    },
+    {
+      id: 2,
+      type: 'Wedding Photography',
+      location: 'Overland Park, KS',
+      fullLocation: 'Overland Park, KS Overland Park, KS',
+      time: '5m',
+      avatar: 'WP',
+      isOnline: true
+    },
+    {
+      id: 3,
+      type: 'Wedding Photography',
+      location: 'Overland Park, KS',
+      fullLocation: 'Overland Park, KS Overland Park, KS',
+      time: '5m',
+      avatar: 'WP',
+      isOnline: true
+    },
+    {
+      id: 4,
+      type: 'Wedding Photography',
+      location: 'Overland Park, KS',
+      fullLocation: 'Overland Park, KS Overland Park, KS',
+      time: '5m',
+      avatar: 'WP',
+      isOnline: true
+    },
+    {
+      id: 5,
+      type: 'Wedding Photography',
+      location: 'Overland Park, KS',
+      fullLocation: 'Overland Park, KS Overland Park, KS',
+      time: '5m',
+      avatar: 'WP',
+      isOnline: true
+    }
+  ];
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (notificationRef.current && !notificationRef.current.contains(event.target)) {
+        setIsNotificationOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  // Function to close mobile menu
+  const closeMobileMenu = () => {
+    setIsMenuOpen(false);
+  };
 
   return (
     <nav className="bg-white shadow-sm relative z-50">
@@ -26,20 +96,83 @@ const Navbar = () => {
                 placeholder="Search for any services or categories..."
                 className="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-[#C8C1F5] focus:border-transparent"
               />
-              <div className='absolute right-1 top-1  rounded-full p-2'>
-                <Search className=" w-5 h-5 text-black" />
+              <div className='absolute right-1 top-1 rounded-full p-2'>
+                <Search className="w-5 h-5 text-black" />
               </div>
             </div>
           </div>
 
           {/* Desktop Navigation Icons */}
           <div className="hidden md:flex items-center space-x-4">
-            <button className="p-2 text-gray-600 hover:text-purple-600 transition-colors">
-              <Bell className="w-5 h-5" />
-            </button>
-            <button className="p-2 text-gray-600 hover:text-purple-600 transition-colors">
+            {/* Notification Bell with Dropdown */}
+            <div className="relative" ref={notificationRef}>
+              <button 
+                onClick={() => setIsNotificationOpen(!isNotificationOpen)}
+                className="relative p-2 text-gray-600 hover:text-purple-600 transition-colors"
+              >
+                <Bell className="w-5 h-5" />
+                {/* Notification badge */}
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                  {notifications.length}
+                </span>
+              </button>
+
+              {/* Notification Dropdown */}
+              {isNotificationOpen && (
+                <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 max-h-96 overflow-y-auto">
+                  {/* Header */}
+                  <div className="p-4 border-b border-gray-100">
+                    <h3 className="text-sm font-medium text-gray-900">
+                      Notification ({notifications.length})
+                    </h3>
+                  </div>
+                  
+                  {/* Notification List */}
+                  <div className="py-2">
+                    {notifications.map((notification) => (
+                      <div key={notification.id} className="px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-50 last:border-b-0">
+                        <div className="flex items-start space-x-3">
+                          {/* Avatar */}
+                          <div className="relative flex-shrink-0">
+                            <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-orange-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
+                              {notification.avatar}
+                            </div>
+                            {/* Online status */}
+                            {notification.isOnline && (
+                              <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></div>
+                            )}
+                          </div>
+                          
+                          {/* Notification Content */}
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-gray-900 mb-1">
+                              {notification.type}
+                            </p>
+                            <p className="text-xs text-gray-500 leading-relaxed">
+                              {notification.fullLocation}
+                            </p>
+                            <span className="text-xs text-gray-400 mt-1 inline-block">
+                              {notification.time}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  {/* Footer */}
+                  <div className="p-3 border-t border-gray-100 text-center">
+                    <button className="text-sm text-purple-600 hover:text-purple-700 font-medium">
+                      View All Notifications
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <Link to="/saved" className="p-2 text-gray-600 hover:text-purple-600 transition-colors">
               <Heart className="w-5 h-5" />
-            </button>
+            </Link>
             <Link to="/conversation" className="p-2 text-gray-600 hover:text-purple-600 transition-colors">
               <MessageCircleMore className="w-5 h-5" />
             </Link>
@@ -81,23 +214,48 @@ const Navbar = () => {
         {isMenuOpen && (
           <div className="md:hidden border-t border-gray-200 py-4">
             <div className="flex flex-col space-y-4">
-              <button className="flex items-center space-x-3 text-gray-600 hover:text-purple-600 transition-colors">
-                <Bell className="w-5 h-5" />
-                <span>Notifications</span>
-              </button>
-              <button className="flex items-center space-x-3 text-gray-600 hover:text-purple-600 transition-colors">
+              <Link
+                to="/notification"
+                onClick={closeMobileMenu}
+                className="flex items-center justify-between text-gray-600 hover:text-purple-600 transition-colors"
+              >
+                <div className="flex items-center space-x-3">
+                  <Bell className="w-5 h-5" />
+                  <span>Notifications</span>
+                </div>
+                {notifications.length > 0 && (
+                  <span className="bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    {notifications.length}
+                  </span>
+                )}
+              </Link>
+              <Link
+                to="/saved"
+                onClick={closeMobileMenu}
+                className="flex items-center space-x-3 text-gray-600 hover:text-purple-600 transition-colors"
+              >
                 <Heart className="w-5 h-5" />
                 <span>Favorites</span>
-              </button>
-              <button className="flex items-center space-x-3 text-gray-600 hover:text-purple-600 transition-colors">
+              </Link>
+              <Link
+                to="/conversation"
+                onClick={closeMobileMenu}
+                className="flex items-center space-x-3 text-gray-600 hover:text-purple-600 transition-colors"
+              >
                 <MessageCircleMore className="w-5 h-5" />
                 <span>Messages</span>
-              </button>
-              <button className="flex items-center space-x-3 text-gray-600 hover:text-purple-600 transition-colors">
+              </Link>
+              <button
+                onClick={closeMobileMenu}
+                className="flex items-center space-x-3 text-gray-600 hover:text-purple-600 transition-colors"
+              >
                 <ShoppingCart className="w-5 h-5" />
                 <span>Cart</span>
               </button>
-              <button className="flex items-center space-x-3 text-gray-600 hover:text-purple-600 transition-colors">
+              <button
+                onClick={closeMobileMenu}
+                className="flex items-center space-x-3 text-gray-600 hover:text-purple-600 transition-colors"
+              >
                 <User className="w-5 h-5" />
                 <span>Account</span>
               </button>
@@ -109,4 +267,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default Navbar; 

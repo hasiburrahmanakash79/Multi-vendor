@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Search, MoreHorizontal, Send, MapPin, Star, Camera, Palette, Code, Music, Utensils, Briefcase, Heart, Laptop, Archive, BellOff, Trash2 } from 'lucide-react';
+import { Search, MoreHorizontal, Send, MapPin, Star, Camera, Palette, Code, Music, Utensils, Briefcase, Heart, Laptop, Archive, BellOff, Trash2, Menu, X } from 'lucide-react';
 
 export default function ConversationPage() {
   const contacts = [
@@ -312,6 +312,7 @@ export default function ConversationPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('All');
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showSidebar, setShowSidebar] = useState(false);
   const dropdownRef = useRef(null);
 
   const businessTypes = ['All', ...new Set(contacts.map(contact => contact.business.type))];
@@ -395,22 +396,39 @@ export default function ConversationPage() {
       if (window.confirm(`Are you sure you want to delete the chat with ${currentContact.name}?`)) {
         setContactsData(prevContacts => prevContacts.filter(contact => contact.id !== selectedContact));
         setSelectedContact(contactsData[0]?.id || null);
+        setShowSidebar(false); // Close sidebar on mobile after deletion
       }
     }
     setShowDropdown(false);
   };
 
+  const toggleSidebar = () => {
+    setShowSidebar(!showSidebar);
+  };
+
   return (
     <div className="flex h-[93vh] bg-white border-b border-gray-300">
+      {/* Sidebar Toggle Button (Visible on Mobile) */}
+      <button 
+        className="lg:hidden fixed top-4 left-4 z-20 p-2 bg-[#C8C1F5] text-black rounded-full"
+        onClick={toggleSidebar}
+      >
+        {showSidebar ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+      </button>
+
       {/* Left Sidebar - Contacts List */}
-      <div className="w-80 border-r border-gray-200 flex flex-col">
+      <div 
+        className={`${
+          showSidebar ? 'translate-x-0' : '-translate-x-full'
+        } lg:translate-x-0 fixed lg:static w-64 sm:w-72 lg:w-80 h-full bg-white border-r border-gray-200 flex flex-col transition-transform duration-300 ease-in-out z-10 lg:z-auto`}
+      >
         {/* Header */}
-        <div className="p-4 border-b border-gray-200">
-          <div className="flex items-center justify-between mb-4">
+        <div className="p-3 sm:p-4 border-b border-gray-200">
+          <div className="flex items-center justify-between mb-3 sm:mb-4">
             <select 
               value={filterType} 
               onChange={handleFilterChange}
-              className="text-sm font-medium text-gray-700 px-2 py-1"
+              className="text-xs sm:text-sm font-medium text-gray-700 px-2 py-1 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#C8C1F5]"
             >
               {businessTypes.map(type => (
                 <option key={type} value={type}>{type}</option>
@@ -418,13 +436,13 @@ export default function ConversationPage() {
               <option value="Starred">Starred</option>
             </select>
             <div className="relative flex-1 ml-2">
-              <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+              <Search className="w-4 h-4 text-gray-400 absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2" />
               <input
                 type="text"
                 value={searchTerm}
                 onChange={handleSearch}
                 placeholder="Search contacts..."
-                className="w-full pl-10 pr-4 py-1 bg-gray-100 rounded-full outline-none "
+                className="w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-1 bg-gray-100 rounded-full outline-none border border-gray-300 text-xs sm:text-sm"
               />
             </div>
           </div>
@@ -436,15 +454,18 @@ export default function ConversationPage() {
             filteredContacts.map((contact) => (
               <div 
                 key={contact.id}
-                onClick={() => setSelectedContact(contact.id)}
-                className={`flex items-center p-4 hover:bg-gray-50 cursor-pointer border-b border-gray-100 ${selectedContact === contact.id ? 'bg-gray-50' : ''}`}
+                onClick={() => {
+                  setSelectedContact(contact.id);
+                  setShowSidebar(false); // Close sidebar on mobile after selection
+                }}
+                className={`flex items-center p-3 sm:p-4 hover:bg-gray-50 cursor-pointer border-b border-gray-100 ${selectedContact === contact.id ? 'bg-gray-50' : ''}`}
               >
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex-shrink-0 flex items-center justify-center text-white text-sm font-medium">
+                <div className="w-8 sm:w-10 h-8 sm:h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex-shrink-0 flex items-center justify-center text-white text-xs sm:text-sm font-medium">
                   {contact.avatar}
                 </div>
-                <div className="ml-3 flex-1 min-w-0">
+                <div className="ml-2 sm:ml-3 flex-1 min-w-0">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-medium text-gray-900 truncate">{contact.name}</h3>
+                    <h3 className="text-xs sm:text-sm font-medium text-gray-900 truncate">{contact.name}</h3>
                     <div className="flex items-center gap-1">
                       <span className="text-xs text-gray-500">{contact.time}</span>
                       <button
@@ -461,12 +482,12 @@ export default function ConversationPage() {
                       </button>
                     </div>
                   </div>
-                  <p className="text-sm text-gray-500 truncate mt-1">{contact.preview}</p>
+                  <p className="text-xs sm:text-sm text-gray-500 truncate mt-1">{contact.preview}</p>
                 </div>
               </div>
             ))
           ) : (
-            <p className="p-4 text-sm text-gray-500">No contacts found.</p>
+            <p className="p-3 sm:p-4 text-xs sm:text-sm text-gray-500">No contacts found.</p>
           )}
         </div>
       </div>
@@ -476,15 +497,21 @@ export default function ConversationPage() {
         {/* Chat Header */}
         {currentContact ? (
           <>
-            <div className="p-4 border-b border-gray-200 bg-white relative">
+            <div className="p-3 sm:p-4 border-b border-gray-200 bg-white relative">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <button 
+                    className="lg:hidden p-2 text-gray-600"
+                    onClick={toggleSidebar}
+                  >
+                    <Menu className="w-5 h-5" />
+                  </button>
+                  <div className="w-8 sm:w-10 h-8 sm:h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white text-xs sm:text-sm font-medium">
                     {currentContact.avatar}
                   </div>
                   <div>
-                    <h2 className="font-medium text-gray-900">{currentContact.name}</h2>
-                    <div className="flex items-center gap-2 text-sm text-gray-500">
+                    <h2 className="font-medium text-sm sm:text-base text-gray-900">{currentContact.name}</h2>
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 text-xs sm:text-sm text-gray-500">
                       <span>Last seen: {currentContact.lastSeen}</span>
                       <span>{currentContact.localTime}</span>
                     </div>
@@ -495,22 +522,22 @@ export default function ConversationPage() {
                 </button>
               </div>
               {showDropdown && (
-                <div ref={dropdownRef} className="absolute right-4 top-12 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
+                <div ref={dropdownRef} className="absolute right-2 sm:right-4 top-10 sm:top-12 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
                   <button 
                     onClick={() => handleDropdownAction('archive')}
-                    className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    className="flex items-center gap-2 w-full text-left px-3 sm:px-4 py-2 text-xs sm:text-sm text-gray-700 hover:bg-gray-100"
                   >
                     <Archive className="w-4 h-4" /> Archive Chat
                   </button>
                   <button 
                     onClick={() => handleDropdownAction('mute')}
-                    className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    className="flex items-center gap-2 w-full text-left px-3 sm:px-4 py-2 text-xs sm:text-sm text-gray-700 hover:bg-gray-100"
                   >
                     <BellOff className="w-4 h-4" /> Mute Notifications
                   </button>
                   <button 
                     onClick={() => handleDropdownAction('delete')}
-                    className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                    className="flex items-center gap-2 w-full text-left px-3 sm:px-4 py-2 text-xs sm:text-sm text-red-600 hover:bg-red-50"
                   >
                     <Trash2 className="w-4 h-4" /> Delete Chat
                   </button>
@@ -519,23 +546,23 @@ export default function ConversationPage() {
             </div>
 
             {/* Messages Area */}
-            <div className="flex-1 p-4 overflow-y-auto bg-gray-50">
+            <div className="flex-1 p-2 sm:p-4 overflow-y-auto bg-gray-50">
               {currentContact.messages.map((msg) => (
-                <div key={msg.id} className={`mb-6 ${msg.type === 'outgoing' ? 'flex justify-end' : ''}`}>
-                  <div className={`max-w-md ${msg.type === 'outgoing' ? 'bg-[#C8C1F5] text-black' : 'bg-white text-gray-800'} rounded-3xl p-4 shadow-sm`}>
-                    <p className="mb-2">{msg.text}</p>
+                <div key={msg.id} className={`mb-4 sm:mb-6 ${msg.type === 'outgoing' ? 'flex justify-end' : ''}`}>
+                  <div className={`max-w-[80%] sm:max-w-md ${msg.type === 'outgoing' ? 'bg-[#C8C1F5] text-black' : 'bg-white text-gray-800'} rounded-2xl sm:rounded-3xl p-3 sm:p-4 shadow-sm`}>
+                    <p className="mb-2 text-xs sm:text-sm">{msg.text}</p>
                     
                     {msg.showBusiness && currentContact.business && (
                       <>
-                        <div className="text-sm text-gray-500 mb-3">This message relates to:</div>
-                        <div className="bg-gray-50 rounded-lg p-3 flex items-center gap-3">
-                          <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-orange-500 rounded-lg flex items-center justify-center text-black">
+                        <div className="text-xs sm:text-sm text-gray-500 mb-2 sm:mb-3">This message relates to:</div>
+                        <div className="bg-gray-50 rounded-lg p-2 sm:p-3 flex items-center gap-2 sm:gap-3">
+                          <div className="w-8 sm:w-12 h-8 sm:h-12 bg-gradient-to-br from-pink-500 to-orange-500 rounded-lg flex items-center justify-center text-black">
                             {currentContact.business.icon}
                           </div>
                           <div>
-                            <h4 className="font-medium text-gray-900">{currentContact.business.name}</h4>
-                            <div className="flex items-center gap-1 text-sm text-gray-600 mt-1">
-                              <MapPin className="w-4 h-4" />
+                            <h4 className="font-medium text-xs sm:text-sm text-gray-900">{currentContact.business.name}</h4>
+                            <div className="flex items-center gap-1 text-xs sm:text-sm text-gray-600 mt-1">
+                              <MapPin className="w-3 sm:w-4 h-3 sm:h-4" />
                               <span>{currentContact.business.location}</span>
                             </div>
                           </div>
@@ -552,8 +579,8 @@ export default function ConversationPage() {
             </div>
 
             {/* Message Input */}
-            <div className="p-4 border-t border-gray-200 bg-white">
-              <div className="flex items-center gap-3">
+            <div className="p-3 sm:p-4 border-t border-gray-200 bg-white">
+              <div className="flex items-center gap-2 sm:gap-3">
                 <div className="flex-1 relative">
                   <input
                     type="text"
@@ -561,24 +588,24 @@ export default function ConversationPage() {
                     onChange={(e) => setMessage(e.target.value)}
                     onKeyPress={handleKeyPress}
                     placeholder="Type new messages..."
-                    className="w-full px-4 py-3 bg-gray-100 rounded-full outline-none border border-gray-300"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-100 rounded-full outline-none border border-gray-300 text-xs sm:text-sm"
                   />
                 </div>
                 <button 
                   onClick={sendMessage}
                   disabled={!message.trim()}
-                  className="bg-[#C8C1F5] disabled:bg-gray-100 disabled:cursor-not-allowed text-black p-3 rounded-full"
+                  className="bg-[#C8C1F5] disabled:bg-gray-100 disabled:cursor-not-allowed text-black p-2 sm:p-3 rounded-full"
                 >
-                  <Send className="w-5 h-5" />
+                  <Send className="w-4 sm:w-5 h-4 sm:h-5" />
                 </button>
-                <button className="bg-white hover:bg-gray-50 text-[#C8C1F5] border border-[#C8C1F5] px-6 py-3 rounded-full font-medium transition-colors">
+                <button className="bg-white hover:bg-gray-50 text-[#C8C1F5] border border-[#C8C1F5] px-4 sm:px-6 py-2 sm:py-3 rounded-full font-medium text-xs sm:text-sm transition-colors">
                   Create an offer
                 </button>
               </div>
             </div>
           </>
         ) : (
-          <div className="flex-1 flex items-center justify-center text-gray-500">
+          <div className="flex-1 flex items-center justify-center text-gray-500 text-sm">
             No contact selected
           </div>
         )}
