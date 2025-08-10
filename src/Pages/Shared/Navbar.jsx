@@ -78,7 +78,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white shadow-sm relative z-50">
+    <nav className="fixed -top-0.5 left-0 w-full bg-white shadow-sm z-50">
       <div className="container mx-auto px-2">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -176,9 +176,9 @@ const Navbar = () => {
             <Link to="/conversation" className="p-2 text-gray-600 hover:text-purple-600 transition-colors">
               <MessageCircleMore className="w-5 h-5" />
             </Link>
-            <button className="p-2 text-gray-600 hover:text-purple-600 transition-colors">
+            <Link to='/order' className="p-2 text-gray-600 hover:text-purple-600 transition-colors">
               <ShoppingCart className="w-5 h-5" /> 
-            </button>
+            </Link>
             <div className="relative">
               <Link to='/profile' className="flex items-center space-x-1 p-2 text-gray-600 hover:text-purple-600 transition-colors">
                 <User className="w-5 h-5" />
@@ -244,19 +244,20 @@ const Navbar = () => {
                 <MessageCircleMore className="w-5 h-5" />
                 <span>Messages</span>
               </Link>
-              <button
+              <Link to='/order'
                 onClick={closeMobileMenu}
                 className="flex items-center space-x-3 text-gray-600 hover:text-purple-600 transition-colors"
               >
                 <ShoppingCart className="w-5 h-5" />
                 <span>Cart</span>
-              </button>
+              </Link>
               <Link
               to="/profile"
                 onClick={closeMobileMenu}
                 className="flex items-center space-x-3 text-gray-600 hover:text-purple-600 transition-colors"
               >
                 <User className="w-5 h-5" />
+                <span>Profile</span>
               </Link>
             </div>
           </div>

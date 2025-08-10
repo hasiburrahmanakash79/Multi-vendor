@@ -8,6 +8,7 @@ import ConversationPage from "../Pages/ConversationPage/ConversationPage";
 import Notification from "../Pages/Notification/Notification";
 import SaveItems from "../Pages/SaveItems/SaveItems";
 import SellerProfile from "../Pages/SellerProfile/SellerProfile";
+import ManageOrder from "../Pages/ManageOrder/ManageOrder";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -36,6 +37,11 @@ const router = createBrowserRouter([
       {
         path: "/profile",
         element: <SellerProfile />
+      },
+      
+      {
+        path: "/order",
+        element: <ManageOrder />
       },
       
 
