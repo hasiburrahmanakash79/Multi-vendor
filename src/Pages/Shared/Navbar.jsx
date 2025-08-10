@@ -40,11 +40,11 @@ const Navbar = () => {
             <button className="p-2 text-gray-600 hover:text-purple-600 transition-colors">
               <Heart className="w-5 h-5" />
             </button>
-            <button className="p-2 text-gray-600 hover:text-purple-600 transition-colors">
+            <Link to="/conversation" className="p-2 text-gray-600 hover:text-purple-600 transition-colors">
               <MessageCircleMore className="w-5 h-5" />
-            </button>
+            </Link>
             <button className="p-2 text-gray-600 hover:text-purple-600 transition-colors">
-              <ShoppingCart className="w-5 h-5" />
+              <ShoppingCart className="w-5 h-5" /> 
             </button>
             <div className="relative">
               <button className="flex items-center space-x-1 p-2 text-gray-600 hover:text-purple-600 transition-colors">

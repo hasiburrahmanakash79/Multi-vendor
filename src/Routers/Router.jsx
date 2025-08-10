@@ -4,6 +4,7 @@ import SignIn from "../Pages/Authentication/SignIn";
 import Main from "../Layouts/Main";
 import Homepage from "../Pages/HomePage/Homepage";
 import ServiceDetailPage from "../Pages/Services/ServiceDetailPage";
+import ConversationPage from "../Pages/ConversationPage/ConversationPage";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -16,6 +17,10 @@ const router = createBrowserRouter([
       {
         path: "/serviceDetails/:id",
         element: <ServiceDetailPage />
+      },
+      {
+        path: "/conversation",
+        element: <ConversationPage />
       },
       
 
