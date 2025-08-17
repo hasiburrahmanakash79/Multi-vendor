@@ -13,6 +13,7 @@ import event from "../../assets/videos/event.mp4";
 import "react-datepicker/dist/react-datepicker.css";
 import MobileAppSection from "../HomePage/MobileAppSection/MobileAppSection";
 import ServicesPackages from "../HomePage/ServicesPackages/ServicesPackages";
+import { Link } from "react-router-dom";
 
 const ServiceDetailPage = () => {
   const [bookingDate, setBookingDate] = useState(new Date("2025-09-05")); // Initialize as Date object
@@ -317,7 +318,7 @@ const ServiceDetailPage = () => {
                         selected={bookingDate}
                         onChange={(date) => setBookingDate(date)}
                         dateFormat="MM/dd/yyyy"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 text-sm"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C8C1F5] text-sm"
                         placeholderText="Select a date"
                       />
                     </div>
@@ -333,7 +334,7 @@ const ServiceDetailPage = () => {
                         timeIntervals={15}
                         timeCaption="Time"
                         dateFormat="h:mm aa"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 text-sm"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C8C1F5] text-sm"
                         placeholderText="Select a time"
                       />
                     </div>
@@ -347,25 +348,26 @@ const ServiceDetailPage = () => {
                   <p className="text-sm text-gray-600">
                     Overland Park, KS Overland Park, KS Overland Park, KS
                   </p>
-                  <button className="mt-2 w-full border border-gray-300 rounded-lg py-2 text-sm text-gray-600 hover:bg-gray-50">
-                    Chat with seller
-                  </button>
+                </div>
+                <div className="w-full">
+                  <Link
+                    to="/order-preview"
+                    className="block w-full bg-[#C8C1F5] hover:shadow-md hover:bg-[#b0a6f3] duration-500 text-white py-3 rounded-lg font-medium transition-colors text-center"
+                  >
+                    Book Now
+                  </Link>
                 </div>
               </div>
-
-              <button className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-medium transition-colors">
-                Book Now
-              </button>
             </div>
           </div>
         </div>
       </div>
 
       <div className="py-10">
-        <ServicesPackages/>
+        <ServicesPackages />
       </div>
 
-      <MobileAppSection/>
+      <MobileAppSection />
     </div>
   );
 };

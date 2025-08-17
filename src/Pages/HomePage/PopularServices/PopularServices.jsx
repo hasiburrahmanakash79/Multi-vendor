@@ -103,7 +103,7 @@ const PopularServices = () => {
           Popular Services
         </h1>
         <Link
-          to="/"
+          to="/services"
           className="text-[#1E40AF] underline text-base"
         >
           See All

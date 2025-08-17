@@ -9,6 +9,9 @@ import Notification from "../Pages/Notification/Notification";
 import SaveItems from "../Pages/SaveItems/SaveItems";
 import SellerProfile from "../Pages/SellerProfile/SellerProfile";
 import ManageOrder from "../Pages/ManageOrder/ManageOrder";
+import AllServices from "../Pages/AllServices/AllServices";
+import OrderPreview from "../Pages/OrderPage/OrderPreview";
+import PaymentSuccess from "../Pages/OrderPage/PaymentSuccess";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -21,6 +24,14 @@ const router = createBrowserRouter([
       {
         path: "/serviceDetails/:id",
         element: <ServiceDetailPage />
+      },
+      {
+        path: "/order-preview",
+        element: <OrderPreview />
+      },
+      {
+        path: "/services",
+        element: <AllServices />
       },
       {
         path: "/conversation",
@@ -43,6 +54,10 @@ const router = createBrowserRouter([
         path: "/order",
         element: <ManageOrder />
       },
+      {
+        path: "/successful",
+        element: <PaymentSuccess />
+      }
       
 
     ],
