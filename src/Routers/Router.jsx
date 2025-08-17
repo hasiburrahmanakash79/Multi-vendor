@@ -12,6 +12,8 @@ import ManageOrder from "../Pages/ManageOrder/ManageOrder";
 import AllServices from "../Pages/AllServices/AllServices";
 import OrderPreview from "../Pages/OrderPage/OrderPreview";
 import PaymentSuccess from "../Pages/OrderPage/PaymentSuccess";
+import ServiceTimeline from "../Pages/OrderPage/ServiceTimeline";
+import AccountSettings from "../Pages/AccountSettings/AccountSettings";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -53,6 +55,14 @@ const router = createBrowserRouter([
       {
         path: "/order",
         element: <ManageOrder />
+      },
+      {
+        path: "/timeline/:id",
+        element: <ServiceTimeline />
+      },
+      {
+        path: "/settings",
+        element: <AccountSettings />
       },
       {
         path: "/successful",

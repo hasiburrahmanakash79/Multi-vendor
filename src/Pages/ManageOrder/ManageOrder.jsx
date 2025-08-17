@@ -7,6 +7,7 @@ import image5 from "../../assets/images/cardImage5.png";
 import image6 from "../../assets/images/cardImage6.png";
 import image7 from "../../assets/images/cardImage7.png";
 import image8 from "../../assets/images/cardImage8.png";
+import { Link } from "react-router-dom";
 
 const ManageOrder = () => {
   const initialOrders = [
@@ -195,7 +196,7 @@ const ManageOrder = () => {
                       className="w-24 h-16 object-cover mr-2 sm:mr-3 rounded-xl hidden sm:block"
                     />
                     <div>
-                      <p className="text-purple-600 font-medium text-sm">{order.service}</p>
+                      <Link to={`/timeline/${order.id}`} className="text-purple-600 font-medium text-sm">{order.service}</Link>
                       <p className="text-gray-500 text-xs sm:text-sm">{order.location}</p>
                     </div>
                   </div>

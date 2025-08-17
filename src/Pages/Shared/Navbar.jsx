@@ -159,7 +159,7 @@ const Navbar = () => {
               <ShoppingCart className="w-5 h-5" /> 
             </Link>
             <div className="relative">
-              <Link to='/profile' className="flex items-center space-x-1 p-2 text-gray-600 hover:text-purple-600 transition-colors">
+              <Link to='/settings' className="flex items-center space-x-1 p-2 text-gray-600 hover:text-purple-600 transition-colors">
                 <User className="w-5 h-5" />
               </Link>
             </div>

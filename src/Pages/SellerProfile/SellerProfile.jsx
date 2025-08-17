@@ -214,7 +214,7 @@ const SellerProfile = () => {
             <Link
               to={`/serviceDetails/${service.id}`}
               key={service.id}
-              className="relative border border-gray-200 rounded-lg p-3 hover:shadow-2xl duration-500"
+              className="relative border border-gray-200 rounded-xl p-3 hover:shadow-2xl duration-500"
             >
               <div className="absolute top-3 left-3 bg-white/40 text-black text-sm font-semibold px-3 py-2 rounded-br-xl flex items-center gap-1">
                 <RiStarFill className="inline text-yellow-400" />{" "}
