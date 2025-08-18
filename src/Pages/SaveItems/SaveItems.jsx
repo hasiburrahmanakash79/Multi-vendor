@@ -122,7 +122,7 @@ const SaveItems = () => {
             <Link
               to={`/serviceDetails/${service.id}`}
               key={service.id}
-              className="relative border border-gray-200 rounded-lg p-3"
+              className="relative border border-gray-200 rounded-xl hover:shadow-2xl transform duration-500 p-3"
             >
               <div className="absolute top-3 left-3 bg-white/40 text-black text-sm font-semibold px-3 py-2 rounded-br-xl flex items-center gap-1">
                 <RiStarFill className="inline text-yellow-400" />{" "}

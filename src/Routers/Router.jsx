@@ -14,6 +14,7 @@ import OrderPreview from "../Pages/OrderPage/OrderPreview";
 import PaymentSuccess from "../Pages/OrderPage/PaymentSuccess";
 import ServiceTimeline from "../Pages/OrderPage/ServiceTimeline";
 import AccountSettings from "../Pages/AccountSettings/AccountSettings";
+import OtpVerification from "../Pages/Authentication/OtpVerification";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -21,58 +22,56 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Homepage/>
+        element: <Homepage />,
       },
       {
         path: "/serviceDetails/:id",
-        element: <ServiceDetailPage />
+        element: <ServiceDetailPage />,
       },
       {
         path: "/order-preview",
-        element: <OrderPreview />
+        element: <OrderPreview />,
       },
       {
         path: "/services",
-        element: <AllServices />
+        element: <AllServices />,
       },
       {
         path: "/conversation",
-        element: <ConversationPage />
+        element: <ConversationPage />,
       },
       {
         path: "/notification",
-        element: <Notification />
+        element: <Notification />,
       },
       {
         path: "/saved",
-        element: <SaveItems />
+        element: <SaveItems />,
       },
       {
         path: "/profile",
-        element: <SellerProfile />
+        element: <SellerProfile />,
       },
-      
+
       {
         path: "/order",
-        element: <ManageOrder />
+        element: <ManageOrder />,
       },
       {
         path: "/timeline/:id",
-        element: <ServiceTimeline />
+        element: <ServiceTimeline />,
       },
       {
         path: "/settings",
-        element: <AccountSettings />
+        element: <AccountSettings />,
       },
       {
         path: "/successful",
-        element: <PaymentSuccess />
-      }
-      
-
+        element: <PaymentSuccess />,
+      },
     ],
   },
-  
+
   {
     path: "/signin",
     element: <SignIn />,
@@ -80,6 +79,10 @@ const router = createBrowserRouter([
   {
     path: "/signup",
     element: <Signup />,
+  },
+  {
+    path: "/otp",
+    element: <OtpVerification />,
   },
 ]);
 

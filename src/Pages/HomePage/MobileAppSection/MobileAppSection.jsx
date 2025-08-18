@@ -59,8 +59,8 @@ const MobileAppSection = () => {
               </div>
             </div>
 
-            <div className="hidden lg:block absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-4 z-10">
-              <div className="w-96 h-96 rounded-3xl overflow-hidden shadow-2xl transform rotate-2">
+            <div className="hidden lg:block absolute right-0 top-1/2 hover:scale-110 transform duration-500 -translate-y-1/2 translate-x-4 z-10">
+              <div className="w-96 h-96 rounded-3xl overflow-hidden shadow-2xl transform rotate-6">
                 <img
                   src={image}
                   alt="Event decoration"

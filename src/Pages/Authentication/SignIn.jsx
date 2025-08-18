@@ -3,6 +3,7 @@ import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { FaUser } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+import signinImage from "../../assets/images/signin.png";
 
 const SignIn = () => {
   const {
@@ -21,25 +22,19 @@ const SignIn = () => {
   };
 
   return (
-    <div className="grid grid-cols-7 min-h-screen bg-base-200">
-      <div className="col-span-3 bg-blue-500 flex items-center p-8">
-        <h2 className="text-white text-4xl font-bold leading-relaxed">
-          Welcome Back! Verify Your <br /> Email to Access Your <br /> Learning
-          Portal!
-        </h2>
+    <div className="grid grid-cols-2 min-h-screen bg-base-200">
+      <div className="col-span-1 bg-blue-500 flex items-center">
+        <img src={signinImage} className="object-cover h-full" alt="" />
       </div>
-      <div className="col-span-4 flex items-center justify-center ">
-        <div className="max-w-lg w-full bg-white rounded-3xl border border-blue-200 shadow-md p-16">
-          <h2 className="text-2xl font-bold text-center mb-2">
-            Sign in Account
+      <div className="col-span-1 flex items-center justify-center ">
+        <div className="max-w-xl w-full p-10">
+          <h2 className="text-3xl font-semibold text-center mb-4">
+            Welcome Back!{" "}
           </h2>
-          <p className="text-center text-sm mb-6">
-            Don’t have an Account?{" "}
-            <Link to='/signup' className="text-blue-500 hover:underline">
-              Sign Up Free
-            </Link>
+          <p className="text-center text-sm mb-6 text-[#747086]">
+            Enter your email and password to access your account.
           </p>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div>
               <label className="block text-sm font-medium mb-1">
                 User name
@@ -51,7 +46,7 @@ const SignIn = () => {
                     required: "Username is required",
                   })}
                   placeholder="Enter your user name"
-                  className="w-full border border-base-300 bg-base-200 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-base-300 bg-base-200 rounded-full p-2 outline-none"
                 />
                 <FaUser className="absolute inset-y-3 right-3 flex items-center text-gray-500" />
               </div>
@@ -70,8 +65,8 @@ const SignIn = () => {
                   {...register("password", {
                     required: "Password is required",
                   })}
-                  placeholder="Enter your Password"
-                  className="w-full border border-base-300 bg-base-200 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="********"
+                  className="w-full border border-base-300 bg-base-200 rounded-full p-2 outline-none"
                 />
                 <button
                   type="button"
@@ -96,7 +91,7 @@ const SignIn = () => {
                   />
                   Remember for 30 Days
                 </div>
-                <a href="#" className="text-blue-500 hover:underline">
+                <a href="#" className="text-[#b6acf7] hover:underline">
                   Forgot Password?
                 </a>
               </div>
@@ -104,7 +99,7 @@ const SignIn = () => {
 
             <button
               type="submit"
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 rounded-md"
+              className="w-full bg-[#C8C1F5] hover:bg-[#b6acf7] text-black py-2 rounded-full "
             >
               Login
             </button>
@@ -112,7 +107,7 @@ const SignIn = () => {
 
           <div className="divider">Or Login with</div>
           <div className="flex space-x-4">
-            <button className="flex-1 flex items-center justify-center border border-base-300 rounded-md py-2 hover:bg-gray-100">
+            <button className="flex-1 flex items-center justify-center border border-base-300 rounded-md py-2 hover:bg-gray-100 hover:shadow-lg">
               <img
                 src="https://www.svgrepo.com/show/475656/google-color.svg"
                 alt="Google"
@@ -120,18 +115,18 @@ const SignIn = () => {
               />
               Google
             </button>
-            <button className="flex-1 flex items-center justify-center border border-base-300 rounded-md py-2 hover:bg-gray-100">
+            <button className="flex-1 flex items-center justify-center border border-base-300 rounded-md py-2 hover:bg-gray-100 hover:shadow-lg">
               <img
-                src="https://www.svgrepo.com/show/452196/facebook-1.svg"
-                alt="Facebook"
-                className="w-5 h-5 mr-2"
+                src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg"
+                alt="Apple"
+                className="w-5 mr-2"
               />
-              Facebook
+              Apple
             </button>
           </div>
           <p className="text-center text-sm mt-6">
             Don’t have an account?{" "}
-            <Link to='/signup' className="text-blue-500 hover:underline">
+            <Link to="/signup" className="text-[#b6acf7] hover:underline">
               Sign Up Free
             </Link>
           </p>
