@@ -15,6 +15,10 @@ import PaymentSuccess from "../Pages/OrderPage/PaymentSuccess";
 import ServiceTimeline from "../Pages/OrderPage/ServiceTimeline";
 import AccountSettings from "../Pages/AccountSettings/AccountSettings";
 import OtpVerification from "../Pages/Authentication/OtpVerification";
+import AdminOverview from "../Pages/AdminPages/AdminOverview";
+import BuyerOverview from "../Pages/BuyerPages/BuyerOverview";
+import MyServices from "../Pages/BuyerPages/MyServices";
+import AddServices from "../Pages/BuyerPages/AddServices";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -69,9 +73,20 @@ const router = createBrowserRouter([
         path: "/successful",
         element: <PaymentSuccess />,
       },
+      {
+        path: "/buyer-overview",
+        element: <BuyerOverview />,
+      },
+      {
+        path: "/my-services",
+        element: <MyServices />,
+      },
+      {
+        path: "/add-services",
+        element: <AddServices />,
+      },
     ],
   },
-
   {
     path: "/signin",
     element: <SignIn />,

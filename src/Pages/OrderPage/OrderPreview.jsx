@@ -64,7 +64,7 @@ const OrderPreview = () => {
             <div className="absolute inset-0 bg-black/20 bg-opacity-20 rounded-2xl"></div>
           </div>
 
-          <div className="p-8">
+          <div className="md:p-8 mt-5">
             {/* Venue Title */}
             <h2 className="text-2xl font-semibold text-gray-800 mb-6">
               Destination engagement and wedding hall, california
@@ -72,7 +72,7 @@ const OrderPreview = () => {
 
             {/* Description Section */}
             <div className="mb-8">
-              <h3 className="text-lg font-medium text-gray-700 mb-3">
+              <h3 className="text-lg font-bold text-gray-700 mb-3">
                 Descriptions
               </h3>
               <p className="text-gray-600 leading-relaxed">
