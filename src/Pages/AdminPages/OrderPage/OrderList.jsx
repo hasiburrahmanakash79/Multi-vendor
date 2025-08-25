@@ -6,6 +6,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import SectionTitle from "../../../components/SectionTitle";
 
 const OrderList = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -225,6 +226,10 @@ const OrderList = () => {
 
   return (
     <div className="">
+        <SectionTitle
+        title={"Order List"}
+        description={"Track, manage and forecast your customers and orders."}
+      />
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         {stats.map((stat, index) => (
           <div
@@ -284,7 +289,7 @@ const OrderList = () => {
               </tr>
             </thead>
             <tbody>
-              {currentOrders.map((order) => (
+              {currentOrders.length > 0 ? (currentOrders.map((order) => (
                 <tr
                   key={order.id}
                   className="border-b border-gray-200 hover:bg-gray-50"
@@ -314,7 +319,17 @@ const OrderList = () => {
                     </span>
                   </td>
                 </tr>
-              ))}
+              ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan="8"
+                    className="text-center py-6 text-gray-500 font-medium"
+                  >
+                    No order found matching your criteria.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

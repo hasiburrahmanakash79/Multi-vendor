@@ -3,14 +3,12 @@ import { Check, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import SectionTitle from "../../../components/SectionTitle";
 
-const AllService = () => {
+const SellerRequest = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
-  const itemsPerPage = 10;
-
-  const services = [
+  const [services, setServices] = useState([
     {
-      id: "ORD-AX93K7",
+      id: "ORD-AX93K7-1",
       eventName: "Catering",
       date: "Jan 6, 2025",
       location: "Overland Park, KS",
@@ -20,7 +18,7 @@ const AllService = () => {
       status: "Active",
     },
     {
-      id: "ORD-AX93K7",
+      id: "ORD-AX93K7-2",
       eventName: "Wedding photography expert in chicago",
       date: "Jan 6, 2025",
       location: "Overland Park, KS",
@@ -30,7 +28,7 @@ const AllService = () => {
       status: "Canceled",
     },
     {
-      id: "ORD-AX93K7",
+      id: "ORD-AX93K7-3",
       eventName: "Dj",
       date: "Jan 6, 2025",
       location: "Overland Park, KS",
@@ -40,7 +38,7 @@ const AllService = () => {
       status: "Active",
     },
     {
-      id: "ORD-AX93K7",
+      id: "ORD-AX93K7-4",
       eventName: "Catering",
       date: "Jan 6, 2025",
       location: "Overland Park, KS",
@@ -50,7 +48,7 @@ const AllService = () => {
       status: "Pending",
     },
     {
-      id: "ORD-AX93K7",
+      id: "ORD-AX93K7-5",
       eventName: "Wedding photography expert in chicago",
       date: "Jan 6, 2025",
       location: "Overland Park, KS",
@@ -60,7 +58,7 @@ const AllService = () => {
       status: "Active",
     },
     {
-      id: "ORD-AX93K7",
+      id: "ORD-AX93K7-6",
       eventName: "Dj",
       date: "Jan 6, 2025",
       location: "Overland Park, KS",
@@ -70,7 +68,7 @@ const AllService = () => {
       status: "Canceled",
     },
     {
-      id: "ORD-AX93K7",
+      id: "ORD-AX93K7-7",
       eventName: "Catering",
       date: "Jan 6, 2025",
       location: "Overland Park, KS",
@@ -79,7 +77,9 @@ const AllService = () => {
       price: "$2,000",
       status: "Active",
     },
-  ];
+  ]);
+
+  const itemsPerPage = 10;
 
   const filteredOrders = services.filter(
     (order) =>
@@ -102,6 +102,34 @@ const AllService = () => {
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
     setCurrentPage(1);
+  };
+
+  const handleApprove = (id) => {
+    setServices((prev) =>
+      prev.map((service) =>
+        service.id === id ? { ...service, status: "Active" } : service
+      )
+    );
+  };
+
+  const handleDeny = (id) => {
+    setServices((prev) =>
+      prev.map((service) =>
+        service.id === id ? { ...service, status: "Canceled" } : service
+      )
+    );
+  };
+
+  const handleApproveAll = () => {
+    setServices((prev) =>
+      prev.map((service) => ({ ...service, status: "Active" }))
+    );
+  };
+
+  const handleDenyAll = () => {
+    setServices((prev) =>
+      prev.map((service) => ({ ...service, status: "Canceled" }))
+    );
   };
 
   const renderPaginationButtons = () => {
@@ -199,12 +227,29 @@ const AllService = () => {
   return (
     <div className="">
       <SectionTitle
-        title={"All Services"}
+        title={"Seller Request"}
         description={"Track, manage and forecast your customers and orders."}
       />
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200">
-        <div className="p-6">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+        <div className="flex justify-between items-start mb-6">
+          <h1 className="text-2xl font-semibold">Request List</h1>
+          <div className="flex gap-5">
+            <button
+              onClick={handleApproveAll}
+              className="py-2 px-4 bg-purple-200 text-black rounded-lg hover:shadow-xl"
+            >
+              Approve All
+            </button>
+            <button
+              onClick={handleDenyAll}
+              className="py-2 px-4 border border-gray-200 text-black rounded-lg hover:shadow-xl"
+            >
+              Deny All
+            </button>
+          </div>
+        </div>
+        <div className="pb-6">
           <input
             type="text"
             placeholder="Search"
@@ -218,13 +263,13 @@ const AllService = () => {
           <table className="min-w-full">
             <thead className="bg-gray-50">
               <tr className="text-left text-gray-600 uppercase text-sm font-bold">
-                <th className="py-3 px-4">ID</th>
+                <th className="py-3 px-4">Seller</th>
                 <th className="py-3 px-4">Event Name</th>
                 <th className="py-3 px-4">Date</th>
                 <th className="py-3 px-4">Location</th>
-                <th className="py-3 px-4">Seller</th>
                 <th className="py-3 px-4">Service type</th>
                 <th className="py-3 px-4">Price</th>
+                <th className="py-3 px-4">Status</th>
                 <th className="py-3 px-4">Action</th>
               </tr>
             </thead>
@@ -235,7 +280,7 @@ const AllService = () => {
                     key={service.id}
                     className="border-b border-gray-200 hover:bg-gray-50"
                   >
-                    <td className="p-4 text-gray-700">{service.id}</td>
+                    <td className="p-4 text-gray-700">{service.seller}</td>
                     <td className="p-4 text-gray-700">
                       <Link to={`/admin/order-details/${service.id}`}>
                         {service.eventName}
@@ -243,25 +288,27 @@ const AllService = () => {
                     </td>
                     <td className="p-4 text-gray-700">{service.date}</td>
                     <td className="p-4 text-gray-700">{service.location}</td>
-                    <td className="p-4 text-gray-700">{service.seller}</td>
                     <td className="p-4 text-gray-700">
                       <span
                         className={`px-2 py-1 rounded-full text-xs ${
                           service.service_type === "Regular"
                             ? "bg-green-100 text-green-800"
-                            : service.service_type === "Custom"
-                            ? "bg-yellow-100 text-yellow-800"
-                            : "bg-gray-100 text-gray-800"
+                            : "bg-yellow-100 text-yellow-800"
                         }`}
                       >
                         {service.service_type}
                       </span>
                     </td>
                     <td className="p-4 text-gray-700">{service.price}</td>
+                    <td className="p-4 text-gray-700">{service.status}</td>
                     <td className="p-4">
                       <span className="flex items-center gap-6">
-                        <Check className="text-green-500" />
-                        <X className="text-red-500" />
+                        <button onClick={() => handleApprove(service.id)}>
+                          <Check className="text-green-500 hover:text-green-700" />
+                        </button>
+                        <button onClick={() => handleDeny(service.id)}>
+                          <X className="text-red-500 hover:text-red-700" />
+                        </button>
                       </span>
                     </td>
                   </tr>
@@ -272,7 +319,7 @@ const AllService = () => {
                     colSpan="8"
                     className="text-center py-6 text-gray-500 font-medium"
                   >
-                    No product found matching your criteria.
+                    No Request found matching your criteria.
                   </td>
                 </tr>
               )}
@@ -316,4 +363,4 @@ const AllService = () => {
   );
 };
 
-export default AllService;
+export default SellerRequest;

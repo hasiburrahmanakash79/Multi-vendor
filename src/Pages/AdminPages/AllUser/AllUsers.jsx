@@ -395,7 +395,7 @@ export default function AllUser() {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {currentUsers.length > 0 ? (
-                currentUsers.map((user, index) => (
+                currentUsers.map((user) => (
                   
                   <tr key={user.id}  className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">

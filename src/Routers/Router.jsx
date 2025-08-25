@@ -24,6 +24,8 @@ import AllUser from "../Pages/AdminPages/AllUser/AllUsers";
 import UserDetail from "../Pages/AdminPages/AllUser/UserDetail";
 import OrderList from "../Pages/AdminPages/OrderPage/OrderList";
 import OrderDetailPage from "../Pages/AdminPages/OrderPage/OrderDetailPage";
+import AllService from "../Pages/AdminPages/Services/AllService";
+import SellerRequest from "../Pages/AdminPages/SellerRequest/SellerRequest";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -118,7 +120,11 @@ const router = createBrowserRouter([
       },
       {
         path: "service",
-        element: <OrderDetailPage/>
+        element: <AllService/>
+      },
+      {
+        path: "request",
+        element: <SellerRequest/>
       },
     ],
   },
