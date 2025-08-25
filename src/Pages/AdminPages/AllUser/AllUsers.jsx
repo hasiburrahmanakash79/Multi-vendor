@@ -259,7 +259,7 @@ export default function AllUser() {
           onClick={() => handlePageChange(1)}
           className={`w-8 h-8 flex items-center justify-center text-sm font-medium rounded-md transition-colors ${
             currentPage === 1
-              ? 'text-white bg-blue-600'
+              ? 'text-black bg-purple-100'
               : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
           }`}
         >
@@ -286,7 +286,7 @@ export default function AllUser() {
               onClick={() => handlePageChange(i)}
               className={`w-8 h-8 flex items-center justify-center text-sm font-medium rounded-md transition-colors ${
                 currentPage === i
-                  ? 'text-white bg-blue-600'
+                  ? 'text-black bg-purple-100'
                   : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
               }`}
             >
@@ -311,7 +311,7 @@ export default function AllUser() {
             onClick={() => handlePageChange(totalPages)}
             className={`w-8 h-8 flex items-center justify-center text-sm font-medium rounded-md transition-colors ${
               currentPage === totalPages
-                ? 'text-white bg-blue-600'
+                ? 'text-black bg-purple-100'
                 : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
             }`}
           >

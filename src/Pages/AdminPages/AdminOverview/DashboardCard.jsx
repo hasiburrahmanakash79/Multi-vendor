@@ -52,7 +52,7 @@ const MetricCard = ({
   const TrendIcon = trend === "up" ? TrendingUp : TrendingDown;
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-6 relative">
+    <div className="bg-white rounded-2xl border border-gray-200 p-6 relative">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-gray-600 text-lg font-semibold">{title}</h3>
       </div>

@@ -22,6 +22,8 @@ import AddServices from "../Pages/BuyerPages/AddServices";
 import Dashboard from "../Layouts/Dashboard";
 import AllUser from "../Pages/AdminPages/AllUser/AllUsers";
 import UserDetail from "../Pages/AdminPages/AllUser/UserDetail";
+import OrderList from "../Pages/AdminPages/OrderPage/OrderList";
+import OrderDetailPage from "../Pages/AdminPages/OrderPage/OrderDetailPage";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -105,6 +107,18 @@ const router = createBrowserRouter([
       {
         path: "userDetail/:id",
         element: <UserDetail/>
+      },
+      {
+        path: "order",
+        element: <OrderList/>
+      },
+      {
+        path: "order-details/:id",
+        element: <OrderDetailPage/>
+      },
+      {
+        path: "service",
+        element: <OrderDetailPage/>
       },
     ],
   },

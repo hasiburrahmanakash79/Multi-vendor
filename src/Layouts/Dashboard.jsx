@@ -7,6 +7,7 @@ import ShoppingIconSvg from "../assets/icons/shopping.svg"; // Import as string 
 import LaborIconSvg from "../assets/icons/labor.svg"; // Import as string (to be replaced with component via @svgr/webpack)
 import ContentIconSvg from "../assets/icons/content.svg"; // Import as string (to be replaced with component via @svgr/webpack)
 import PrivacyIconSvg from "../assets/icons/privacy.svg"; // Import as string (to be replaced with component via @svgr/webpack)
+import ServicesIconSvg from "../assets/icons/power-service.svg"; // Import as string (to be replaced with component via @svgr/webpack)
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
@@ -41,7 +42,8 @@ const Dashboard = () => {
   const menus = [
     { title: "Dashboard", path: "/admin/dashboard", icon: HomeIconSvg },
     { title: "User", path: "/admin/user", icon: UserIconSvg },
-    { title: "Order", path: "/payments", icon: ShoppingIconSvg },
+    { title: "Order", path: "/admin/order", icon: ShoppingIconSvg },
+    { title: "Services", path: "/admin/service", icon: ServicesIconSvg },
     { title: "Seller request", path: "/settings", icon: LaborIconSvg },
     { title: "Content", path: "/settings", icon: ContentIconSvg },
     { title: "Privacy", path: "/settings", icon: PrivacyIconSvg },

@@ -136,7 +136,7 @@ export default function UserDetailPage() {
 
             {/* Services */}
             <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Danials's Services</h2>
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">Danial Services</h2>
               <div className="space-y-3">
                 {services.map((service, index) => (
                   <div key={service.id} className={`flex items-center p-3 border border-gray-200 rounded-lg ${index > 0 ? 'mt-3' : ''}`}>
