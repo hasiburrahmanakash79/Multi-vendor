@@ -26,6 +26,9 @@ import OrderList from "../Pages/AdminPages/OrderPage/OrderList";
 import OrderDetailPage from "../Pages/AdminPages/OrderPage/OrderDetailPage";
 import AllService from "../Pages/AdminPages/Services/AllService";
 import SellerRequest from "../Pages/AdminPages/SellerRequest/SellerRequest";
+import PrivacyPolicyUpload from "../Pages/AdminPages/PrivacyPolicy/PrivacyPolicyUpload";
+import RequestDetails from "../Pages/AdminPages/SellerRequest/RequestDetails";
+import ContentPage from "../Pages/AdminPages/ContentPage/ContentPage";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -125,6 +128,18 @@ const router = createBrowserRouter([
       {
         path: "request",
         element: <SellerRequest/>
+      },
+      {
+        path: "request-details/:id",
+        element: <RequestDetails/>
+      },
+      {
+        path: "content",
+        element: <ContentPage/>
+      },
+      {
+        path: "add-privacy",
+        element: <PrivacyPolicyUpload/>
       },
     ],
   },

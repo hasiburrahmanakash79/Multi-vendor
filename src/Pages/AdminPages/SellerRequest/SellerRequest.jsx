@@ -267,7 +267,6 @@ const SellerRequest = () => {
                 <th className="py-3 px-4">Event Name</th>
                 <th className="py-3 px-4">Date</th>
                 <th className="py-3 px-4">Location</th>
-                <th className="py-3 px-4">Service type</th>
                 <th className="py-3 px-4">Price</th>
                 <th className="py-3 px-4">Status</th>
                 <th className="py-3 px-4">Action</th>
@@ -282,23 +281,12 @@ const SellerRequest = () => {
                   >
                     <td className="p-4 text-gray-700">{service.seller}</td>
                     <td className="p-4 text-gray-700">
-                      <Link to={`/admin/order-details/${service.id}`}>
+                      <Link to={`/admin/request-details/${service.id}`}>
                         {service.eventName}
                       </Link>
                     </td>
                     <td className="p-4 text-gray-700">{service.date}</td>
                     <td className="p-4 text-gray-700">{service.location}</td>
-                    <td className="p-4 text-gray-700">
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs ${
-                          service.service_type === "Regular"
-                            ? "bg-green-100 text-green-800"
-                            : "bg-yellow-100 text-yellow-800"
-                        }`}
-                      >
-                        {service.service_type}
-                      </span>
-                    </td>
                     <td className="p-4 text-gray-700">{service.price}</td>
                     <td className="p-4 text-gray-700">{service.status}</td>
                     <td className="p-4">

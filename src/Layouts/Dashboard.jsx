@@ -45,8 +45,8 @@ const Dashboard = () => {
     { title: "Order", path: "/admin/order", icon: ShoppingIconSvg },
     { title: "Services", path: "/admin/service", icon: ServicesIconSvg },
     { title: "Seller request", path: "/admin/request", icon: LaborIconSvg },
-    { title: "Content", path: "/settings", icon: ContentIconSvg },
-    { title: "Privacy", path: "/settings", icon: PrivacyIconSvg },
+    { title: "Content", path: "/admin/content", icon: ContentIconSvg },
+    { title: "Privacy", path: "/admin/add-privacy", icon: PrivacyIconSvg },
   ];
 
   return (
