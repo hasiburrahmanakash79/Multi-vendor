@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { Link } from "react-router-dom";
 
 const AddServices = () => {
   const [formData, setFormData] = useState({
@@ -77,7 +78,6 @@ const AddServices = () => {
 
   const handlePublish = () => {
     console.log("Publishing service:", formData, coverPreview, galleryPreviews);
-    // Add actual publish logic here if needed
   };
 
   return (
@@ -86,8 +86,7 @@ const AddServices = () => {
         {/* Header */}
         <div className="flex items-center justify-between p-4">
           <div className="flex items-center">
-            <button
-              onClick={() => console.log("Go back")}
+            <Link to="/buyer-overview"
               className="mr-3 text-gray-600 hover:text-gray-800"
             >
               <svg
@@ -103,7 +102,7 @@ const AddServices = () => {
                   d="M15 19l-7-7 7-7"
                 />
               </svg>
-            </button>
+            </Link>
             <div>
               <h3 className="text-lg font-semibold text-gray-900">
                 Create Your Services

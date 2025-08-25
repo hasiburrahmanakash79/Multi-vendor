@@ -19,6 +19,9 @@ import AdminOverview from "../Pages/AdminPages/AdminOverview";
 import BuyerOverview from "../Pages/BuyerPages/BuyerOverview";
 import MyServices from "../Pages/BuyerPages/MyServices";
 import AddServices from "../Pages/BuyerPages/AddServices";
+import Dashboard from "../Layouts/Dashboard";
+import AllUser from "../Pages/AdminPages/AllUser/AllUsers";
+import UserDetail from "../Pages/AdminPages/AllUser/UserDetail";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -84,6 +87,24 @@ const router = createBrowserRouter([
       {
         path: "/add-services",
         element: <AddServices />,
+      },
+    ],
+  },
+  {
+    path: "/admin",
+    element: <Dashboard />,
+    children: [
+      {
+        path: "dashboard",
+        element: <AdminOverview/>
+      },
+      {
+        path: "user",
+        element: <AllUser/>
+      },
+      {
+        path: "userDetail/:id",
+        element: <UserDetail/>
       },
     ],
   },

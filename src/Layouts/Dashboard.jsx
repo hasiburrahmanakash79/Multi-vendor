@@ -1,17 +1,21 @@
-import { useEffect, useState } from "react";
-import { Link, Outlet, useLocation } from "react-router-dom";
-import {
-  FaRegChessQueen,
-  FaRegCircleUser,
-  FaRightFromBracket,
-} from "react-icons/fa6";
-import { IconContext } from "react-icons";
+import logo from "../assets/logo/logo.png";
+import user from "../assets/icons/user.png";
+import Logout from "../assets/icons/logout.png";
+import HomeIconSvg from "../assets/icons/Home.svg"; // Import as string (to be replaced with component via @svgr/webpack)
+import UserIconSvg from "../assets/icons/Users.svg"; // Import as string (to be replaced with component via @svgr/webpack)
+import ShoppingIconSvg from "../assets/icons/shopping.svg"; // Import as string (to be replaced with component via @svgr/webpack)
+import LaborIconSvg from "../assets/icons/labor.svg"; // Import as string (to be replaced with component via @svgr/webpack)
+import ContentIconSvg from "../assets/icons/content.svg"; // Import as string (to be replaced with component via @svgr/webpack)
+import PrivacyIconSvg from "../assets/icons/privacy.svg"; // Import as string (to be replaced with component via @svgr/webpack)
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import { RiArrowRightSLine, RiGalleryView2, RiBookOpenLine } from "react-icons/ri";
+
 
 const Dashboard = () => {
-  const [open, setOpen] = useState(true);
+  const navigate = useNavigate();
   const location = useLocation();
+
+  // Handle logout logic
   const handleLogout = () => {
     Swal.fire({
       title: "Are you sure?",
@@ -23,144 +27,81 @@ const Dashboard = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         console.log("User logged out");
+        // Clear authentication cookies
+        ["accessToken", "refreshToken", "isAuthenticated"].forEach((cookie) =>
+          (document.cookie = `${cookie}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`)
+        );
+        Swal.fire("Logged out!", "You have been logged out successfully.", "success");
+        navigate("/signin");
       }
     });
   };
 
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setOpen(false);
-      } else {
-        setOpen(true);
-      }
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  const iconMappings = {
-    Upgrade: FaRegChessQueen,
-    Book: RiBookOpenLine,
-    Home: RiGalleryView2,
-  };
-
-  const Menus = [
-    {
-      title: "Home",
-      path: "/home",
-      icon: iconMappings.Home,
-      role: "user",
-      gap: true,
-    },
-    {
-      title: "Study Plan",
-      path: "/study_plan",
-      icon: iconMappings.Book,
-      role: "user",
-    },
-    {
-      title: "Upgrade",
-      path: "/upgrade",
-      icon: iconMappings.Upgrade,
-      role: "user",
-    },
+  // Menu configuration
+  const menus = [
+    { title: "Dashboard", path: "/admin/dashboard", icon: HomeIconSvg },
+    { title: "User", path: "/admin/user", icon: UserIconSvg },
+    { title: "Order", path: "/payments", icon: ShoppingIconSvg },
+    { title: "Seller request", path: "/settings", icon: LaborIconSvg },
+    { title: "Content", path: "/settings", icon: ContentIconSvg },
+    { title: "Privacy", path: "/settings", icon: PrivacyIconSvg },
   ];
 
-  const studentMenus = Menus.filter((menu) => menu.role === "user");
   return (
-    <div className="flex">
+    <div className="flex h-screen">
       {/* Sidebar */}
-      <div
-        className={` ${
-          open ? "w-52 p-4" : "w-14 text-center"
-        } h-screen bg-base-300 fixed left-0 top-0 bottom-0 z-50 pt-8 transition-all duration-500`}
-      >
-        <RiArrowRightSLine 
-          className={`absolute cursor-pointer -right-5 text-gray-400 bg-base-300 shadow-2xl top-9 w-10 h-10 rounded-full ${
-            !open && "rotate-180"
-          }`}
-          onClick={() => setOpen(!open)}
-        />
-        <div className="flex items-center gap-x-4 p-2">
-          <img
-            src="/your-logo.png"
-            alt="logo"
-            className={`cursor-pointer w-full md:w-9/12 p-1 duration-500`}
-          />
+      <aside className="w-64 shadow-lg border-r border-gray-200 fixed left-0 top-0 bottom-0 z-50 pt-8 bg-white transition-all duration-500">
+        {/* Logo Section */}
+        <div className="p-2 flex flex-col items-center justify-center">
+          <img src={logo} alt="Logo" className="cursor-pointer w-3/4 mb-1" />
         </div>
 
-        <ul
-          className={`${
-            open ? "" : "flex flex-col items-center justify-center"
-          }`}
-        >
-          { studentMenus.map(
-            (Menu, index) => (
-              <Link
-                to={Menu.path}
-                key={index}
-                className={`flex rounded-full py-1.5 px-4 cursor-pointer text-sm items-center ${
-                  Menu.gap ? "mt-9" : "mt-2"
-                } ${
-                  location.pathname === Menu.path
-                    ? "bg-[#1E2839] text-white"
-                    : "hover:bg-white"
-                }`} // Add active class
-              >
-                <li className="flex items-center gap-x-2 text-md ">
-                  <IconContext.Provider value={{ className: "react-icon" }}>
-                    <Menu.icon />
-                  </IconContext.Provider>
-                  <span
-                    className={`${!open && "hidden"} origin-left duration-200`}
-                  >
-                    {Menu.title}
-                  </span>
-                </li>
-              </Link>
-            )
-          )}
-        </ul>
+        {/* Navigation Menu */}
+        <nav className="mt-10 p-5 space-y-3">
+          {menus.map((menu, index) => (
+            <Link
+              key={index}
+              to={menu.path}
+              className={`flex items-center py-2 px-7 text-sm rounded-lg cursor-pointer transition-colors ${
+                location.pathname === menu.path
+                  ? "bg-[#EFEEF9] text-[#9C6ED9]"
+                  : "text-gray-600 hover:bg-[#EFEEF9]"
+              }`}
+            >
+              <img
+              src={menu.icon}
+                className={`w-6 h-6`}
+              />
+              <span className="ml-3">{menu.title}</span>
+            </Link>
+          ))}
+        </nav>
 
-        {/* Profile + Logout */}
-        <div className="mt-28 ms-3.5 md:ms-0 bottom-20 absolute w-full">
-          <Link
-            to="/profile"
-            className={`-ml-3.5 flex p-2 pl-6 cursor-pointer text-sm items-center w-full ${
-              location.pathname === "/profile" ? "bg-white" : "hover:bg-white"
-            }`}
-          >
-            <li className="flex items-center gap-x-4 w-full">
-              <FaRegCircleUser />
-              <span className={`${!open && "hidden"} origin-left duration-200`}>
-                Profile
+        {/* Profile and Logout */}
+        <footer className="mt-28 p-2 absolute bottom-2 w-full">
+          <div className="flex items-center justify-center gap-x-3">
+            <Link className="flex items-center gap-x-3 p-2 text-sm">
+              <div className="rounded-full p-3 bg-purple-50">
+                <img src={user} alt="Profile" className="w-5" />
+              </div>
+              <span>
+                <p className="font-bold">John Cena</p>
+                <p className="text-xs">Super Admin</p>
               </span>
-            </li>
-          </Link>
-          <button
-            onClick={handleLogout}
-            className="flex text-red-400 p-2 text-sm items-center cursor-pointer w-full"
-          >
-            <li className="flex items-center gap-x-4 w-full">
-              <FaRightFromBracket />
-              <span className={`${!open && "hidden"} origin-left duration-200`}>
-                Logout
-              </span>
-            </li>
-          </button>
-        </div>
-      </div>
+            </Link>
+            <button onClick={handleLogout} className="text-2xl cursor-pointer">
+              <img src={Logout} alt="Logout" className="w-10" />
+            </button>
+          </div>
+        </footer>
+      </aside>
 
       {/* Main Content Area */}
-      <div
-        className={` ${
-          open ? "pl-56 pr-4" : "pl-14 pr-2"
-        } flex-1 overflow-y-auto transition-all duration-500 h-[100vh]`}
-      >
-        <Outlet/>
-      </div>
+      <main className="flex-1 pl-64 overflow-y-auto bg-gray-50 transition-all duration-500">
+        <div className="p-5">
+          <Outlet />
+        </div>
+      </main>
     </div>
   );
 };
