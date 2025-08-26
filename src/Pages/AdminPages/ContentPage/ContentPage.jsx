@@ -77,7 +77,7 @@ const ContentPage = () => {
 
   return (
     <div>
-        <SectionTitle title={"Upload Content"}/>
+      <SectionTitle title={"Upload Content"} />
       <div className="p-6 bg-white rounded-2xl shadow-md border border-gray-200">
         {/* Error & Upload States */}
         {error && (

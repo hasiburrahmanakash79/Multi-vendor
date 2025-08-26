@@ -226,7 +226,7 @@ const OrderList = () => {
 
   return (
     <div className="">
-        <SectionTitle
+      <SectionTitle
         title={"Order List"}
         description={"Track, manage and forecast your customers and orders."}
       />
@@ -289,37 +289,40 @@ const OrderList = () => {
               </tr>
             </thead>
             <tbody>
-              {currentOrders.length > 0 ? (currentOrders.map((order) => (
-                <tr
-                  key={order.id}
-                  className="border-b border-gray-200 hover:bg-gray-50"
-                >
-                  <td className="p-4 text-gray-700">{order.id}</td>
-                  <td className="p-4 text-gray-700">
-                    <Link to={`/admin/order-details/${order.id}`}>{order.eventName}</Link>
-                  </td>
-                  <td className="p-4 text-gray-700">{order.date}</td>
-                  <td className="p-4 text-gray-700">{order.location}</td>
-                  <td className="p-4 text-gray-700">{order.seller}</td>
-                  <td className="p-4 text-gray-700">{order.buyer}</td>
-                  <td className="p-4 text-gray-700">{order.price}</td>
-                  <td className="p-4">
-                    <span
-                      className={`px-2 py-1 rounded-full text-xs ${
-                        order.status === "Active"
-                          ? "bg-green-100 text-green-800"
-                          : order.status === "Canceled"
-                          ? "bg-red-100 text-red-800"
-                          : order.status === "Pending"
-                          ? "bg-yellow-100 text-yellow-800"
-                          : "bg-gray-100 text-gray-800"
-                      }`}
-                    >
-                      {order.status}
-                    </span>
-                  </td>
-                </tr>
-              ))
+              {currentOrders.length > 0 ? (
+                currentOrders.map((order) => (
+                  <tr
+                    key={order.id}
+                    className="border-b border-gray-200 hover:bg-gray-50"
+                  >
+                    <td className="p-4 text-gray-700">{order.id}</td>
+                    <td className="p-4 text-gray-700">
+                      <Link to={`/admin/order-details/${order.id}`}>
+                        {order.eventName}
+                      </Link>
+                    </td>
+                    <td className="p-4 text-gray-700">{order.date}</td>
+                    <td className="p-4 text-gray-700">{order.location}</td>
+                    <td className="p-4 text-gray-700">{order.seller}</td>
+                    <td className="p-4 text-gray-700">{order.buyer}</td>
+                    <td className="p-4 text-gray-700">{order.price}</td>
+                    <td className="p-4">
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs ${
+                          order.status === "Active"
+                            ? "bg-green-100 text-green-800"
+                            : order.status === "Canceled"
+                            ? "bg-red-100 text-red-800"
+                            : order.status === "Pending"
+                            ? "bg-yellow-100 text-yellow-800"
+                            : "bg-gray-100 text-gray-800"
+                        }`}
+                      >
+                        {order.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))
               ) : (
                 <tr>
                   <td

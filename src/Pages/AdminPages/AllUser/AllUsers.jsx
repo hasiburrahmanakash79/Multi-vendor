@@ -1,11 +1,11 @@
-import { Search, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
-import { useState, useMemo } from 'react';
-import SectionTitle from '../../../components/SectionTitle';
-import { Link } from 'react-router-dom';
+import { Search, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
+import { useState, useMemo } from "react";
+import SectionTitle from "../../../components/SectionTitle";
+import { Link } from "react-router-dom";
 
 export default function AllUser() {
-  const [activeTab, setActiveTab] = useState('All');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [activeTab, setActiveTab] = useState("All");
+  const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(8);
 
@@ -153,21 +153,21 @@ export default function AllUser() {
       joiningDate: "Dec 26, 2024",
       location: "Chicago, IL",
       userType: "Seller",
-    }
+    },
   ];
 
   const [users, setUsers] = useState(allUsers);
 
   const avatarColors = [
-    'bg-purple-100 text-purple-600',
-    'bg-green-100 text-green-600', 
-    'bg-blue-100 text-blue-600',
-    'bg-yellow-100 text-yellow-600',
-    'bg-pink-100 text-pink-600',
-    'bg-indigo-100 text-indigo-600',
-    'bg-red-100 text-red-600',
-    'bg-orange-100 text-orange-600',
-    'bg-teal-100 text-teal-600'
+    "bg-purple-100 text-purple-600",
+    "bg-green-100 text-green-600",
+    "bg-blue-100 text-blue-600",
+    "bg-yellow-100 text-yellow-600",
+    "bg-pink-100 text-pink-600",
+    "bg-indigo-100 text-indigo-600",
+    "bg-red-100 text-red-600",
+    "bg-orange-100 text-orange-600",
+    "bg-teal-100 text-teal-600",
   ];
 
   // Filter and search logic
@@ -175,16 +175,17 @@ export default function AllUser() {
     let filtered = users;
 
     // Filter by tab
-    if (activeTab !== 'All') {
-      filtered = filtered.filter(user => user.userType === activeTab);
+    if (activeTab !== "All") {
+      filtered = filtered.filter((user) => user.userType === activeTab);
     }
 
     // Filter by search query
     if (searchQuery) {
-      filtered = filtered.filter(user =>
-        user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        user.location.toLowerCase().includes(searchQuery.toLowerCase())
+      filtered = filtered.filter(
+        (user) =>
+          user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          user.location.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
@@ -227,13 +228,13 @@ export default function AllUser() {
   };
 
   const handleDeleteUser = (userId) => {
-    setUsers(users.filter(user => user.id !== userId));
+    setUsers(users.filter((user) => user.id !== userId));
   };
 
   const renderPaginationButtons = () => {
     const buttons = [];
     const maxVisiblePages = 5;
-    
+
     if (totalPages <= maxVisiblePages) {
       // Show all pages if total is small
       for (let i = 1; i <= totalPages; i++) {
@@ -243,8 +244,8 @@ export default function AllUser() {
             onClick={() => handlePageChange(i)}
             className={`w-8 h-8 flex items-center justify-center text-sm font-medium rounded-md transition-colors ${
               currentPage === i
-                ? 'text-black bg-purple-100'
-                : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
+                ? "text-black bg-purple-100"
+                : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
             }`}
           >
             {i}
@@ -259,8 +260,8 @@ export default function AllUser() {
           onClick={() => handlePageChange(1)}
           className={`w-8 h-8 flex items-center justify-center text-sm font-medium rounded-md transition-colors ${
             currentPage === 1
-              ? 'text-black bg-purple-100'
-              : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
+              ? "text-black bg-purple-100"
+              : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
           }`}
         >
           1
@@ -270,14 +271,16 @@ export default function AllUser() {
       // Show ellipsis if needed
       if (currentPage > 3) {
         buttons.push(
-          <span key="ellipsis1" className="text-gray-500">...</span>
+          <span key="ellipsis1" className="text-gray-500">
+            ...
+          </span>
         );
       }
 
       // Show pages around current page
       const start = Math.max(2, currentPage - 1);
       const end = Math.min(totalPages - 1, currentPage + 1);
-      
+
       for (let i = start; i <= end; i++) {
         if (i !== 1 && i !== totalPages) {
           buttons.push(
@@ -286,8 +289,8 @@ export default function AllUser() {
               onClick={() => handlePageChange(i)}
               className={`w-8 h-8 flex items-center justify-center text-sm font-medium rounded-md transition-colors ${
                 currentPage === i
-                  ? 'text-black bg-purple-100'
-                  : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
+                  ? "text-black bg-purple-100"
+                  : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
               }`}
             >
               {i}
@@ -299,7 +302,9 @@ export default function AllUser() {
       // Show ellipsis if needed
       if (currentPage < totalPages - 2) {
         buttons.push(
-          <span key="ellipsis2" className="text-gray-500">...</span>
+          <span key="ellipsis2" className="text-gray-500">
+            ...
+          </span>
         );
       }
 
@@ -311,8 +316,8 @@ export default function AllUser() {
             onClick={() => handlePageChange(totalPages)}
             className={`w-8 h-8 flex items-center justify-center text-sm font-medium rounded-md transition-colors ${
               currentPage === totalPages
-                ? 'text-black bg-purple-100'
-                : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
+                ? "text-black bg-purple-100"
+                : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
             }`}
           >
             {totalPages}
@@ -326,28 +331,31 @@ export default function AllUser() {
 
   return (
     <div className="">
-      <SectionTitle title={"Buyer & User management"} description={"Track, manage and forecast your customers and orders."}/>
+      <SectionTitle
+        title={"Buyer & User management"}
+        description={"Track, manage and forecast your customers and orders."}
+      />
       <div className="border border-gray-200 p-5 rounded-2xl">
         {/* Header */}
         <div className="">
           {/* Filter Tabs and Search */}
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-1 bg-gray-100 rounded-lg p-1">
-              {['All', 'Seller', 'Buyer'].map((tab) => (
+              {["All", "Seller", "Buyer"].map((tab) => (
                 <button
                   key={tab}
                   onClick={() => handleTabChange(tab)}
                   className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
                     activeTab === tab
-                      ? 'text-gray-900 bg-white shadow-sm'
-                      : 'text-gray-500 hover:text-gray-900 hover:bg-white'
+                      ? "text-gray-900 bg-white shadow-sm"
+                      : "text-gray-500 hover:text-gray-900 hover:bg-white"
                   }`}
                 >
                   {tab}
                 </button>
               ))}
             </div>
-            
+
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <input
@@ -364,7 +372,8 @@ export default function AllUser() {
         {/* Results Info */}
         <div className="mb-4">
           <p className="text-sm text-gray-600">
-            Showing {startIndex + 1}-{Math.min(endIndex, filteredUsers.length)} of {filteredUsers.length} results
+            Showing {startIndex + 1}-{Math.min(endIndex, filteredUsers.length)}{" "}
+            of {filteredUsers.length} results
           </p>
         </div>
 
@@ -396,12 +405,21 @@ export default function AllUser() {
             <tbody className="bg-white divide-y divide-gray-200">
               {currentUsers.length > 0 ? (
                 currentUsers.map((user) => (
-                  
-                  <tr key={user.id}  className="hover:bg-gray-50">
+                  <tr key={user.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <Link to={`/admin/userDetail/${user.id}`} className="flex items-center">
-                        <div className={`h-8 w-8 rounded-full flex items-center justify-center text-sm font-medium ${avatarColors[user.id % avatarColors.length]}`}>
-                          {user.name.split(' ').map(n => n[0]).join('')}
+                      <Link
+                        to={`/admin/userDetail/${user.id}`}
+                        className="flex items-center"
+                      >
+                        <div
+                          className={`h-8 w-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                            avatarColors[user.id % avatarColors.length]
+                          }`}
+                        >
+                          {user.name
+                            .split(" ")
+                            .map((n) => n[0])
+                            .join("")}
                         </div>
                         <div className="ml-3">
                           <div className="text-sm font-medium text-gray-900">
@@ -411,9 +429,7 @@ export default function AllUser() {
                       </Link>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-500">
-                        {user.email}
-                      </div>
+                      <div className="text-sm text-gray-500">{user.email}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">
@@ -426,16 +442,18 @@ export default function AllUser() {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
-                        user.userType === 'Seller' 
-                          ? 'bg-green-100 text-green-800' 
-                          : 'bg-purple-100 text-purple-800'
-                      }`}>
+                      <span
+                        className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
+                          user.userType === "Seller"
+                            ? "bg-green-100 text-green-800"
+                            : "bg-purple-100 text-purple-800"
+                        }`}
+                      >
                         {user.userType}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <button 
+                      <button
                         onClick={() => handleDeleteUser(user.id)}
                         className="text-gray-400 hover:text-red-600 transition-colors"
                       >
@@ -443,11 +461,13 @@ export default function AllUser() {
                       </button>
                     </td>
                   </tr>
-                  
                 ))
               ) : (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
+                  <td
+                    colSpan={6}
+                    className="px-6 py-12 text-center text-gray-500"
+                  >
                     No users found matching your criteria.
                   </td>
                 </tr>
@@ -459,30 +479,30 @@ export default function AllUser() {
         {/* Pagination */}
         {totalPages > 1 && (
           <div className="flex items-center justify-between mt-6">
-            <button 
+            <button
               onClick={handlePreviousPage}
               disabled={currentPage === 1}
               className={`flex items-center px-3 py-2 text-sm font-medium transition-colors ${
                 currentPage === 1
-                  ? 'text-gray-300 cursor-not-allowed'
-                  : 'text-gray-500 hover:text-gray-700'
+                  ? "text-gray-300 cursor-not-allowed"
+                  : "text-gray-500 hover:text-gray-700"
               }`}
             >
               <ChevronLeft className="h-4 w-4 mr-1" />
               Previous
             </button>
-            
+
             <div className="flex items-center space-x-2">
               {renderPaginationButtons()}
             </div>
-            
-            <button 
+
+            <button
               onClick={handleNextPage}
               disabled={currentPage === totalPages}
               className={`flex items-center px-3 py-2 text-sm font-medium transition-colors ${
                 currentPage === totalPages
-                  ? 'text-gray-300 cursor-not-allowed'
-                  : 'text-gray-500 hover:text-gray-700 '
+                  ? "text-gray-300 cursor-not-allowed"
+                  : "text-gray-500 hover:text-gray-700 "
               }`}
             >
               Next
