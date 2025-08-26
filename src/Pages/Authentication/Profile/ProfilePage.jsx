@@ -1,7 +1,6 @@
 import { FiMessageCircle } from "react-icons/fi";
 import backgroundImage from "../../../assets/images/cover.jpg";
 import profileImage from "../../../assets/images/cardImage2.png";
-import badge from "../../../assets/icons/badge.png";
 
 const ProfilePage = () => {
   const profile = {
