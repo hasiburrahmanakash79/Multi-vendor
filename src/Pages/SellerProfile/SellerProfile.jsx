@@ -164,6 +164,24 @@ const SellerProfile = () => {
         </div>
       </div>
 
+      <div className="border border-gray-200 p-4 rounded-4xl my-10">
+        <h1 className="text-xl font-semibold pb-4">Buyer Bio</h1>
+        <p>
+          Amazing service! The team made our wedding day stress-free and truly
+          magical. Everything was perfectly organized from the décor to the
+          timeline. Highly recommend them.
+          <br />
+          <br />
+          We provided an exceptional level of service that completely removed
+          the stress from our wedding day. From the moment planning began, every
+          detail was handled with precision and care — the décor was beautifully
+          arranged, the timeline ran smoothly, and nothing was left to chance.
+          Their professionalism and attention to detail made the entire day feel
+          magical, allowing us to simply enjoy each moment. I would confidently
+          recommend them to anyone planning a wedding.
+        </p>
+      </div>
+
       <div className="mt-8">
         <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-6">
           {profile.name} Reviews

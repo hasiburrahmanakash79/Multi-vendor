@@ -9,10 +9,9 @@ const ProfilePage = () => {
     avatar: profileImage,
   };
 
-
   return (
     <div className="py-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-      <div className="border border-gray-200 p-4 sm:p-8 rounded-4xl">
+      <div className="border border-gray-200 p-4 rounded-4xl">
         <div
           className="rounded-xl p-6 flex items-center justify-between h-40 sm:h-52"
           style={{
@@ -35,28 +34,7 @@ const ProfilePage = () => {
           </div>
 
           <div className="flex flex-wrap justify-center sm:justify-end gap-4 sm:gap-6 items-center">
-            <div className="flex items-center space-x-4 sm:space-x-6 text-sm">
-              <div className="text-center px-4 sm:px-10">
-                <p className="text-2xl sm:text-3xl font-semibold text-yellow-600">
-                  {profile.rating}
-                </p>
-                <p className="whitespace-nowrap">Avg. Rating</p>
-              </div>
-
-              <div className="flex flex-col items-center justify-center border-r border-l px-4 sm:px-10 border-gray-300">
-                <div className="w-8 h-8 mb-1.5">
-                  <img src={badge} alt="verified badge" />
-                </div>
-                <p className="flex items-center">Verified</p>
-              </div>
-
-              <div className="px-4 sm:px-10">
-                <p className="text-2xl sm:text-3xl font-semibold text-purple-400">
-                  {profile.reviews}+
-                </p>
-                <p>Reviews</p>
-              </div>
-            </div>
+            <div className="flex items-center space-x-4 sm:space-x-6 text-sm"></div>
 
             <button className="text-gray-700 px-4 py-2 rounded-full hover:bg-gray-200 transition-colors flex gap-2 bg-gray-100 text-sm sm:text-base">
               <FiMessageCircle className="w-5 h-5 sm:w-6 sm:h-6" /> Message
@@ -65,6 +43,23 @@ const ProfilePage = () => {
         </div>
       </div>
 
+      <div className="border border-gray-200 p-4 rounded-4xl my-10">
+        <h1 className="text-xl font-semibold pb-4">Buyer Bio</h1>
+        <p>
+          Amazing service! The team made our wedding day stress-free and truly
+          magical. Everything was perfectly organized from the décor to the
+          timeline. Highly recommend them.
+          <br />
+          <br />
+          We provided an exceptional level of service that completely removed
+          the stress from our wedding day. From the moment planning began, every
+          detail was handled with precision and care — the décor was beautifully
+          arranged, the timeline ran smoothly, and nothing was left to chance.
+          Their professionalism and attention to detail made the entire day feel
+          magical, allowing us to simply enjoy each moment. I would confidently
+          recommend them to anyone planning a wedding.
+        </p>
+      </div>
     </div>
   );
 };
