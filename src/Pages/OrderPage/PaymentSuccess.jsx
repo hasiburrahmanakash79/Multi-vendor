@@ -1,4 +1,5 @@
 
+import { Link } from 'react-router-dom';
 import success from '../../assets/images/success.png'
 
 export default function PaymentSuccess() {
@@ -22,9 +23,9 @@ export default function PaymentSuccess() {
         </h2>
         
         {/* Order page button */}
-        <button className="bg-gray-800 hover:bg-gray-900 text-white font-medium px-8 py-3 rounded-full transition duration-200 hover:shadow-lg">
+        <Link to='/order' className="bg-gray-800 hover:bg-gray-900 text-white font-medium px-8 py-3 rounded-full transition duration-200 hover:shadow-lg">
           Order page
-        </button>
+        </Link>
       </div>
     </div>
   );

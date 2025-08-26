@@ -29,6 +29,7 @@ import SellerRequest from "../Pages/AdminPages/SellerRequest/SellerRequest";
 import PrivacyPolicyUpload from "../Pages/AdminPages/PrivacyPolicy/PrivacyPolicyUpload";
 import RequestDetails from "../Pages/AdminPages/SellerRequest/RequestDetails";
 import ContentPage from "../Pages/AdminPages/ContentPage/ContentPage";
+import ProfilePage from "../Pages/Authentication/Profile/ProfilePage";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -62,8 +63,13 @@ const router = createBrowserRouter([
         path: "/saved",
         element: <SaveItems />,
       },
+
       {
-        path: "/profile",
+        path: "/buyer-profile",
+        element: <ProfilePage />,
+      },
+      {
+        path: "/seller-profile",
         element: <SellerProfile />,
       },
 
@@ -84,7 +90,7 @@ const router = createBrowserRouter([
         element: <PaymentSuccess />,
       },
       {
-        path: "/buyer-overview",
+        path: "/seller-overview",
         element: <BuyerOverview />,
       },
       {

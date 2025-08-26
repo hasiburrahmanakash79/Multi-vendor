@@ -280,7 +280,7 @@ const ServiceDetailPage = () => {
           </div>
 
           <div className="lg:col-span-1">
-            <div className="bg-white border border-gray-200 rounded-lg p-6 sticky top-7">
+            <div className="bg-white border border-gray-200 rounded-lg p-6 sticky top-20">
               <div className="flex items-center space-x-3 mb-6">
                 <img
                   src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80"

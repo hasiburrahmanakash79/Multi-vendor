@@ -1,261 +1,72 @@
-import { useState } from "react";
-import { FaEdit } from "react-icons/fa";
-import { FaTrashCan } from "react-icons/fa6";
-import { FiEdit2, FiExternalLink, FiLock } from "react-icons/fi";
+import { FiMessageCircle } from "react-icons/fi";
+import backgroundImage from "../../../assets/images/cover.jpg";
+import profileImage from "../../../assets/images/cardImage2.png";
+import badge from "../../../assets/icons/badge.png";
 
-export default function ProfilePage() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-
-  const openPasswordModal = () => setIsModalOpen(true);
-  const closePasswordModal = () => {
-    setIsModalOpen(false);
-    setCurrentPassword("");
-    setNewPassword("");
-    setConfirmPassword("");
+const ProfilePage = () => {
+  const profile = {
+    name: "Danial Smith",
+    avatar: profileImage,
   };
 
-  const openDeleteModal = () => setIsDeleteModalOpen(true);
-  const closeDeleteModal = () => setIsDeleteModalOpen(false);
-
-  const handleSavePassword = () => {
-    if (!currentPassword || !newPassword || !confirmPassword) {
-      alert("Please fill in all fields!");
-      return;
-    }
-
-    if (newPassword !== confirmPassword) {
-      alert("New passwords do not match!");
-      return;
-    }
-
-    // Mock API call
-    console.log("Password changed successfully!");
-    alert("Password changed successfully!");
-
-    closePasswordModal();
-  };
-
-  const handleDeleteAccount = () => {
-    // Mock delete action
-    console.log("Account deleted!");
-    alert("Your account has been deleted!");
-
-    closeDeleteModal();
-  };
 
   return (
-    <div className="p-5">
-      {/* Profile Header */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 rounded-2xl shadow-sm border border-base-300">
-        <div className="flex flex-col md:flex-row items-center gap-5">
-          <div className="relative w-24 h-24 md:w-32 md:h-32">
+    <div className="py-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <div className="border border-gray-200 p-4 sm:p-8 rounded-4xl">
+        <div
+          className="rounded-xl p-6 flex items-center justify-between h-40 sm:h-52"
+          style={{
+            backgroundImage: `url(${backgroundImage})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        ></div>
+
+        <div className="flex flex-col sm:flex-row justify-between gap-5 items-center sm:items-end mt-4 sm:mt-0">
+          <div className="flex flex-col justify-center items-center ml-0 md:ml-10 -mt-20 sm:-mt-28">
             <img
-              src="https://i.pravatar.cc/150?img=32"
-              alt="Profile"
-              className="w-full h-full rounded-full object-cover"
+              src={profile.avatar}
+              alt={profile.name}
+              className="w-32 h-32 sm:w-48 sm:h-48 rounded-full object-cover border-4 border-white"
             />
-            <button className="absolute bottom-1 right-1 p-2 cursor-pointer rounded-full bg-white/60">
-              <FaEdit className="text-gray-600" />
+            <h2 className="text-xl sm:text-2xl font-semibold break-words text-center">
+              {profile.name}
+            </h2>
+          </div>
+
+          <div className="flex flex-wrap justify-center sm:justify-end gap-4 sm:gap-6 items-center">
+            <div className="flex items-center space-x-4 sm:space-x-6 text-sm">
+              <div className="text-center px-4 sm:px-10">
+                <p className="text-2xl sm:text-3xl font-semibold text-yellow-600">
+                  {profile.rating}
+                </p>
+                <p className="whitespace-nowrap">Avg. Rating</p>
+              </div>
+
+              <div className="flex flex-col items-center justify-center border-r border-l px-4 sm:px-10 border-gray-300">
+                <div className="w-8 h-8 mb-1.5">
+                  <img src={badge} alt="verified badge" />
+                </div>
+                <p className="flex items-center">Verified</p>
+              </div>
+
+              <div className="px-4 sm:px-10">
+                <p className="text-2xl sm:text-3xl font-semibold text-purple-400">
+                  {profile.reviews}+
+                </p>
+                <p>Reviews</p>
+              </div>
+            </div>
+
+            <button className="text-gray-700 px-4 py-2 rounded-full hover:bg-gray-200 transition-colors flex gap-2 bg-gray-100 text-sm sm:text-base">
+              <FiMessageCircle className="w-5 h-5 sm:w-6 sm:h-6" /> Message
             </button>
           </div>
-          <div className="text-center md:text-left">
-            <span className="mt-2 text-sm font-bold bg-blue-100 text-blue-600 px-2 py-1 rounded-full">
-              Admin
-            </span>
-            <h2 className="text-lg font-semibold mt-2">Mahdee Rashid</h2>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-          <div>
-            <p className="font-medium">E-mail</p>
-            <p className="text-gray-600">polash@gmail.com</p>
-          </div>
-          <div>
-            <p className="font-medium">Phone</p>
-            <p className="text-gray-600">+880 1636 828200</p>
-          </div>
-          <div>
-            <p className="font-medium">Address</p>
-            <p className="text-gray-600">123 Main Street, Dhaka, Bangladesh</p>
-          </div>
-          <div>
-            <p className="font-medium">LinkedIn</p>
-            <a
-              href="https://linkedin.com/in/polash"
-              className="text-blue-500 hover:underline"
-            >
-              linkedin.com/in/polash
-            </a>
-          </div>
-          <div>
-            <p className="font-medium">Website</p>
-            <a
-              href="https://polashportfolio.com"
-              className="text-blue-500 hover:underline"
-            >
-              polashportfolio.com
-            </a>
-          </div>
         </div>
       </div>
 
-      {/* Update Fields */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-        <div className="flex flex-col gap-2">
-          <label className="font-semibold">Name</label>
-          <div className="relative">
-            <input
-              type="text"
-              value="Mahdee Rashid"
-              readOnly
-              className="w-full bg-blue-100 text-blue-500 rounded-lg py-2 px-4 pr-10 outline-none"
-            />
-            <FiEdit2 className="absolute right-3 top-1/2 -translate-y-1/2 text-blue-400" />
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <label className="font-semibold">E-mail</label>
-          <div className="relative">
-            <input
-              type="email"
-              value="mahdeerashid@gmail.com"
-              readOnly
-              className="w-full bg-blue-100 text-blue-500 rounded-lg py-2 px-4 pr-10 outline-none"
-            />
-            <FiEdit2 className="absolute right-3 top-1/2 -translate-y-1/2 text-blue-400" />
-          </div>
-        </div>
-      </div>
-
-      {/* Change Password */}
-      <div className="mt-8 p-6 rounded-2xl border border-blue-200 shadow-sm gap-4">
-        <button
-          onClick={openPasswordModal}
-          className="text-gray-500 hover:text-blue-500 transition py-3"
-        >
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-4">
-              <div className="p-3 rounded-full bg-gray-200">
-                <FiLock className="text-gray-500" size={20} />
-              </div>
-              <div>
-                <h4 className="font-semibold text-lg">Change Password</h4>
-              </div>
-            </div>
-            <div>
-              <FiExternalLink size={20} />
-            </div>
-          </div>
-        </button>
-      </div>
-
-      {/* Delete Account */}
-      <div className="md:flex justify-between items-center mt-8 p-6 shadow-sm rounded-2xl border border-red-300">
-        <div>
-          <h4 className="text-red-500 font-bold text-lg">Delete Account</h4>
-          <p className="text-gray-500 text-sm mt-2">
-            Contact our{" "}
-            <a href="#" className="text-blue-500 hover:underline">
-              support team
-            </a>{" "}
-            to process the deletion of your account.
-          </p>
-        </div>
-        <div className="py-3">
-          <button
-            onClick={openDeleteModal}
-            className="bg-red-500 hover:bg-red-600 shadow-lg text-white font-semibold py-2 px-6 rounded-lg transition"
-          >
-            Apply Delete
-          </button>
-        </div>
-      </div>
-
-      {/* Change Password Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl p-8 w-full max-w-md shadow-lg">
-            <h2 className="text-2xl font-bold mb-6 text-center">
-              Change Password
-            </h2>
-            <div className="flex flex-col gap-4">
-              <input
-                type="password"
-                placeholder="Current Password"
-                value={currentPassword}
-                onChange={(e) => setCurrentPassword(e.target.value)}
-                className="border p-3 rounded-lg outline-none"
-              />
-              <input
-                type="password"
-                placeholder="New Password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                className="border p-3 rounded-lg outline-none"
-              />
-              <input
-                type="password"
-                placeholder="Confirm New Password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className="border p-3 rounded-lg outline-none"
-              />
-            </div>
-            <div className="flex justify-end gap-4 mt-6">
-              <button
-                onClick={closePasswordModal}
-                className="px-4 py-2 rounded-lg border text-gray-600 hover:bg-gray-100"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSavePassword}
-                className="px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600"
-              >
-                Save
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Delete Account Modal */}
-      {isDeleteModalOpen && (
-        <div className="fixed inset-0 bg-black/50 border border-base-300 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl p-8 w-full max-w-sm shadow-lg">
-            <div className="w-10 h-10 bg-red-100 rounded-lg mb-4 flex items-center justify-center">
-              <FaTrashCan className="text-red-500 text-xl" />
-            </div>
-            <h5 className="text-gray-600 font-bold">
-              Are you sure you want to Delete your account?{" "}
-            </h5>
-            <p className="mb-5">
-              Inter your current password you used login with
-            </p>
-            <div className="flex justify-between gap-4 w-full">
-              <button
-                onClick={closeDeleteModal}
-                className="px-4 py-2 rounded-lg border border-base-300 text-gray-600 hover:bg-gray-100 w-full"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleDeleteAccount}
-                className="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 w-full"
-              >
-                Yes Delete
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
-}
+};
+
+export default ProfilePage;

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Check, ChevronLeft, ChevronRight, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import SectionTitle from "../../../components/SectionTitle";
 
@@ -225,7 +225,6 @@ const AllService = () => {
                 <th className="py-3 px-4">Seller</th>
                 <th className="py-3 px-4">Service type</th>
                 <th className="py-3 px-4">Price</th>
-                <th className="py-3 px-4">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -258,12 +257,6 @@ const AllService = () => {
                       </span>
                     </td>
                     <td className="p-4 text-gray-700">{service.price}</td>
-                    <td className="p-4">
-                      <span className="flex items-center gap-6">
-                        <Check className="text-green-500" />
-                        <X className="text-red-500" />
-                      </span>
-                    </td>
                   </tr>
                 ))
               ) : (

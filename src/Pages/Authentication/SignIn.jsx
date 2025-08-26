@@ -13,7 +13,7 @@ const SignIn = () => {
     setValue,
   } = useForm();
   const [showPassword, setShowPassword] = useState(false);
-  const [role, setRole] = useState("user"); // Default role is user
+  const [role, setRole] = useState("buyer"); // Default role is user
   const navigate = useNavigate();
 
   const togglePasswordVisibility = () => {
@@ -24,12 +24,12 @@ const SignIn = () => {
     if (role === "admin") {
       setValue("username", "admin@example.com");
       setValue("password", "Admin@1234");
-    } else if (role === "buyer") {
-      setValue("username", "buyer@example.com");
-      setValue("password", "Buyer@1234");
+    } else if (role === "seller") {
+      setValue("username", "seller@example.com");
+      setValue("password", "seller@1234");
     } else {
-      setValue("username", "testuser@example.com");
-      setValue("password", "Test@1234");
+      setValue("username", "buyer@example.com");
+      setValue("password", "buyer@1234");
     }
   };
 
@@ -40,19 +40,13 @@ const SignIn = () => {
     // Simulate successful login and redirect based on role
     if (role === "admin") {
       navigate("/admin/dashboard");
-    } else if (role === "buyer") {
-      navigate("/buyer-overview");
+    } else if (role === "seller") {
+      navigate("/seller-overview");
     } else {
       navigate("/");
     }
   };
 
-  const handleLogout = () => {
-    // Remove role from localStorage
-    localStorage.removeItem("userRole");
-    // Redirect to sign-in page
-    navigate("/signin");
-  };
 
   return (
     <div className="grid grid-cols-2 min-h-screen bg-base-200">
@@ -76,9 +70,9 @@ const SignIn = () => {
               onChange={(e) => setRole(e.target.value)}
               className="w-full border border-base-300 bg-base-200 rounded-full p-2 outline-none"
             >
-              <option value="user">User</option>
-              <option value="admin">Admin</option>
               <option value="buyer">Buyer</option>
+              <option value="seller">Seller</option>
+              <option value="admin">Admin</option>
             </select>
           </div>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -159,14 +153,6 @@ const SignIn = () => {
               Login
             </button>
           </form>
-
-          <button
-            type="button"
-            onClick={handleLogout}
-            className="w-full bg-red-300 hover:bg-red-400 text-black py-2 rounded-full mt-4"
-          >
-            Logout
-          </button>
 
           <div className="divider">Or Login with</div>
           <div className="flex space-x-4">

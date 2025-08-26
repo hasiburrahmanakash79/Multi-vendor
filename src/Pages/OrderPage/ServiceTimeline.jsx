@@ -1,4 +1,5 @@
 import { MapPin, MessageCircle, Phone } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function ServiceTimeline() {
   return (
@@ -132,10 +133,10 @@ export default function ServiceTimeline() {
               
               {/* Action Buttons */}
               <div className="flex space-x-3">
-                <button className="flex-1 bg-[#C8C1F5] font-medium py-3 px-4 rounded-full flex items-center justify-center space-x-2 transition hover:shadow-lg duration-300">
+                <Link to='/conversation' className="flex-1 bg-[#C8C1F5] font-medium py-3 px-4 rounded-full flex items-center justify-center space-x-2 transition hover:shadow-lg duration-300">
                   <MessageCircle className="w-4 h-4" />
                   <span>Send Message</span>
-                </button>
+                </Link>
                 
                 <button className="p-3 bg-gray-100 hover:bg-gray-200 rounded-full transition duration-200">
                   <Phone className="w-6 h-5 text-gray-600" />

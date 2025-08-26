@@ -11,7 +11,6 @@ import ServicesIconSvg from "../assets/icons/power-service.svg"; // Import as st
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
-
 const Dashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -27,12 +26,7 @@ const Dashboard = () => {
       cancelButtonText: "No, Cancel!",
     }).then((result) => {
       if (result.isConfirmed) {
-        console.log("User logged out");
-        // Clear authentication cookies
-        ["accessToken", "refreshToken", "isAuthenticated"].forEach((cookie) =>
-          (document.cookie = `${cookie}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`)
-        );
-        Swal.fire("Logged out!", "You have been logged out successfully.", "success");
+        localStorage.removeItem("userRole");
         navigate("/signin");
       }
     });
@@ -70,10 +64,7 @@ const Dashboard = () => {
                   : "text-gray-600 hover:bg-[#EFEEF9]"
               }`}
             >
-              <img
-              src={menu.icon}
-                className={`w-6 h-6`}
-              />
+              <img src={menu.icon} className={`w-6 h-6`} />
               <span className="ml-3">{menu.title}</span>
             </Link>
           ))}
@@ -91,7 +82,12 @@ const Dashboard = () => {
                 <p className="text-xs">Super Admin</p>
               </span>
             </Link>
-            <button onClick={handleLogout} className="text-2xl cursor-pointer">
+            <button
+              onClick={() => {
+                handleLogout();
+              }}
+              className="text-2xl cursor-pointer"
+            >
               <img src={Logout} alt="Logout" className="w-10" />
             </button>
           </div>

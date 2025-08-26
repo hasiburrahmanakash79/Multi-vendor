@@ -1,7 +1,16 @@
-import { useEffect, useRef, useState } from 'react';
-import logo from '../../assets/logo/logo.png';
-import { Search, Bell, MessageCircleMore, User, Menu, X, Heart, ShoppingCart } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useEffect, useRef, useState } from "react";
+import logo from "../../assets/logo/logo.png";
+import {
+  Search,
+  Bell,
+  MessageCircleMore,
+  User,
+  Menu,
+  X,
+  Heart,
+  ShoppingCart,
+} from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -15,64 +24,70 @@ const Navbar = () => {
   const notifications = [
     {
       id: 1,
-      type: 'Wedding Photography',
-      location: 'Overland Park, KS',
-      fullLocation: 'Overland Park, KS Overland Park, KS',
-      time: '5m',
-      avatar: 'WP',
-      isOnline: true
+      type: "Wedding Photography",
+      location: "Overland Park, KS",
+      fullLocation: "Overland Park, KS Overland Park, KS",
+      time: "5m",
+      avatar: "WP",
+      isOnline: true,
     },
     {
       id: 2,
-      type: 'Wedding Photography',
-      location: 'Overland Park, KS',
-      fullLocation: 'Overland Park, KS Overland Park, KS',
-      time: '5m',
-      avatar: 'WP',
-      isOnline: true
+      type: "Wedding Photography",
+      location: "Overland Park, KS",
+      fullLocation: "Overland Park, KS Overland Park, KS",
+      time: "5m",
+      avatar: "WP",
+      isOnline: true,
     },
     {
       id: 3,
-      type: 'Wedding Photography',
-      location: 'Overland Park, KS',
-      fullLocation: 'Overland Park, KS Overland Park, KS',
-      time: '5m',
-      avatar: 'WP',
-      isOnline: true
+      type: "Wedding Photography",
+      location: "Overland Park, KS",
+      fullLocation: "Overland Park, KS Overland Park, KS",
+      time: "5m",
+      avatar: "WP",
+      isOnline: true,
     },
     {
       id: 4,
-      type: 'Wedding Photography',
-      location: 'Overland Park, KS',
-      fullLocation: 'Overland Park, KS Overland Park, KS',
-      time: '5m',
-      avatar: 'WP',
-      isOnline: true
+      type: "Wedding Photography",
+      location: "Overland Park, KS",
+      fullLocation: "Overland Park, KS Overland Park, KS",
+      time: "5m",
+      avatar: "WP",
+      isOnline: true,
     },
     {
       id: 5,
-      type: 'Wedding Photography',
-      location: 'Overland Park, KS',
-      fullLocation: 'Overland Park, KS Overland Park, KS',
-      time: '5m',
-      avatar: 'WP',
-      isOnline: true
-    }
+      type: "Wedding Photography",
+      location: "Overland Park, KS",
+      fullLocation: "Overland Park, KS Overland Park, KS",
+      time: "5m",
+      avatar: "WP",
+      isOnline: true,
+    },
   ];
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (notificationRef.current && !notificationRef.current.contains(event.target)) {
+      if (
+        notificationRef.current &&
+        !notificationRef.current.contains(event.target)
+      ) {
         setIsNotificationOpen(false);
       }
-      if (userDropdownRef.current && !userDropdownRef.current.contains(event.target)) {
+      if (
+        userDropdownRef.current &&
+        !userDropdownRef.current.contains(event.target)
+      ) {
         setIsUserDropdownOpen(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
@@ -90,7 +105,7 @@ const Navbar = () => {
     <nav className="fixed -top-0.5 left-0 w-full bg-white shadow-sm z-50">
       <div className="container mx-auto px-2">
         <div className="flex justify-between items-center h-16">
-          <div className='h-8 w-32'>
+          <div className="h-8 w-32">
             <Link to="/">
               <img src={logo} alt="" />
             </Link>
@@ -102,7 +117,7 @@ const Navbar = () => {
                 placeholder="Search for any services or categories..."
                 className="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-[#C8C1F5] focus:border-transparent"
               />
-              <div className='absolute right-1 top-1 rounded-full p-2'>
+              <div className="absolute right-1 top-1 rounded-full p-2">
                 <Search className="w-5 h-5 text-black" />
               </div>
             </div>
@@ -111,11 +126,13 @@ const Navbar = () => {
           <div className="hidden md:flex items-center space-x-4">
             {userRole ? (
               <>
-                {(userRole === "user" || userRole === "buyer") && (
+                {(userRole === "buyer" || userRole === "seller") && (
                   <>
                     <div className="relative" ref={notificationRef}>
-                      <button 
-                        onClick={() => setIsNotificationOpen(!isNotificationOpen)}
+                      <button
+                        onClick={() =>
+                          setIsNotificationOpen(!isNotificationOpen)
+                        }
                         className="relative p-2 text-gray-600 hover:text-purple-600 transition-colors"
                       >
                         <Bell className="w-5 h-5" />
@@ -132,7 +149,10 @@ const Navbar = () => {
                           </div>
                           <div className="py-2">
                             {notifications.map((notification) => (
-                              <div key={notification.id} className="px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-50 last:border-b-0">
+                              <div
+                                key={notification.id}
+                                className="px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-50 last:border-b-0"
+                              >
                                 <div className="flex items-start space-x-3">
                                   <div className="relative flex-shrink-0">
                                     <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-orange-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
@@ -165,17 +185,26 @@ const Navbar = () => {
                         </div>
                       )}
                     </div>
-                    <Link to="/conversation" className="p-2 text-gray-600 hover:text-purple-600 transition-colors">
+                    <Link
+                      to="/conversation"
+                      className="p-2 text-gray-600 hover:text-purple-600 transition-colors"
+                    >
                       <MessageCircleMore className="w-5 h-5" />
                     </Link>
                   </>
                 )}
-                {userRole === "user" && (
+                {userRole === "buyer" && (
                   <>
-                    <Link to="/saved" className="p-2 text-gray-600 hover:text-purple-600 transition-colors">
+                    <Link
+                      to="/saved"
+                      className="p-2 text-gray-600 hover:text-purple-600 transition-colors"
+                    >
                       <Heart className="w-5 h-5" />
                     </Link>
-                    <Link to="/order" className="p-2 text-gray-600 hover:text-purple-600 transition-colors">
+                    <Link
+                      to="/order"
+                      className="p-2 text-gray-600 hover:text-purple-600 transition-colors"
+                    >
                       <ShoppingCart className="w-5 h-5" />
                     </Link>
                   </>
@@ -190,18 +219,31 @@ const Navbar = () => {
                   {isUserDropdownOpen && (
                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200">
                       <Link
-                        to="/profile"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        to={
+                          userRole === "buyer"
+                            ? "/buyer-profile"
+                            : userRole === "seller"
+                            ? "/seller-profile"
+                            : "/"
+                        }
+                        className="block rounded px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                         onClick={() => setIsUserDropdownOpen(false)}
                       >
                         Profile
+                      </Link>
+                      <Link
+                        to="/settings"
+                        className="block rounded px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={() => setIsUserDropdownOpen(false)}
+                      >
+                        Account Settings
                       </Link>
                       <button
                         onClick={() => {
                           handleLogout();
                           setIsUserDropdownOpen(false);
                         }}
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        className="block rounded w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       >
                         Logout
                       </button>
@@ -223,7 +265,11 @@ const Navbar = () => {
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="p-2 text-gray-600 hover:text-purple-600 transition-colors"
             >
-              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {isMenuOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
             </button>
           </div>
         </div>
@@ -242,7 +288,7 @@ const Navbar = () => {
             <div className="flex flex-col space-y-4">
               {userRole ? (
                 <>
-                  {(userRole === "user" || userRole === "buyer") && (
+                  {(userRole === "buyer" || userRole === "seller") && (
                     <>
                       <Link
                         to="/notification"
@@ -269,7 +315,7 @@ const Navbar = () => {
                       </Link>
                     </>
                   )}
-                  {userRole === "user" && (
+                  {userRole === "buyer" && (
                     <>
                       <Link
                         to="/saved"
@@ -289,13 +335,28 @@ const Navbar = () => {
                       </Link>
                     </>
                   )}
+
                   <Link
-                    to="/profile"
+                    to={
+                      userRole === "buyer"
+                        ? "/buyer-profile"
+                        : userRole === "seller"
+                        ? "/seller-profile"
+                        : "/"
+                    }
                     onClick={closeMobileMenu}
                     className="flex items-center space-x-3 text-gray-600 hover:text-purple-600 transition-colors"
                   >
                     <User className="w-5 h-5" />
                     <span>Profile</span>
+                  </Link>
+
+                  <Link
+                    to="/settings"
+                    onClick={closeMobileMenu}
+                    className="flex items-center space-x-3 text-gray-600 hover:text-purple-600 transition-colors"
+                  >
+                    Account Settings
                   </Link>
                   <button
                     onClick={() => {
