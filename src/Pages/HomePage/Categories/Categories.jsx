@@ -121,7 +121,7 @@ const Categories = () => {
   };
 
   return (
-    <div className="py-7">
+    <div className="py-7 container mx-auto md:mt-10">
       <div className="px-4">
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">

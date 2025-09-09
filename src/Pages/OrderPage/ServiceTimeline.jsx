@@ -3,10 +3,10 @@ import { Link } from 'react-router-dom';
 
 export default function ServiceTimeline() {
   return (
-    <div className="min-h-screen py-8">
+    <div className="min-h-screen py-8 container mx-auto mt-30 md:mt-15">
       <div className=" px-4">
         {/* Header */}
-        <h1 className="text-3xl font-bold text-gray-800 text-center mb-8">
+        <h1 className="text-3xl font-bold text-gray-800  mb-8">
           Service Timeline
         </h1>
         

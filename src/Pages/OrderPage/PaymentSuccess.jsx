@@ -4,7 +4,7 @@ import success from '../../assets/images/success.png'
 
 export default function PaymentSuccess() {
   return (
-    <div className="min-h-[70vh] flex items-center justify-center px-4">
+    <div className="min-h-screen flex items-center justify-center px-4 container mx-auto mt-30 md:mt-15">
       <div className="text-center max-w-md w-full">
         {/* Thank you message */}
         <h1 className="text-2xl font-semibold text-gray-800 mb-8">

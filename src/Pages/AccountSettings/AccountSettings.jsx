@@ -482,7 +482,7 @@ if (userRole === "buyer") {
   };
 
   return (
-    <div className="min-h-screen ">
+    <div className="min-h-screen container mx-auto mt-30 md:mt-15">
       <div className="px-4 py-8  ">
         {/* Header */}
         <div className="flex items-center space-x-4 mb-8">

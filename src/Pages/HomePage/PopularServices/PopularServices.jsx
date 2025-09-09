@@ -96,7 +96,7 @@ const PopularServices = () => {
   ];
 
   return (
-    <div className="py-7 px-4">
+    <div className="py-7 px-4 container mx-auto">
       <div className="py-5 flex justify-between items-center">
         <h1 className="text-2xl md:text-4xl font-bold text-left text-gray-800">
           Popular Services

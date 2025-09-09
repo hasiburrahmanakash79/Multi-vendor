@@ -140,7 +140,7 @@ const ManageOrder = () => {
   };
 
   return (
-    <div className="p-4">
+    <div className="p-4 container mx-auto mt-30 md:mt-15">
       <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-4">Manage Order</h2>
       <div className="flex flex-wrap gap-2 mb-6">
         <button

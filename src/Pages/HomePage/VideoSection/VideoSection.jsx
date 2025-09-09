@@ -14,7 +14,7 @@ const VideoSection = () => {
   };
 
   return (
-    <div className="py-7 px-4">
+    <div className="py-7 px-4 container mx-auto">
       <div className="">
         <div className="relative md:rounded-3xl rounded-xl overflow-hidden shadow-xl">
           <div className="relative h-64 sm:h-80 lg:h-96">

@@ -29,7 +29,7 @@ const ServiceDetailPage = () => {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen container mx-auto mt-30 md:mt-15">
       <div className="px-4 py-8">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-gray-900">

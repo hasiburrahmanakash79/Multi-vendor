@@ -52,7 +52,7 @@ const ServicesPackages = () => {
   ];
 
   return (
-    <div className="py-5 px-4">
+    <div className="py-10 px-4 container mx-auto">
       <div className="pb-5 flex justify-between items-center">
         <h1 className="text-2xl md:text-4xl font-bold text-left">
           Services Packages

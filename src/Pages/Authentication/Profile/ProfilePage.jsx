@@ -9,7 +9,7 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="py-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    <div className="py-6 px-4 sm:px-6 lg:px-8 container mx-auto mt-30 md:mt-15">
       <div className="border border-gray-200 p-4 rounded-4xl">
         <div
           className="rounded-xl p-6 flex items-center justify-between h-40 sm:h-52"

@@ -45,10 +45,10 @@ const OrderPreview = () => {
   };
 
   return (
-    <div className="min-h-screen py-8 bg-gray-50">
+    <div className="min-h-screen py-8 container mx-auto mt-30 md:mt-15">
       <div className="px-4">
         {/* Header */}
-        <h1 className="text-3xl font-bold text-gray-800 text-center mb-8">
+        <h1 className="text-3xl font-bold text-gray-800 mb-8">
           Order Preview
         </h1>
 
@@ -64,7 +64,7 @@ const OrderPreview = () => {
             <div className="absolute inset-0 bg-black/20 bg-opacity-20 rounded-2xl"></div>
           </div>
 
-          <div className="md:p-8 mt-5">
+          <div className=" mt-10">
             {/* Venue Title */}
             <h2 className="text-2xl font-semibold text-gray-800 mb-6">
               Destination engagement and wedding hall, california
