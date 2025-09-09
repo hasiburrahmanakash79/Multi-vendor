@@ -288,7 +288,7 @@ const ServiceDetailPage = () => {
                   className="w-12 h-12 rounded-full object-cover"
                 />
                 <div>
-                  <Link to='/profile' className="font-medium text-gray-900">Robert Carlone</Link>
+                  <Link to='/seller-profile' className="font-medium text-gray-900">Robert Carlone</Link>
                   <p className="text-sm text-gray-500">
                     Available 9:00 AM - 10:00 PM
                   </p>
