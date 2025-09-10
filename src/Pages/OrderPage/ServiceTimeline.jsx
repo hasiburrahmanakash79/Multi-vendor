@@ -1,7 +1,9 @@
 import { MapPin, MessageCircle, Phone } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import Check from '../../assets/icons/Vector.svg';
 
 export default function ServiceTimeline() {
+  const userRole = localStorage.getItem("userRole");
   return (
     <div className="min-h-screen py-8 container mx-auto mt-30 md:mt-15">
       <div className=" px-4">
@@ -133,11 +135,17 @@ export default function ServiceTimeline() {
               
               {/* Action Buttons */}
               <div className="flex space-x-3">
-                <Link to='/conversation' className="flex-1 bg-[#C8C1F5] font-medium py-3 px-4 rounded-full flex items-center justify-center space-x-2 transition hover:shadow-lg duration-300">
-                  <MessageCircle className="w-4 h-4" />
-                  <span>Send Message</span>
-                </Link>
-                
+                {userRole === "seller" ? (
+                  <button className="flex-1 bg-[#C8C1F5] font-medium py-3 px-4 rounded-full flex items-center justify-center space-x-2 transition hover:shadow-lg duration-300">
+                    <img src={Check} alt=""  className='w-4 h-4'/>
+                    <span> Task complete request</span>
+                  </button>
+                ) : (
+                  <button  className="flex-1 bg-[#C8C1F5] font-medium py-3 px-4 rounded-full flex items-center justify-center space-x-2 transition hover:shadow-lg duration-300">
+                    <img src={Check} alt=""  className='w-4 h-4'/>
+                    <span> Task complete request</span>
+                  </button>
+                )}
                 <button className="p-3 bg-gray-100 hover:bg-gray-200 rounded-full transition duration-200">
                   <Phone className="w-6 h-5 text-gray-600" />
                 </button>
