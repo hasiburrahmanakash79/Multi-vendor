@@ -290,7 +290,7 @@ if (userRole === "buyer") {
 
       case 'Notifications':
         return (
-          <div className="space-y-6 shadow-xl p-4 rounded-2xl">
+          <div className="space-y-6 bg-gray-50 p-4 rounded-2xl">
             <div className="flex justify-between items-center">
               <div>
                 <h3 className="text-lg font-medium text-gray-800">Pop up notification on desktop</h3>
