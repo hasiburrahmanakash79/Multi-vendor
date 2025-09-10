@@ -1,9 +1,18 @@
-import { MapPin, MessageCircle, Phone } from 'lucide-react';
+import { MapPin, MessageCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
 import Check from '../../assets/icons/Vector.svg';
+import question from '../../assets/icons/question.svg';
 
 export default function ServiceTimeline() {
   const userRole = localStorage.getItem("userRole");
+  const [showTaskCompleteModal, setShowTaskCompleteModal] = useState(false);
+
+  const handleTaskComplete = () => {
+    // Handle task completion logic here
+    setShowTaskCompleteModal(false);
+  };
+
   return (
     <div className="min-h-screen py-8 container mx-auto mt-30 md:mt-15">
       <div className=" px-4">
@@ -136,24 +145,56 @@ export default function ServiceTimeline() {
               {/* Action Buttons */}
               <div className="flex space-x-3">
                 {userRole === "seller" ? (
-                  <button className="flex-1 bg-[#C8C1F5] font-medium py-3 px-4 rounded-full flex items-center justify-center space-x-2 transition hover:shadow-lg duration-300">
-                    <img src={Check} alt=""  className='w-4 h-4'/>
-                    <span> Task complete request</span>
+                  <button 
+                    onClick={() => setShowTaskCompleteModal(true)}
+                    className="flex-1 bg-[#C8C1F5] font-medium py-3 px-4 rounded-full flex items-center justify-center space-x-2 transition hover:shadow-lg duration-300 cursor-pointer"
+                  >
+                    <img src={Check} alt="" className='w-4 h-4'/>
+                    <span>Task complete request</span>
                   </button>
                 ) : (
-                  <button  className="flex-1 bg-[#C8C1F5] font-medium py-3 px-4 rounded-full flex items-center justify-center space-x-2 transition hover:shadow-lg duration-300">
-                    <img src={Check} alt=""  className='w-4 h-4'/>
-                    <span> Task complete request</span>
-                  </button>
+                  <Link to="/conversation" className="flex-1 bg-[#C8C1F5] font-medium py-3 px-4 rounded-full flex items-center justify-center space-x-2 transition hover:shadow-lg duration-300 cursor-pointer">
+                    <MessageCircle className="w-4 h-4 text-gray-700" />
+                    <span>Send Message</span>
+                  </Link>
                 )}
-                <button className="p-3 bg-gray-100 hover:bg-gray-200 rounded-full transition duration-200">
-                  <Phone className="w-6 h-5 text-gray-600" />
-                </button>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Logout Modal */}
+      
+
+      {/* Task Complete Confirmation Modal */}
+      {showTaskCompleteModal && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-sm w-full mx-4">
+            <div className='flex justify-center items-center py-5'>
+              <img src={question} alt="" />
+            </div>
+            <h3 className="text-lg font-semibold text-center text-gray-800 mb-4">Are you sure you want to mark this task as complete?</h3>
+            <div className="flex space-x-4">
+              <button
+                onClick={() => setShowTaskCompleteModal(false)}
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors duration-300 cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  handleTaskComplete();
+                  // Additional task completion logic can be added here
+                }}
+                className="flex-1 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-colors duration-300 cursor-pointer"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
