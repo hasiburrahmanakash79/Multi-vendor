@@ -1,5 +1,4 @@
 import { FaStar } from "react-icons/fa";
-import location from "../../assets/icons/location.svg";
 import image1 from "../../assets/images/cardImage1.png";
 import image2 from "../../assets/images/cardImage2.png";
 import image3 from "../../assets/images/cardImage3.png";
@@ -227,7 +226,7 @@ const SellerProfile = () => {
         <h1 className="text-lg sm:text-xl font-semibold text-gray-800 mb-6">
           {profile.name} Services
         </h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {services.map((service) => (
             <Link
               to={`/serviceDetails/${service.id}`}
@@ -235,7 +234,7 @@ const SellerProfile = () => {
               className="relative border border-gray-200 rounded-xl p-3 hover:shadow-2xl duration-500"
             >
               <div className="absolute top-3 left-3 bg-white/40 text-black text-sm font-semibold px-3 py-2 rounded-br-xl flex items-center gap-1">
-                <RiStarFill className="inline text-yellow-400" />{" "}
+                <RiStarFill className="inline text-yellow-500" />{" "}
                 {service.rating}
               </div>
               <img
@@ -252,10 +251,6 @@ const SellerProfile = () => {
                   />
                   <p className="text-sm sm:text-base">{service.name}</p>
                 </div>
-                <span className="flex items-center gap-2">
-                  <img src={location} alt="location" />
-                  <p className="text-xs sm:text-sm md:text-base">{service.distance}</p>
-                </span>
               </div>
               <div className="mt-2">
                 <p className="font-semibold text-sm sm:text-base">{service.title}</p>

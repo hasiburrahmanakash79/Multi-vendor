@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import location from "../../../assets/icons/location.svg";
 import image1 from "../../../assets/images/cardImage1.png";
 import image2 from "../../../assets/images/cardImage2.png";
 import image3 from "../../../assets/images/cardImage3.png";
@@ -117,7 +116,7 @@ const PopularServices = () => {
               className="relative border border-gray-200 rounded-xl p-3 bg-white shadow-md hover:shadow-2xl transform transition-all duration-300 ease-in-out"
             >
               <div className="absolute top-3 left-3 bg-white/80 text-black text-sm font-semibold px-3 py-2 rounded-br-xl flex items-center gap-1 transition-all duration-300 hover:bg-white">
-                <RiStarFill className="text-yellow-400" /> {service.rating}
+                <RiStarFill className="text-yellow-500" /> {service.rating}
               </div>
               <img
                 src={service.thumbnail}
@@ -135,12 +134,6 @@ const PopularServices = () => {
                     {service.name}
                   </p>
                 </div>
-                <span className="flex items-center gap-2">
-                  <img src={location} alt="location" className="w-4 h-4" />
-                  <p className="text-sm md:text-base text-gray-600">
-                    {service.distance}
-                  </p>
-                </span>
               </div>
               <div className="mt-2">
                 <p className="font-semibold text-gray-800 hover:text-[#1E40AF] transition-colors duration-300">

@@ -1,4 +1,3 @@
-import location from "../../assets/icons/location.svg";
 import image1 from "../../assets/images/cardImage1.png";
 import image2 from "../../assets/images/cardImage2.png";
 import image3 from "../../assets/images/cardImage3.png";
@@ -131,7 +130,7 @@ const AllServices = () => {
   };
 
   return (
-    <div className="py-6 px-4 min-h-screen">
+    <div className="py-6 px-4 min-h-screen container mx-auto mt-30 md:mt-15">
       <div className="flex gap-6">
         {/* Sidebar (Visible only on large screens) */}
         <div className="hidden lg:block lg:w-1/4 bg-white border border-gray-200 rounded-lg p-4 shadow-md">
@@ -265,14 +264,14 @@ const AllServices = () => {
 
           {/* Packages Grid */}
           <div className="pt-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
               {filteredPackages.map((pack) => (
                 <div
                   key={pack.id}
-                  className="relative bg-white border border-gray-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow duration-300"
+                  className="relative bg-white border border-gray-200 rounded-xl p-3 shadow-sm hover:shadow-md transition-shadow duration-300"
                 >
-                  <div className="absolute top-4 left-4 bg-white/70 text-black text-xs font-semibold px-2 py-1 rounded-br-md flex items-center gap-1">
-                    <RiStarFill className="inline text-yellow-400 w-4 h-4" />{" "}
+                  <div className="absolute top-3 left-3 bg-white/70 text-black text-xs font-semibold px-2 py-1 rounded-br-md flex items-center gap-1">
+                    <RiStarFill className="inline text-yellow-500 w-4 h-4" />{" "}
                     {pack.rating}
                   </div>
                   <img
@@ -289,12 +288,6 @@ const AllServices = () => {
                       />
                       <p className="text-sm text-gray-700">{pack.name}</p>
                     </div>
-                    <span className="flex items-center gap-1">
-                      <img src={location} alt="" className="w-4 h-4" />
-                      <p className="text-xs md:text-sm text-gray-500">
-                        {pack.distance}
-                      </p>
-                    </span>
                   </div>
                   <div className="mt-2">
                     <p className="font-semibold text-gray-900 text-base">

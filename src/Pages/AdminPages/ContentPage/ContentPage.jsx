@@ -16,7 +16,6 @@ const ContentPage = () => {
     setError(null);
     setIsUploading(true);
 
-    const fileSizeKB = file.size / 1024;
     const fileSizeMB = file.size / (1024 * 1024);
 
     if (type === "banner" && !file.type.startsWith("image/")) {
@@ -24,30 +23,28 @@ const ContentPage = () => {
       setIsUploading(false);
       return;
     }
-    if (
-      type === "video" &&
-      !file.type.startsWith("image/") &&
-      !file.type.startsWith("video/")
-    ) {
+
+    if (type === "video" && !file.type.match(/^(image|video)\//)) {
       setError("Please upload an image or video file!");
       setIsUploading(false);
       return;
     }
-    if (fileSizeKB > 100) {
-      setError("Image size must be less than 100KB!");
+
+    if (fileSizeMB > 5) {
+      setError("Image size must be less than 5MB!");
       setIsUploading(false);
       return;
     }
-    if (type === "video" && file.type.startsWith("video/") && fileSizeMB > 10) {
-      setError("Video size must be less than 10MB!");
+
+    if (type === "video" && file.type.startsWith("video/") && fileSizeMB > 50) {
+      setError("Video size must be less than 50MB!");
       setIsUploading(false);
       return;
     }
 
     const reader = new FileReader();
     reader.onload = (e) => {
-      if (type === "banner") setBannerImage(e.target.result);
-      else setVideoImage(e.target.result);
+      type === "banner" ? setBannerImage(e.target.result) : setVideoImage(e.target.result);
       setIsUploading(false);
     };
     reader.onerror = () => {
@@ -58,8 +55,7 @@ const ContentPage = () => {
   };
 
   const handleDelete = (type) => {
-    if (type === "banner") setBannerImage(null);
-    else setVideoImage(null);
+    type === "banner" ? setBannerImage(null) : setVideoImage(null);
   };
 
   const handlePublish = () => {
@@ -77,9 +73,8 @@ const ContentPage = () => {
 
   return (
     <div>
-      <SectionTitle title={"Upload Content"} />
+      <SectionTitle title="Upload Content" />
       <div className="p-6 bg-white rounded-2xl shadow-md border border-gray-200">
-        {/* Error & Upload States */}
         {error && (
           <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-lg border border-red-200 text-sm">
             {error}
@@ -91,20 +86,14 @@ const ContentPage = () => {
           </div>
         )}
 
-        {/* Banner Upload */}
         <div className="mb-8">
           <label className="text-gray-700 font-medium mb-2 block">
-            Banner Image{" "}
-            <span className="text-gray-400 text-sm">(Max 100KB)</span>
+            Banner Image <span className="text-gray-400 text-sm">(Max 5MB)</span>
           </label>
           <div className="relative">
             {bannerImage ? (
               <div className="relative w-full sm:w-2/3 h-42 border border-gray-300 rounded-lg overflow-hidden group">
-                <img
-                  src={bannerImage}
-                  alt="Banner"
-                  className="w-full h-full object-cover"
-                />
+                <img src={bannerImage} alt="Banner" className="w-full h-full object-cover" />
                 <button
                   onClick={() => handleDelete("banner")}
                   className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
@@ -127,22 +116,14 @@ const ContentPage = () => {
           </div>
         </div>
 
-        {/* Video / Image Upload */}
         <div className="mb-8">
           <label className="text-gray-700 font-medium mb-2 block">
-            Video / Image{" "}
-            <span className="text-gray-400 text-sm">
-              (Image &lt; 100KB, Video &lt; 10MB)
-            </span>
+            Video / Image <span className="text-gray-400 text-sm">(Image &lt; 5MB, Video &lt; 50MB)</span>
           </label>
           <div className="relative">
             {videoImage ? (
               <div className="relative w-48 h-48 border border-gray-300 rounded-lg overflow-hidden group">
-                <img
-                  src={videoImage}
-                  alt="Video or Image"
-                  className="w-full h-full object-cover"
-                />
+                <img src={videoImage} alt="Video or Image" className="w-full h-full object-cover" />
                 <button
                   onClick={() => handleDelete("video")}
                   className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
@@ -165,12 +146,8 @@ const ContentPage = () => {
           </div>
         </div>
 
-        {/* Description */}
         <div className="mb-8">
-          <label
-            htmlFor="description"
-            className="block text-sm font-medium text-gray-700 mb-2"
-          >
+          <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
             Description <span className="text-red-600">*</span>
           </label>
           <textarea
@@ -179,11 +156,10 @@ const ContentPage = () => {
             onChange={(e) => setDescription(e.target.value)}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm resize-y"
             placeholder="Write a detailed description..."
-            rows="6"
+            rows={6}
           />
         </div>
 
-        {/* Publish Button */}
         <div className="flex justify-end">
           <button
             onClick={handlePublish}

@@ -99,9 +99,15 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           <div className="h-8 w-32">
-            <Link to="/">
-              <img src={logo} alt="Logo" />
-            </Link>
+            {userRole === "seller" ? (
+              <Link to="/seller-overview">
+                <img src={logo} alt="Logo" />
+              </Link>
+            ) : (
+              <Link to="/">
+                <img src={logo} alt="Logo" />
+              </Link>
+            )}
           </div>
           <div className="hidden md:flex flex-1 max-w-md mx-8">
             <div className="relative w-full">

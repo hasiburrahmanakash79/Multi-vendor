@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import location from "../../assets/icons/location.svg";
 import image1 from "../../assets/images/cardImage1.png";
 import image2 from "../../assets/images/cardImage2.png";
 import image3 from "../../assets/images/cardImage3.png";
@@ -142,10 +141,6 @@ const SaveItems = () => {
                   />
                   <p>{service.name}</p>
                 </div>
-                <span className="flex items-center gap-2">
-                  <img src={location} alt="" />
-                  <p className="text-sm md:text-base">{service.distance}</p>
-                </span>
               </div>
               <div className="mt-2">
                 <p className="font-semibold">{service.title}</p>
