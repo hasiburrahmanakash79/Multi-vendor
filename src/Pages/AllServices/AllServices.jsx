@@ -5,6 +5,7 @@ import image4 from "../../assets/images/cardImage4.png";
 import { RiStarFill } from "react-icons/ri";
 import { Heart } from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const AllServices = () => {
   const packages = [
@@ -266,7 +267,8 @@ const AllServices = () => {
           <div className="pt-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
               {filteredPackages.map((pack) => (
-                <div
+                <Link
+              to={`/serviceDetails/${pack.id}`}
                   key={pack.id}
                   className="relative bg-white border border-gray-200 rounded-xl p-3 shadow-sm hover:shadow-md transition-shadow duration-300"
                 >
@@ -307,7 +309,7 @@ const AllServices = () => {
                       <Heart className="w-5 h-5 text-gray-500 hover:text-red-500 cursor-pointer transition-colors duration-300" />
                     </span>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           </div>
