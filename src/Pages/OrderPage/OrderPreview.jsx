@@ -37,7 +37,6 @@ const OrderPreview = () => {
 
   const handleChangeLocation = () => {
     console.log('Redirecting to location change page');
-    // Add navigation logic here (e.g., use React Router)
   };
 
   const handleNext = () => {
@@ -47,14 +46,11 @@ const OrderPreview = () => {
   return (
     <div className="min-h-screen py-8 container mx-auto mt-30 md:mt-15">
       <div className="px-4">
-        {/* Header */}
         <h1 className="text-3xl font-bold text-gray-800 mb-8">
           Order Preview
         </h1>
 
-        {/* Main Content Card */}
         <div className="">
-          {/* Hero Image */}
           <div className="relative h-64 bg-gradient-to-r from-orange-200 to-orange-300 rounded-2xl">
             <img
               src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
@@ -65,12 +61,10 @@ const OrderPreview = () => {
           </div>
 
           <div className=" mt-10">
-            {/* Venue Title */}
             <h2 className="text-2xl font-semibold text-gray-800 mb-6">
               Destination engagement and wedding hall, california
             </h2>
 
-            {/* Description Section */}
             <div className="mb-8">
               <h3 className="text-lg font-bold text-gray-700 mb-3">
                 Descriptions
@@ -85,13 +79,11 @@ const OrderPreview = () => {
             </div>
 
             <div className="grid md:grid-cols-2 gap-8">
-              {/* Booking Info */}
               <div className="space-y-5">
                 <h3 className="text-lg font-bold text-gray-700 mb-4">
                   Booking info
                 </h3>
 
-                {/* Date and Time */}
                 <div className="bg-gray-50 p-4 rounded-2xl shadow-lg">
                   <div className="flex justify-between items-center mb-2">
                     <div>

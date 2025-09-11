@@ -9,19 +9,16 @@ export default function ServiceTimeline() {
   const [showTaskCompleteModal, setShowTaskCompleteModal] = useState(false);
 
   const handleTaskComplete = () => {
-    // Handle task completion logic here
     setShowTaskCompleteModal(false);
   };
 
   return (
     <div className="min-h-screen py-8 container mx-auto mt-30 md:mt-15">
       <div className=" px-4">
-        {/* Header */}
         <h1 className="text-3xl font-bold text-gray-800  mb-8">
           Service Timeline
         </h1>
         
-        {/* Hero Image */}
         <div className="relative h-64 mb-8">
           <img 
             src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" 
@@ -31,12 +28,10 @@ export default function ServiceTimeline() {
           <div className="absolute inset-0 bg-black/20 bg-opacity-20 rounded-2xl"></div>
         </div>
         
-        {/* Venue Title */}
         <h2 className="text-2xl font-semibold text-gray-800 mb-6">
           Destination engagement and wedding hall, california
         </h2>
         
-        {/* Description */}
         <div className="mb-8">
           <h3 className="text-lg font-medium text-gray-700 mb-3">Descriptions</h3>
           <p className="text-gray-600 leading-relaxed">
@@ -47,9 +42,7 @@ export default function ServiceTimeline() {
         </div>
         
         <div className="grid lg:grid-cols-2 gap-8">
-          {/* Left Column */}
           <div className="space-y-8">
-            {/* Included Services */}
             <div>
               <h3 className="text-lg font-medium text-gray-700 mb-6">Included Services</h3>
               
@@ -68,7 +61,6 @@ export default function ServiceTimeline() {
               </div>
             </div>
             
-            {/* Booking Info */}
             <div>
               <h3 className="text-lg font-medium text-gray-700 mb-6">Booking info</h3>
               
@@ -94,9 +86,7 @@ export default function ServiceTimeline() {
             </div>
           </div>
           
-          {/* Right Column */}
           <div className="space-y-6">
-            {/* Price Section */}
             <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
               <h3 className="text-lg font-medium text-gray-700 mb-4">Price</h3>
               
@@ -135,14 +125,11 @@ export default function ServiceTimeline() {
               </div>
             </div>
             
-            {/* Time Left */}
             <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
               <div className="flex justify-between items-center mb-4 bg-amber-50 p-4">
                 <span className="text-gray-700 font-medium">Time Left</span>
                 <span className="text-orange-500 font-semibold">20 Days</span>
               </div>
-              
-              {/* Action Buttons */}
               <div className="flex space-x-3">
                 {userRole === "seller" ? (
                   <button 
@@ -163,11 +150,6 @@ export default function ServiceTimeline() {
           </div>
         </div>
       </div>
-
-      {/* Logout Modal */}
-      
-
-      {/* Task Complete Confirmation Modal */}
       {showTaskCompleteModal && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 max-w-sm w-full mx-4">
@@ -185,7 +167,6 @@ export default function ServiceTimeline() {
               <button
                 onClick={() => {
                   handleTaskComplete();
-                  // Additional task completion logic can be added here
                 }}
                 className="flex-1 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-colors duration-300 cursor-pointer"
               >

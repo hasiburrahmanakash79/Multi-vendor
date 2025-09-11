@@ -16,10 +16,10 @@ import ServicesPackages from "../HomePage/ServicesPackages/ServicesPackages";
 import { Link } from "react-router-dom";
 
 const ServiceDetailPage = () => {
-  const [bookingDate, setBookingDate] = useState(new Date("2025-09-05")); // Initialize as Date object
-  const [bookingTime, setBookingTime] = useState(new Date("2025-09-05T09:00")); // Initialize as Date object
-  const [isPlaying, setIsPlaying] = useState(false); // State for video playback
-  const videoRef = useRef(null); // Ref for video element
+  const [bookingDate, setBookingDate] = useState(new Date("2025-09-05")); 
+  const [bookingTime, setBookingTime] = useState(new Date("2025-09-05T09:00")); 
+  const [isPlaying, setIsPlaying] = useState(false); 
+  const videoRef = useRef(null)
 
   const handlePlayClick = () => {
     setIsPlaying(true);
