@@ -1,7 +1,31 @@
 import { Search } from "lucide-react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import banner from "../../../assets/images/banner.png";
 
 const Hero = () => {
+  const [formData, setFormData] = useState({
+    location: "",
+    service: "",
+    date: "",
+  });
+  const navigate = useNavigate();
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    const queryParams = new URLSearchParams({
+      location: formData.location,
+      service: formData.service,
+      date: formData.date,
+    }).toString();
+    navigate(`/services?${queryParams}`);
+  };
+
   return (
     <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
       <div
@@ -24,15 +48,18 @@ const Hero = () => {
           </h1>
         </div>
 
-        <div className="bg-white rounded-3xl md:rounded-full shadow-2xl mx-auto overflow-hidden w-full">
+        <form onSubmit={handleSearch} className="bg-white rounded-3xl md:rounded-full shadow-2xl mx-auto overflow-hidden w-full">
           <div className="flex flex-col md:flex-row flex-wrap">
             <div className="flex-1 px-4 sm:px-6 py-4 border-b md:border-b-0 md:border-r border-gray-200">
               <p className="text-left text-sm font-medium text-gray-700 mb-1 ms-1">
                 Where
               </p>
               <select
+                name="location"
+                value={formData.location}
+                onChange={handleInputChange}
                 className="w-full bg-transparent border-0 text-gray-700 focus:outline-none text-sm"
-                defaultValue=""
+                required
               >
                 <option value="" disabled>
                   Select Location
@@ -49,8 +76,11 @@ const Hero = () => {
                 Services
               </label>
               <select
+                name="service"
+                value={formData.service}
+                onChange={handleInputChange}
                 className="w-full bg-transparent border-0 text-gray-700 focus:outline-none text-sm"
-                defaultValue=""
+                required
               >
                 <option value="" disabled>
                   Select Services
@@ -68,12 +98,19 @@ const Hero = () => {
               </label>
               <input
                 type="date"
+                name="date"
+                value={formData.date}
+                onChange={handleInputChange}
                 className="w-full bg-transparent border-0 text-gray-700 focus:outline-none text-sm"
+                required
               />
             </div>
 
             <div className="flex items-center justify-center p-3 sm:p-4 w-full md:w-auto">
-              <button className="bg-[#C8C1F5] text-black w-full md:w-14 h-12 sm:h-14 rounded-2xl md:rounded-full transition-all duration-300 flex items-center justify-center gap-2 shadow-lg">
+              <button
+                type="submit"
+                className="bg-[#C8C1F5] text-black w-full md:w-14 h-12 sm:h-14 rounded-2xl md:rounded-full transition-all duration-300 flex items-center justify-center gap-2 shadow-lg"
+              >
                 <Search className="w-5 h-5 sm:w-6 sm:h-6" />
                 <span className="block md:hidden text-sm font-medium">
                   Search
@@ -81,7 +118,7 @@ const Hero = () => {
               </button>
             </div>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );
