@@ -35,7 +35,7 @@ export default function MyServices() {
       orders: 3,
       time: "10:00AM-06:00PM",
       price: "$200-$500",
-      status: "Active",
+      status: "Pending",
       image: "/api/placeholder/80/80",
     },
     {
@@ -81,6 +81,9 @@ export default function MyServices() {
   );
   const activeCount = services.filter(
     (service) => service.status === "Active"
+  ).length;
+  const pendingCount = services.filter(
+    (service) => service.status === "Pending"
   ).length;
   const suspendedCount = services.filter(
     (service) => service.status === "Suspended"
@@ -136,6 +139,16 @@ export default function MyServices() {
             }`}
           >
             Active ({activeCount})
+          </button>
+          <button
+            onClick={() => setActiveTab("Pending")}
+            className={`pb-2 font-medium ${
+              activeTab === "Pending"
+                ? "text-purple-600 border-b-2 border-purple-600"
+                : "text-gray-500 hover:text-gray-700"
+            }`}
+          >
+            Pending ({pendingCount})
           </button>
           <button
             onClick={() => setActiveTab("Suspended")}
