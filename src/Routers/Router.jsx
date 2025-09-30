@@ -30,6 +30,7 @@ import PrivacyPolicyUpload from "../Pages/AdminPages/PrivacyPolicy/PrivacyPolicy
 import RequestDetails from "../Pages/AdminPages/SellerRequest/RequestDetails";
 import ContentPage from "../Pages/AdminPages/ContentPage/ContentPage";
 import ProfilePage from "../Pages/Authentication/Profile/ProfilePage";
+import ProductDetail from "../Pages/trash/ProductDetail";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -156,6 +157,10 @@ const router = createBrowserRouter([
   {
     path: "/signup",
     element: <Signup />,
+  },
+  {
+path: '/trash',
+element: <ProductDetail />
   },
   {
     path: "/otp",

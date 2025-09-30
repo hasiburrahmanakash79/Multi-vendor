@@ -112,19 +112,20 @@ const PopularServices = () => {
       </div>
       <div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {serviced.map((service) => (
+          {services.map((service) => (
             <Link
               to={`/serviceDetails/${service.id}`}
               key={service.id}
               className="relative border border-gray-200 rounded-xl p-3 bg-white shadow-md hover:shadow-2xl transform transition-all duration-300 ease-in-out"
             >
               <div className="absolute top-3 left-3 bg-white/80 text-black text-sm font-semibold px-3 py-2 rounded-br-xl flex items-center gap-1 transition-all duration-300 hover:bg-white">
-                <RiStarFill className="text-yellow-500" /> {service.rating}
+                <RiStarFill className="text-yellow-500" /> {service.average_rating}
               </div>
               <img
-                src={service.thumbnail}
-                alt={service.title}
+                src={service.cover_photo}
+                alt={service?.title}
                 className="w-full h-48 object-cover rounded-lg"
+                crossOrigin="anonymous"
               />
               <div className="flex items-center justify-between mt-2 border-b pb-2 border-gray-200">
                 <div className="flex items-center gap-2">
@@ -134,7 +135,7 @@ const PopularServices = () => {
                     alt={service.name}
                   />
                   <p className="text-gray-700 font-medium hover:text-gray-900 transition-colors duration-300">
-                    {service.name}
+                    {service.seller.full_name}
                   </p>
                 </div>
               </div>

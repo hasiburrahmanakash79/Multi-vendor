@@ -15,7 +15,7 @@ const useServicesList = () => {
         setLoading(true);
         const res = await apiClient.get("/site/service/list");
         if (mounted) {
-          setServices(res.data?.data || []);
+          setServices(res.data || []);
         }
       } catch (err) {
         if (mounted) {
