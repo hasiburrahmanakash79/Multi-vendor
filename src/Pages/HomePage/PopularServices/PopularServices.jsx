@@ -9,9 +9,12 @@ import image7 from "../../../assets/images/cardImage7.png";
 import image8 from "../../../assets/images/cardImage8.png";
 import { RiStarFill } from "react-icons/ri";
 import { Heart } from "lucide-react";
+import useServicesList from "../../../hooks/useServicesList";
 
 const PopularServices = () => {
-  const services = [
+  const { services, loading, error } = useServicesList([]);
+  console.log(services, "services-------------------");
+  const serviced = [
     {
       id: 1,
       thumbnail: image1,
@@ -109,7 +112,7 @@ const PopularServices = () => {
       </div>
       <div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {services.map((service) => (
+          {serviced.map((service) => (
             <Link
               to={`/serviceDetails/${service.id}`}
               key={service.id}
