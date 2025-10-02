@@ -49,7 +49,13 @@ const ServiceDetailPage = () => {
     }
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-full min-h-screen">
+        <div className="w-10 h-10 border-4 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
   if (error) return <div>{error}</div>;
   if (!service) return <div>No service found</div>;
 
@@ -58,7 +64,9 @@ const ServiceDetailPage = () => {
       <div className="container mx-auto mt-30 md:mt-15">
         <div className="px-4 py-8">
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold text-gray-900">{service.title}</h1>
+            <h1 className="text-2xl font-bold text-gray-900">
+              {service.title}
+            </h1>
             <div className="flex items-center space-x-4">
               <button className="flex items-center space-x-2 text-gray-600 hover:text-purple-600">
                 <BookmarkPlus className="w-4 h-4" />
@@ -82,7 +90,9 @@ const ServiceDetailPage = () => {
                 )}
                 <video
                   ref={videoRef}
-                  className={`w-full h-full object-cover ${!isPlaying ? "hidden" : ""}`}
+                  className={`w-full h-full object-cover ${
+                    !isPlaying ? "hidden" : ""
+                  }`}
                   controls={isPlaying}
                 >
                   <source
@@ -159,13 +169,17 @@ const ServiceDetailPage = () => {
                 <h2 className="text-xl font-semibold my-5">What Included</h2>
                 <ul className="space-y-2 text-gray-600">
                   {service.additionals?.map((item, index) => (
-                    <li key={index}>• {item.title}: {item.description}</li>
+                    <li key={index}>
+                      • {item.title}: {item.description}
+                    </li>
                   ))}
                 </ul>
                 <h2 className="text-xl font-semibold my-5">Why Choose Us</h2>
                 <ul className="space-y-2 text-gray-600">
                   {service.benefits?.map((item, index) => (
-                    <li key={index}>• {item.title}: {item.description}</li>
+                    <li key={index}>
+                      • {item.title}: {item.description}
+                    </li>
                   ))}
                 </ul>
                 <h2 className="text-xl font-semibold my-5">Ideal For</h2>
@@ -213,7 +227,6 @@ const ServiceDetailPage = () => {
                         </div>
                         <div className="flex-1">
                           <p className="text-gray-600 mb-3">{review.text}</p>
-                          
                         </div>
                       </div>
                     </div>
@@ -264,7 +277,8 @@ const ServiceDetailPage = () => {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Booking Date
                     </label>
- fifthteen                    <div className="grid grid-cols-2 gap-2">
+                    fifthteen{" "}
+                    <div className="grid grid-cols-2 gap-2">
                       <div>
                         <label className="block text-xs text-gray-500 mb-1">
                           Select Date
