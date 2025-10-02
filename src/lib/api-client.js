@@ -1,7 +1,7 @@
 // src/lib/api-client.js
 import axios from "axios";
 import { getCookie, setCookie, removeAuthTokens } from "./cookie-utils";
-const API_URL = import.meta.env.VITE_API_URL || "http://10.10.12.10:8000/api";
+const API_URL = import.meta.env.VITE_API_URL || "http://10.10.12.10:3000/api";
 
 const apiClient = axios.create({
   baseURL: API_URL,
@@ -14,7 +14,7 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use(
   (config) => {
     // const accessToken = getCookie("accessToken");
-    const accessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU5MzA4OTQwLCJpYXQiOjE3NTkyMjI1NDAsImp0aSI6IjkxOGYzODYxZTlmYzQzZWZhMjc3MGYzNjkwYzNhYjgxIiwidXNlcl9pZCI6IjE4In0.5ewR9sCfxLwcErywACIz0oyJiQmdfkVU5gfRh_JoYKY';
+    const accessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU5NDYxMjU3LCJpYXQiOjE3NTkzNzQ4NTcsImp0aSI6IjEyY2RlOTYyNWQyMTQ2YWQ5N2MzYzY4NmMyM2IzYTgyIiwidXNlcl9pZCI6IjE4In0.pjdPh-_0gstQRVD_xwBj1F2cs4AQ7-H_t1f83dDKgek';
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
