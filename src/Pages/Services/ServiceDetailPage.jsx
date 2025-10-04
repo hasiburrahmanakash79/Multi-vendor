@@ -1,11 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
-  MessageSquare,
   BookmarkPlus,
   Star,
-  ThumbsUp,
-  Reply,
   Play,
 } from "lucide-react";
 import DatePicker from "react-datepicker";

@@ -91,24 +91,24 @@ export const parseJwt = (token) => {
 };
 
 // Store tokens in cookies with long expiration times
-export const setAuthTokens = (accessToken, refreshToken) => {
-  // Set accessToken for 1 month (30 days)
+export const setAuthTokens = (access_token, refresh_token) => {
+  // Set access_token for 1 month (30 days)
   const accessTokenMaxAge = 30 * 24 * 60 * 60; // 30 days in seconds
 
-  // Set refreshToken for 1 year (365 days)
+  // Set refresh_token for 1 year (365 days)
   const refreshTokenMaxAge = 365 * 24 * 60 * 60; // 365 days in seconds
 
-  // Set isAuthenticated for 1 year to match refreshToken
+  // Set isAuthenticated for 1 year to match refresh_token
   const authMaxAge = 365 * 24 * 60 * 60; // 365 days in seconds
 
-  setCookie("accessToken", accessToken, {
+  setCookie("access_token", access_token, {
     maxAge: accessTokenMaxAge,
     secure: import.meta.env.VITE_NODE_ENV === "production",
     sameSite: "strict",
     path: "/",
   });
 
-  setCookie("refreshToken", refreshToken, {
+  setCookie("refresh_token", refresh_token, {
     maxAge: refreshTokenMaxAge,
     secure: import.meta.env.VITE_NODE_ENV === "production",
     sameSite: "strict",
@@ -130,8 +130,8 @@ export const setAuthTokens = (accessToken, refreshToken) => {
 
 // Remove auth tokens
 export const removeAuthTokens = () => {
-  removeCookie("accessToken", { path: "/" });
-  removeCookie("refreshToken", { path: "/" });
+  removeCookie("access_token", { path: "/" });
+  removeCookie("refresh_token", { path: "/" });
   removeCookie("isAuthenticated", { path: "/" });
   // console.log("All auth tokens removed");
 };

@@ -11,16 +11,19 @@ import {
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/logo/logo.png";
+import useMe from "../../hooks/useMe";
+import { removeAuthTokens } from "../../lib/cookie-utils";
 
 const Navbar = () => {
+  const { user, loading, error } = useMe();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const notificationRef = useRef(null);
   const userDropdownRef = useRef(null);
   const navigate = useNavigate();
-  const userRole = localStorage.getItem("userRole");
 
+  console.log(user);
   const notifications = [
     {
       id: 1,
@@ -74,13 +77,15 @@ const Navbar = () => {
       if (
         notificationRef.current &&
         !notificationRef.current.contains(event.target)
-      )
+      ) {
         setIsNotificationOpen(false);
+      }
       if (
         userDropdownRef.current &&
         !userDropdownRef.current.contains(event.target)
-      )
+      ) {
         setIsUserDropdownOpen(false);
+      }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
@@ -89,9 +94,10 @@ const Navbar = () => {
   const closeMobileMenu = () => setIsMenuOpen(false);
 
   const handleLogout = () => {
-    localStorage.removeItem("userRole");
+    removeAuthTokens(); // Clear auth tokens from cookies
+    localStorage.removeItem("userRole"); // Remove userRole from localStorage
     setIsUserDropdownOpen(false);
-    navigate("/signin");
+    navigate("/signin"); // Redirect to sign-in page
   };
 
   return (
@@ -99,7 +105,7 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           <div className="h-8 w-32">
-            {userRole === "seller" ? (
+            {user?.role === "Seller" ? (
               <Link to="/seller-overview">
                 <img src={logo} alt="Logo" />
               </Link>
@@ -122,9 +128,9 @@ const Navbar = () => {
             </div>
           </div>
           <div className="hidden md:flex items-center space-x-4">
-            {userRole ? (
+            {user && !loading && !error ? (
               <>
-                {(userRole === "buyer" || userRole === "seller") && (
+                {(user.role === "Buyer" || user.role === "Seller") && (
                   <>
                     <div className="relative" ref={notificationRef}>
                       <button
@@ -193,15 +199,13 @@ const Navbar = () => {
                     </Link>
                   </>
                 )}
-                {userRole === "buyer" && (
-                  <>
-                    <Link
-                      to="/saved"
-                      className="p-2 text-gray-600 hover:text-purple-600 transition-colors"
-                    >
-                      <Heart className="w-5 h-5" />
-                    </Link>
-                  </>
+                {user.role === "Buyer" && (
+                  <Link
+                    to="/saved"
+                    className="p-2 text-gray-600 hover:text-purple-600 transition-colors"
+                  >
+                    <Heart className="w-5 h-5" />
+                  </Link>
                 )}
                 <Link
                   to="/order"
@@ -212,17 +216,18 @@ const Navbar = () => {
                 <div className="relative" ref={userDropdownRef}>
                   <button
                     onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
-                    className="p-2 text-gray-600 hover:text-purple-600 transition-colors"
+                    className="p-2 text-gray-600 hover:text-purple-600 transition-colors flex items-center space-x-2"
                   >
                     <User className="w-5 h-5" />
+                    <span>{user.full_name || "User"}</span>
                   </button>
                   {isUserDropdownOpen && (
                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200">
                       <Link
                         to={
-                          userRole === "buyer"
+                          user.role === "Buyer"
                             ? "/buyer-profile"
-                            : userRole === "seller"
+                            : user.role === "Seller"
                             ? "/seller-profile"
                             : "/"
                         }
@@ -231,12 +236,21 @@ const Navbar = () => {
                       >
                         Profile
                       </Link>
+                      {user.role === "Seller" && (
+                        <Link
+                          to="/seller-overview"
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          onClick={() => setIsUserDropdownOpen(false)}
+                        >
+                          Dashboard
+                        </Link>
+                      )}
                       <Link
                         to="/settings"
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                         onClick={() => setIsUserDropdownOpen(false)}
                       >
-                        Account Settings
+                        Settings
                       </Link>
                       <button
                         onClick={handleLogout}
@@ -283,9 +297,9 @@ const Navbar = () => {
         {isMenuOpen && (
           <div className="md:hidden border-t border-gray-200 py-4">
             <div className="flex flex-col space-y-4">
-              {userRole ? (
+              {user && !loading && !error ? (
                 <>
-                  {(userRole === "buyer" || userRole === "seller") && (
+                  {(user.role === "Buyer" || user.role === "Seller") && (
                     <>
                       <Link
                         to="/notification"
@@ -312,17 +326,15 @@ const Navbar = () => {
                       </Link>
                     </>
                   )}
-                  {userRole === "buyer" && (
-                    <>
-                      <Link
-                        to="/saved"
-                        onClick={closeMobileMenu}
-                        className="flex items-center space-x-3 text-gray-600 hover:text-purple-600 transition-colors"
-                      >
-                        <Heart className="w-5 h-5" />
-                        <span>Favorites</span>
-                      </Link>
-                    </>
+                  {user.role === "Buyer" && (
+                    <Link
+                      to="/saved"
+                      onClick={closeMobileMenu}
+                      className="flex items-center space-x-3 text-gray-600 hover:text-purple-600 transition-colors"
+                    >
+                      <Heart className="w-5 h-5" />
+                      <span>Favorites</span>
+                    </Link>
                   )}
                   <Link
                     to="/order"
@@ -334,9 +346,9 @@ const Navbar = () => {
                   </Link>
                   <Link
                     to={
-                      userRole === "buyer"
+                      user.role === "Buyer"
                         ? "/buyer-profile"
-                        : userRole === "seller"
+                        : user.role === "Seller"
                         ? "/seller-profile"
                         : "/"
                     }
@@ -346,12 +358,21 @@ const Navbar = () => {
                     <User className="w-5 h-5" />
                     <span>Profile</span>
                   </Link>
+                  {user.role === "Seller" && (
+                    <Link
+                      to="/seller-overview"
+                      onClick={closeMobileMenu}
+                      className="flex items-center space-x-3 text-gray-600 hover:text-purple-600 transition-colors"
+                    >
+                      <span>Dashboard</span>
+                    </Link>
+                  )}
                   <Link
                     to="/settings"
                     onClick={closeMobileMenu}
                     className="flex items-center space-x-3 text-gray-600 hover:text-purple-600 transition-colors"
-                  >
-                    Account Settings
+                    >
+                    <span>Settings</span>
                   </Link>
                   <button
                     onClick={() => {

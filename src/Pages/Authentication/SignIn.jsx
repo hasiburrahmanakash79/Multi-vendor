@@ -4,49 +4,55 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { FaUser } from "react-icons/fa6";
 import { Link, useNavigate } from "react-router-dom";
 import signinImage from "../../assets/images/signin.png";
+import apiClient from "../../lib/api-client";
+import { setAuthTokens } from "../../lib/cookie-utils";
 
 const SignIn = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-    setValue,
   } = useForm();
   const [showPassword, setShowPassword] = useState(false);
-  const [role, setRole] = useState("buyer"); // Default role is user
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
   };
 
-  const fillDummyCredentials = () => {
-    if (role === "admin") {
-      setValue("username", "admin@example.com");
-      setValue("password", "Admin@1234");
-    } else if (role === "seller") {
-      setValue("username", "seller@example.com");
-      setValue("password", "seller@1234");
-    } else {
-      setValue("username", "buyer@example.com");
-      setValue("password", "buyer@1234");
+  const onSubmit = async (data) => {
+    try {
+      const payload = {
+        email_address: data.email,
+        password: data.password,
+      };
+
+      const response = await apiClient.post("/auth/sign-in", payload);
+
+      if (response.status === 200 || response.status === 201) {
+        const { access_token, refresh_token } = response.data; // Assuming API returns tokens
+
+        // Adjust access_token maxAge based on "Remember for 30 Days"
+        const accessTokenMaxAge = data.remember
+          ? 30 * 24 * 60 * 60
+          : 1 * 60 * 60; // 30 days or 1 hour
+
+        // Use setAuthTokens with custom access_token expiration
+        setAuthTokens(access_token, refresh_token, {
+          maxAge: accessTokenMaxAge,
+        });
+
+        navigate("/"); // Redirect to dashboard
+      }
+    } catch (error) {
+      setErrorMessage(
+        error.response?.data?.message ||
+          "Login failed. Please check your credentials."
+      );
+      console.error("Sign-in failed:", error.response?.data || error.message);
     }
   };
-
-  const onSubmit = (data) => {
-    console.log("Form Data:", data);
-    // Store role in localStorage
-    localStorage.setItem("userRole", role);
-    // Simulate successful login and redirect based on role
-    if (role === "admin") {
-      navigate("/admin/dashboard");
-    } else if (role === "seller") {
-      navigate("/seller-overview");
-    } else {
-      navigate("/");
-    }
-  };
-
 
   return (
     <div className="grid grid-cols-2 min-h-screen bg-base-200">
@@ -56,44 +62,32 @@ const SignIn = () => {
       <div className="col-span-1 flex items-center justify-center">
         <div className="max-w-xl w-full p-10">
           <h2 className="text-3xl font-semibold text-center mb-4">
-            Welcome Back!{" "}
+            Welcome Back!
           </h2>
           <p className="text-center text-sm mb-6 text-[#747086]">
             Enter your email and password to access your account.
           </p>
-          <div className="mb-6">
-            <label className="block text-sm font-medium mb-2">
-              Select Role
-            </label>
-            <select
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              className="w-full border border-base-300 bg-base-200 rounded-full p-2 outline-none"
-            >
-              <option value="buyer">Buyer</option>
-              <option value="seller">Seller</option>
-              <option value="admin">Admin</option>
-            </select>
-          </div>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium mb-1">
-                User name
-              </label>
+              <label className="block text-sm font-medium mb-1">Email</label>
               <div className="relative">
                 <input
-                  type="text"
-                  {...register("username", {
-                    required: "Username is required",
+                  type="email"
+                  {...register("email", {
+                    required: "Email is required",
+                    pattern: {
+                      value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                      message: "Invalid email address",
+                    },
                   })}
-                  placeholder="Enter your user name"
+                  placeholder="Enter your email"
                   className="w-full border border-base-300 bg-base-200 rounded-full p-2 outline-none"
                 />
                 <FaUser className="absolute inset-y-3 right-3 flex items-center text-gray-500" />
               </div>
-              {errors.username && (
+              {errors.email && (
                 <p className="text-red-500 text-sm mt-1">
-                  {errors.username.message}
+                  {errors.email.message}
                 </p>
               )}
             </div>
@@ -105,6 +99,10 @@ const SignIn = () => {
                   type={showPassword ? "text" : "password"}
                   {...register("password", {
                     required: "Password is required",
+                    minLength: {
+                      value: 8,
+                      message: "Password must be at least 8 characters",
+                    },
                   })}
                   placeholder="********"
                   className="w-full border border-base-300 bg-base-200 rounded-full p-2 outline-none"
@@ -132,19 +130,18 @@ const SignIn = () => {
                   />
                   Remember for 30 Days
                 </div>
-                <a href="#" className="text-[#b6acf7] hover:underline">
+                <Link
+                  to="/forgot-password"
+                  className="text-[#b6acf7] hover:underline"
+                >
                   Forgot Password?
-                </a>
+                </Link>
               </div>
             </div>
 
-            <button
-              type="button"
-              onClick={fillDummyCredentials}
-              className="w-full bg-gray-300 hover:bg-gray-400 text-black py-2 rounded-full mb-4"
-            >
-              Fill Dummy Credentials
-            </button>
+            {errorMessage && (
+              <p className="text-red-500 text-sm text-center">{errorMessage}</p>
+            )}
 
             <button
               type="submit"
