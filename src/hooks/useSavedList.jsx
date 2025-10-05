@@ -28,7 +28,7 @@ const useSavedList = () => {
 
   const saveService = useCallback(async (serviceId, isSaved) => {
     if (!user?.user_id) {
-      setError("User must be logged in to save services");
+      setError("User must be logged in to save or unsave services");
       console.error("No user ID");
       return false;
     }
@@ -36,8 +36,7 @@ const useSavedList = () => {
     try {
       setLoading(true);
       if (isSaved) {
-        // Assuming DELETE to unsave; replace with correct endpoint if different
-        await apiClient.delete(`/user/save-service/${serviceId}`);
+        await apiClient.delete(`/user/remove-saved-service/${serviceId}`);
         console.log("Service unsaved:", serviceId);
       } else {
         await apiClient.post(`/user/save-service/${serviceId}`);

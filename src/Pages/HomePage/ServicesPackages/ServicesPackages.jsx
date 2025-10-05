@@ -1,8 +1,10 @@
 import { Link } from "react-router-dom";
 import { RiStarFill } from "react-icons/ri";
 import { Heart } from "lucide-react";
+import { toast } from "react-toastify";
 import useServicesList from "../../../hooks/useServicesList";
 import useSavedList from "../../../hooks/useSavedList";
+import Swal from "sweetalert2";
 
 const ServicesPackages = () => {
   const { services, loading: servicesLoading } = useServicesList([]);
@@ -17,8 +19,9 @@ const ServicesPackages = () => {
     );
   }
 
+  // Check if a service is saved by comparing service.id with saved.service.id
   const isServiceSaved = (serviceId) => {
-    return savedServices.some((saved) => saved.id === serviceId);
+    return savedServices.some((saved) => saved.service.id === serviceId);
   };
 
   const handleSaveService = async (serviceId) => {
@@ -26,8 +29,24 @@ const ServicesPackages = () => {
     const success = await saveService(serviceId);
     if (success) {
       console.log("Service saved successfully");
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Service saved successfully",
+        showConfirmButton: false,
+        timer: 1500,
+        toast: true,
+      });
     } else {
       console.error("Failed to save service");
+      Swal.fire({
+        position: "top-end",
+        icon: "error",
+        title: "Failed to save service",
+        showConfirmButton: false,
+        timer: 1500,
+        toast: true,
+      });
     }
   };
 
@@ -95,7 +114,7 @@ const ServicesPackages = () => {
                       saveLoading
                         ? "text-gray-400 animate-pulse"
                         : isServiceSaved(service.id)
-                        ? "text-red-500 fill-red-500"
+                        ? "text-red-500 fill-red-500 "
                         : "text-gray-400 hover:text-red-500"
                     }`}
                     onClick={(e) => {
