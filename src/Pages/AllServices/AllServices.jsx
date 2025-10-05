@@ -2,10 +2,23 @@ import { RiStarFill } from "react-icons/ri";
 import { Heart } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import useServicesList from "../../hooks/useServicesList";
+import useSavedList from "../../hooks/useSavedList";
+import Swal from "sweetalert2";
 
 const AllServices = () => {
-  const { services, loading, error } = useServicesList([]);
+  const {
+    services,
+    loading: servicesLoading,
+    error: servicesError,
+  } = useServicesList([]);
+  const {
+    savedServices,
+    saveService,
+    loading: saveLoading,
+    error: saveError,
+  } = useSavedList();
 
   // State for filters, search, and pagination
   const [searchTerm, setSearchTerm] = useState("");
@@ -18,7 +31,9 @@ const AllServices = () => {
   const itemsPerPage = 6; // Number of services per page
 
   // Get unique categories from services
-  const categories = [...new Set(services.map((service) => service.category.title))];
+  const categories = [
+    ...new Set(services.map((service) => service.category.title)),
+  ];
 
   // Handle clearing the search field
   const handleClearSearch = () => {
@@ -26,15 +41,63 @@ const AllServices = () => {
     setCurrentPage(1); // Reset to first page on search clear
   };
 
+  // Check if a service is saved
+  const isServiceSaved = (serviceId) => {
+    return savedServices.some((saved) => saved.service.id === serviceId);
+  };
+
+  // Handle saving a service
+  const handleSaveService = async (serviceId) => {
+    if (isServiceSaved(serviceId)) {
+      Swal.fire({
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 1500,
+        toast: true,
+        text: "You have already saved this service.",
+        icon: "info",
+      });
+      return;
+    }
+
+    console.log("Saving service with ID:", serviceId);
+    const success = await saveService(serviceId);
+    if (success) {
+      console.log("Service saved successfully");
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Service saved successfully",
+        showConfirmButton: false,
+        timer: 1500,
+        toast: true,
+      });
+    } else {
+      console.error("Failed to save service");
+      Swal.fire({
+        position: "top-end",
+        icon: "error",
+        title: "Failed to save service",
+        showConfirmButton: false,
+        timer: 1500,
+        toast: true,
+      });
+    }
+  };
+
   // Filter services based on all criteria
   const filteredPackages = services.filter((service) => {
-    const matchesSearch = service.title.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = service.title
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
     const matchesCategory =
-      filters.category.length === 0 || filters.category.includes(service.category.title);
+      filters.category.length === 0 ||
+      filters.category.includes(service.category.title);
     const matchesPrice =
       parseFloat(service.price) >= filters.priceRange[0] &&
       parseFloat(service.price) <= filters.priceRange[1];
-    const matchesRating = filters.rating === 0 || service.average_rating >= filters.rating;
+    const matchesRating =
+      filters.rating === 0 || service.average_rating >= filters.rating;
 
     return matchesSearch && matchesCategory && matchesPrice && matchesRating;
   });
@@ -42,7 +105,10 @@ const AllServices = () => {
   // Pagination logic
   const totalPages = Math.ceil(filteredPackages.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedServices = filteredPackages.slice(startIndex, startIndex + itemsPerPage);
+  const paginatedServices = filteredPackages.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  );
 
   // Handle filter changes
   const handleCategoryChange = (e) => {
@@ -94,17 +160,23 @@ const AllServices = () => {
     }
   };
 
-  if (loading) {
+  if (servicesLoading) {
     return (
       <div className="flex justify-center items-center h-40">
         <div className="w-10 h-10 border-4 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
-  if (error) return <div className="text-center text-red-600">Error: {error}</div>;
+  if (servicesError)
+    return (
+      <div className="text-center text-red-600">Error: {servicesError}</div>
+    );
 
   return (
     <div className="py-6 px-4 min-h-screen container mx-auto mt-30 md:mt-15">
+      {saveError && (
+        <div className="text-red-500 text-center mb-4">{saveError}</div>
+      )}
       <div className="flex gap-10">
         {/* Sidebar (Visible only on large screens) */}
         <div className="hidden lg:block lg:w-1/4">
@@ -135,7 +207,9 @@ const AllServices = () => {
           {/* Price Range Filter */}
           <div className="mb-6 border border-gray-200 bg-[#D7D4EE] rounded-xl">
             <div className="px-4 pt-3 pb-1">
-              <h4 className="text-sm font-medium text-gray-700 mb-2">Price Range</h4>
+              <h4 className="text-sm font-medium text-gray-700 mb-2">
+                Price Range
+              </h4>
             </div>
             <div className="flex items-center gap-2 bg-white p-5 border border-gray-200 rounded-xl">
               <input
@@ -179,7 +253,9 @@ const AllServices = () => {
                 onChange={handleRatingChange}
                 className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#C8C1F5]"
               />
-              <span className="text-sm text-gray-600">{filters.rating.toFixed(1)}</span>
+              <span className="text-sm text-gray-600">
+                {filters.rating.toFixed(1)}
+              </span>
             </div>
           </div>
         </div>
@@ -285,10 +361,24 @@ const AllServices = () => {
                       <p className="font-semibold text-gray-800">
                         ${parseFloat(service.price).toFixed(2)}
                       </p>
-                      <span className="text-gray-400 text-xs font-light">/hr</span>
+                      <span className="text-gray-400 text-xs font-light">
+                        /hr
+                      </span>
                     </span>
                     <span className="bg-gray-100 p-2 rounded-full hover:bg-gray-200 transition-colors duration-300">
-                      <Heart className="w-5 h-5 text-gray-400 hover:text-red-500 cursor-pointer transition-colors duration-300" />
+                      <Heart
+                        className={`w-5 h-5 cursor-pointer transition-colors duration-300 ${
+                          saveLoading
+                            ? "text-gray-400 animate-pulse"
+                            : isServiceSaved(service.id)
+                            ? "text-red-500 fill-red-500"
+                            : "text-gray-400 hover:text-red-500"
+                        }`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleSaveService(service.id);
+                        }}
+                      />
                     </span>
                   </div>
                 </Link>
@@ -305,7 +395,10 @@ const AllServices = () => {
                 >
                   Previous
                 </button>
-                {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
+                {Array.from(
+                  { length: totalPages },
+                  (_, index) => index + 1
+                ).map((page) => (
                   <button
                     key={page}
                     onClick={() => handlePageChange(page)}
