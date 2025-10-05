@@ -4,11 +4,10 @@ import { Heart } from "lucide-react";
 import useServicesList from "../../../hooks/useServicesList";
 
 const PopularServices = () => {
-  const { services, loading, error } = useServicesList([]);
+  const { services, loading } = useServicesList([]);
 
   const displayedServices = services.slice(0, 8); // Display only the first 8 services
 
-  console.log(services, "popular services");
 
   if (loading) {
     return (

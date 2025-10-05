@@ -1,20 +1,15 @@
 import { Link } from "react-router-dom";
-import image1 from "../../../assets/images/cardImage1.png";
-import image2 from "../../../assets/images/cardImage2.png";
-import image3 from "../../../assets/images/cardImage3.png";
-import image4 from "../../../assets/images/cardImage4.png";
 import { RiStarFill } from "react-icons/ri";
 import { Heart } from "lucide-react";
 import useServicesList from "../../../hooks/useServicesList";
+import useSavedList from "../../../hooks/useSavedList";
 
 const ServicesPackages = () => {
-  const { services, loading, error } = useServicesList([]);
-
+  const { services, loading: servicesLoading } = useServicesList([]);
+  const { savedServices, saveService, loading: saveLoading, error: saveError } = useSavedList();
   const displayedServices = services.slice(-8);
 
-  console.log(services, "popular services");
-
-  if (loading) {
+  if (servicesLoading) {
     return (
       <div className="flex justify-center items-center h-40">
         <div className="w-10 h-10 border-4 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
@@ -22,8 +17,25 @@ const ServicesPackages = () => {
     );
   }
 
+  const isServiceSaved = (serviceId) => {
+    return savedServices.some((saved) => saved.id === serviceId);
+  };
+
+  const handleSaveService = async (serviceId) => {
+    console.log("Saving service with ID:", serviceId);
+    const success = await saveService(serviceId);
+    if (success) {
+      console.log("Service saved successfully");
+    } else {
+      console.error("Failed to save service");
+    }
+  };
+
   return (
     <div className="py-7 px-4 container mx-auto">
+      {saveError && (
+        <div className="text-red-500 text-center mb-4">{saveError}</div>
+      )}
       <div className="py-5 flex justify-between items-center">
         <h1 className="text-2xl md:text-4xl font-bold text-left text-gray-800">
           Services Packages
@@ -78,7 +90,19 @@ const ServicesPackages = () => {
                   <span className="text-gray-400 text-xs font-light">/hr</span>
                 </span>
                 <span className="bg-gray-100 p-2 rounded-full hover:bg-gray-200 transition-colors duration-300">
-                  <Heart className="w-5 h-5 text-gray-400 hover:text-red-500 cursor-pointer transition-colors duration-300" />
+                  <Heart
+                    className={`w-5 h-5 cursor-pointer transition-colors duration-300 ${
+                      saveLoading
+                        ? "text-gray-400 animate-pulse"
+                        : isServiceSaved(service.id)
+                        ? "text-red-500 fill-red-500"
+                        : "text-gray-400 hover:text-red-500"
+                    }`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleSaveService(service.id);
+                    }}
+                  />
                 </span>
               </div>
             </Link>

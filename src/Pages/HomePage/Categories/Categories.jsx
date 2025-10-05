@@ -6,7 +6,6 @@ const Categories = () => {
   const { categories, loading, error } = useCategoriesData([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   
-  console.log(categories);
 
   // Predefined color schemes to cycle through for each category
   const colorSchemes = [

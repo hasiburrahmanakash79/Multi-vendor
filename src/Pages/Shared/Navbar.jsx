@@ -23,7 +23,6 @@ const Navbar = () => {
   const userDropdownRef = useRef(null);
   const navigate = useNavigate();
 
-  console.log(user);
   const notifications = [
     {
       id: 1,
