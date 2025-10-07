@@ -122,7 +122,7 @@ export default function MyServices() {
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-2xl font-bold text-gray-900">My Services</h1>
           <Link
-            to='/add-services'
+            to='/create-service'
             className="px-4 py-2 bg-[#C8C1F5] rounded-full hover:shadow-lg cursor-pointer"
           >
             Create New Services

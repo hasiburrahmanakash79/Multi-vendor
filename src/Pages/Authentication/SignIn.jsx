@@ -42,8 +42,11 @@ const SignIn = () => {
         setAuthTokens(access_token, refresh_token, {
           maxAge: accessTokenMaxAge,
         });
-
-        navigate("/"); // Redirect to dashboard
+        if (response?.data?.role === "Seller") {
+          navigate("/seller-overview"); // Redirect to admin dashboard
+        } else {
+          navigate("/"); // Redirect to user dashboard
+        }
       }
     } catch (error) {
       setErrorMessage(

@@ -2,7 +2,6 @@ import { RiStarFill } from "react-icons/ri";
 import { Heart } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { toast } from "react-toastify";
 import useServicesList from "../../hooks/useServicesList";
 import useSavedList from "../../hooks/useSavedList";
 import Swal from "sweetalert2";
@@ -173,7 +172,7 @@ const AllServices = () => {
     );
 
   return (
-    <div className="py-6 px-4 min-h-screen container mx-auto mt-30 md:mt-15">
+    <div className="py-6 px-4 min-h-screen container mx-auto mt-16 md:mt-0">
       {saveError && (
         <div className="text-red-500 text-center mb-4">{saveError}</div>
       )}

@@ -70,10 +70,11 @@ const SaveItems = () => {
     );
   }
 
+  console.log(currentItems);
   return (
-    <div className="py-7 px-4 container mx-auto mt-30 md:mt-15">
-      <div className="py-5 flex justify-between items-center">
-        <h1 className="text-2xl md:text-4xl font-bold text-left">
+    <div className="min-h-screen container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-gray-900">
           Saved Items
         </h1>
       </div>
@@ -88,7 +89,7 @@ const SaveItems = () => {
             >
               <div className="absolute top-3 left-3 bg-white/40 text-black text-sm font-semibold px-3 py-2 rounded-br-xl flex items-center gap-1">
                 <RiStarFill className="inline text-yellow-400" />{" "}
-                {service.service?.average_rating || "N/A"}
+                {service.average_rating}
               </div>
               <img
                 src={service.service?.cover_photo}

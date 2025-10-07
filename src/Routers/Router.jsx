@@ -8,7 +8,6 @@ import ConversationPage from "../Pages/ConversationPage/ConversationPage";
 import Notification from "../Pages/Notification/Notification";
 import SaveItems from "../Pages/SaveItems/SaveItems";
 import SellerProfile from "../Pages/SellerProfile/SellerProfile";
-import ManageOrder from "../Pages/ManageOrder/ManageOrder";
 import AllServices from "../Pages/AllServices/AllServices";
 import OrderPreview from "../Pages/OrderPage/OrderPreview";
 import PaymentSuccess from "../Pages/OrderPage/PaymentSuccess";
@@ -16,9 +15,6 @@ import ServiceTimeline from "../Pages/OrderPage/ServiceTimeline";
 import AccountSettings from "../Pages/AccountSettings/AccountSettings";
 import OtpVerification from "../Pages/Authentication/OtpVerification";
 import AdminOverview from "../Pages/AdminPages/AdminOverview";
-import BuyerOverview from "../Pages/BuyerPages/BuyerOverview";
-import MyServices from "../Pages/BuyerPages/MyServices";
-import AddServices from "../Pages/BuyerPages/AddServices";
 import Dashboard from "../Layouts/Dashboard";
 import AllUser from "../Pages/AdminPages/AllUser/AllUsers";
 import UserDetail from "../Pages/AdminPages/AllUser/UserDetail";
@@ -31,6 +27,11 @@ import RequestDetails from "../Pages/AdminPages/SellerRequest/RequestDetails";
 import ContentPage from "../Pages/AdminPages/ContentPage/ContentPage";
 import ProfilePage from "../Pages/Authentication/Profile/ProfilePage";
 import Onboarding from "../Pages/Authentication/Onboarding";
+import SellerOverview from "../Pages/SellerPages/SellerOverview";
+import MyServices from "../Pages/SellerPages/MyServices";
+import AddServices from "../Pages/SellerPages/AddServices";
+import ManageOrder from "../Pages/SellerPages/ManageOrder";
+import OrderPage from "../Pages/OrderPage/OrderPage";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -71,11 +72,19 @@ const router = createBrowserRouter([
       },
       {
         path: "/seller-profile",
+        element: <ProfilePage />,
+      },
+      {
+        path: "/seller-profile/:id",
         element: <SellerProfile />,
       },
 
       {
-        path: "/order",
+        path: "/orders",
+        element: <OrderPage />,
+      },
+      {
+        path: "/manage-orders",
         element: <ManageOrder />,
       },
       {
@@ -92,14 +101,14 @@ const router = createBrowserRouter([
       },
       {
         path: "/seller-overview",
-        element: <BuyerOverview />,
+        element: <SellerOverview />,
       },
       {
         path: "/my-services",
         element: <MyServices />,
       },
       {
-        path: "/add-services",
+        path: "/create-service",
         element: <AddServices />,
       },
     ],

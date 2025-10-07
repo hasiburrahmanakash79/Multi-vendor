@@ -967,7 +967,7 @@ export default function ConversationPage() {
   };
 
   return (
-    <div className="flex h-[93vh] bg-white  mt-30 md:mt-15">
+    <div className="flex h-[93vh] bg-white  mt-16 md:mt-0">
       <button
         className="lg:hidden fixed top-4 left-4 z-20 p-2 bg-[#C8C1F5] text-black rounded-full"
         onClick={() => setShowSidebar(!showSidebar)}
