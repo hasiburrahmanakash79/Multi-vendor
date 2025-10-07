@@ -185,7 +185,6 @@ const SellerProfile = () => {
                   <p className="font-semibold text-sm sm:text-base">
                     ${service.price}
                   </p>
-                  <span className="text-gray-400 text-xs font-light">/hr</span>
                 </span>
               </div>
             </Link>

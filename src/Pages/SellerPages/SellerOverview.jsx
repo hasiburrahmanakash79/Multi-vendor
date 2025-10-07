@@ -248,9 +248,6 @@ export default function SellerOverview() {
                       <div className="text-right">
                         <p className="font-semibold text-gray-800 text-sm sm:text-base">
                           ${service.price || 0}
-                          <span className="text-xs sm:text-sm font-normal text-gray-600">
-                            /hrs
-                          </span>
                         </p>
                       </div>
                     </div>

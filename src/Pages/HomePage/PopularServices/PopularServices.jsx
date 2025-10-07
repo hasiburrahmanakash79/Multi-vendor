@@ -117,7 +117,6 @@ const PopularServices = () => {
                   <p className="font-semibold text-gray-800">
                     ${service.price}
                   </p>
-                  <span className="text-gray-400 text-xs font-light">/hr</span>
                 </span>
                 <span className="bg-gray-100 p-2 rounded-full hover:bg-gray-200 transition-colors duration-300">
                   <Heart

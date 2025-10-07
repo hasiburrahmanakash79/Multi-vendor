@@ -113,7 +113,6 @@ const SaveItems = () => {
               <div className="flex items-center justify-between mt-2">
                 <span className="flex items-baseline">
                   <p className="font-semibold">${service.service?.price || "N/A"}</p>
-                  <span className="text-gray-400 text-xs font-light">/hr</span>
                 </span>
                 <span className="bg-gray-100 p-2 rounded-full hover:shadow transition-shadow duration-300">
                   <RiHeartFill

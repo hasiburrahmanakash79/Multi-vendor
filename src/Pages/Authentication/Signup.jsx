@@ -52,7 +52,7 @@ const Signup = () => {
 
   return (
     <div className="grid grid-cols-2 min-h-screen bg-base-200">
-      <div className="col-span-1 bg-blue-500 flex items-center">
+      <div className="col-span-1 flex items-center">
         <img src={signinImage} className="object-cover h-full" alt="" />
       </div>
       <div className="col-span-1 flex items-center justify-center ">
