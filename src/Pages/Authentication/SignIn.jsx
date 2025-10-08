@@ -56,25 +56,39 @@ const SignIn = () => {
   };
 
   return (
-    <div className="flex flex-col md:grid md:grid-cols-2 min-h-screen bg-base-200">
-      <div className="hidden md:flex md:col-span-1 ">
+    <div className="min-h-screen bg-base-200 lg:grid lg:grid-cols-2">
+      {/* Background Image for Large Screens */}
+      <div className="hidden lg:flex lg:col-span-1 bg-blue-500">
         <img
           src={signinImage}
           className="w-full h-full object-cover"
           alt="Sign-in background"
         />
       </div>
-      <div className="flex items-center justify-center p-4 sm:p-6 md:col-span-1">
-        <div className="w-full max-w-md sm:max-w-lg md:max-w-xl p-4 sm:p-6 md:p-8 lg:p-10">
+
+      {/* Popup Layout for Small Devices */}
+      <div className="relative flex items-center justify-center p-4 sm:p-6 min-h-screen lg:min-h-0 lg:col-span-1 lg:bg-transparent">
+        {/* Background Image and Overlay for Small Devices */}
+        <div className="lg:hidden absolute inset-0">
+          <img
+            src={signinImage}
+            className="w-full h-full object-cover"
+            alt="Sign-in background"
+          />
+          <div className="absolute inset-0 bg-black/40"></div>
+        </div>
+
+        {/* Form Container */}
+        <div className="relative w-full max-w-md sm:max-w-lg md:max-w-xl bg-white lg:bg-base-200 rounded-2xl lg:rounded-none shadow-xl lg:shadow-none p-4 sm:p-6 md:p-8 lg:p-10">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-center mb-4">
             Welcome Back!
           </h2>
-          <p className="text-center text-xs sm:text-sm md:text-base mb-4 sm:mb-6 text-[#747086]">
+          <p className="text-center text-xs sm:text-sm md:text-base mb-4 sm:mb-6 text-gray-600 lg:text-[#747086]">
             Enter your email and password to access your account.
           </p>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
             <div>
-              <label className="block text-xs sm:text-sm font-medium mb-1">
+              <label className="block text-xs sm:text-sm font-medium mb-1 text-gray-700 lg:text-gray-800">
                 Email
               </label>
               <div className="relative">
@@ -88,9 +102,9 @@ const SignIn = () => {
                     },
                   })}
                   placeholder="Enter your email"
-                  className="w-full border border-base-300 bg-base-200 rounded-full px-3 py-2 sm:py-3 text-sm sm:text-base outline-none focus:ring-2 focus:ring-[#C8C1F5]"
+                  className="w-full border border-gray-300 bg-gray-50 lg:bg-base-200 rounded-full px-3 py-2 sm:py-3 text-sm sm:text-base outline-none focus:ring-2 focus:ring-[#C8C1F5]"
                 />
-                <FaUser className="absolute inset-y-2 sm:inset-y-3 right-3 h-5 w-5 sm:h-6 sm:w-6 text-gray-500" />
+                <FaUser className="absolute inset-y-2 sm:inset-y-3 right-3 h-4 w-4 sm:h-5 sm:w-5 text-gray-500" />
               </div>
               {errors.email && (
                 <p className="text-red-500 text-xs sm:text-sm mt-1">
@@ -100,7 +114,7 @@ const SignIn = () => {
             </div>
 
             <div>
-              <label className="block text-xs sm:text-sm font-medium mb-1">
+              <label className="block text-xs sm:text-sm font-medium mb-1 text-gray-700 lg:text-gray-800">
                 Password
               </label>
               <div className="relative">
@@ -114,7 +128,7 @@ const SignIn = () => {
                     },
                   })}
                   placeholder="********"
-                  className="w-full border border-base-300 bg-base-200 rounded-full px-3 py-2 sm:py-3 text-sm sm:text-base outline-none focus:ring-2 focus:ring-[#C8C1F5]"
+                  className="w-full border border-gray-300 bg-gray-50 lg:bg-base-200 rounded-full px-3 py-2 sm:py-3 text-sm sm:text-base outline-none focus:ring-2 focus:ring-[#C8C1F5]"
                 />
                 <button
                   type="button"
@@ -122,9 +136,9 @@ const SignIn = () => {
                   className="absolute inset-y-0 right-3 flex items-center text-gray-500"
                 >
                   {showPassword ? (
-                    <FaEyeSlash className="h-5 w-5 sm:h-6 sm:w-6" />
+                    <FaEyeSlash className="h-4 w-4 sm:h-5 sm:w-5" />
                   ) : (
-                    <FaEye className="h-5 w-5 sm:h-6 sm:w-6" />
+                    <FaEye className="h-4 w-4 sm:h-5 sm:w-5" />
                   )}
                 </button>
               </div>
@@ -134,14 +148,14 @@ const SignIn = () => {
                 </p>
               )}
 
-              <div className="flex justify-end items-center mt-2 text-xs sm:text-sm gap-2 sm:gap-0">
+              <div className="flex justify-end items-center mt-2 text-xs sm:text-sm  sm:gap-0">
                 {/* <div className="flex items-center">
                   <input
                     type="checkbox"
                     {...register("remember")}
                     className="mr-2 h-4 w-4 sm:h-5 sm:w-5"
                   />
-                  <span className="opacity-75">Remember for 30 Days</span>
+                  <span className="text-gray-600 lg:opacity-75">Remember for 30 Days</span>
                 </div> */}
                 <Link
                   to="/forgot-password"
@@ -170,7 +184,7 @@ const SignIn = () => {
             Or Login with
           </div>
           <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
-            <button className="flex-1 flex items-center justify-center border border-base-300 rounded-md py-2 sm:py-3 text-xs sm:text-sm hover:bg-gray-100 hover:shadow-lg transition-all">
+            <button className="flex-1 flex items-center justify-center border border-gray-300 rounded-md py-2 sm:py-3 text-xs sm:text-sm hover:bg-gray-100 hover:shadow-lg transition-all">
               <img
                 src="https://www.svgrepo.com/show/475656/google-color.svg"
                 alt="Google"
@@ -178,7 +192,7 @@ const SignIn = () => {
               />
               Google
             </button>
-            <button className="flex-1 flex items-center justify-center border border-base-300 rounded-md py-2 sm:py-3 text-xs sm:text-sm hover:bg-gray-100 hover:shadow-lg transition-all">
+            <button className="flex-1 flex items-center justify-center border border-gray-300 rounded-md py-2 sm:py-3 text-xs sm:text-sm hover:bg-gray-100 hover:shadow-lg transition-all">
               <img
                 src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg"
                 alt="Apple"
@@ -187,7 +201,7 @@ const SignIn = () => {
               Apple
             </button>
           </div>
-          <p className="text-center text-xs sm:text-sm mt-4 sm:mt-6">
+          <p className="text-center text-xs sm:text-sm mt-4 sm:mt-6 text-gray-600 lg:text-[#747086]">
             Don’t have an account?{" "}
             <Link to="/signup" className="text-[#b6acf7] hover:underline">
               Sign Up Free
