@@ -1,15 +1,33 @@
 import { useState, useEffect } from 'react';
 import { MapPin } from 'lucide-react';
 import useModal from '../../components/modal/useModal';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const OrderPreview = () => {
   const { isOpen: showPaymentModal, openModal: openPaymentModal, closeModal: closePaymentModal } = useModal();
   const [selectedPayment, setSelectedPayment] = useState(null);
   const navigate = useNavigate();
+  const { state } = useLocation();
+  
+  const { service, bookingDetails } = state || {};
+  
+  // Format date and time for display
+  const formattedDate = bookingDetails?.date 
+    ? new Date(bookingDetails.date).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      }) 
+    : 'N/A';
+  const formattedTime = bookingDetails?.time 
+    ? new Date(bookingDetails.time).toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: true,
+      }) 
+    : 'N/A';
 
   useEffect(() => {
-    // Initialize Lucide icons
     if (window.lucide) {
       window.lucide.createIcons();
     }
@@ -21,48 +39,58 @@ const OrderPreview = () => {
 
   const handleContinue = () => {
     if (selectedPayment) {
-    navigate('/successful')
+      navigate('/successful', { 
+        state: { 
+          service, 
+          bookingDetails, 
+          paymentMethod: selectedPayment 
+        } 
+      });
       console.log(`Proceeding with ${selectedPayment} payment`);
       closePaymentModal();
-      // Add payment processing logic here (e.g., API call to Stripe/PayPal)
     } else {
       alert('Please select a payment method');
     }
-  };
-
-  const handleChangeBooking = () => {
-    console.log('Redirecting to booking change page');
-    // Add navigation logic here (e.g., use React Router)
-  };
-
-  const handleChangeLocation = () => {
-    console.log('Redirecting to location change page');
   };
 
   const handleNext = () => {
     openPaymentModal();
   };
 
+  // Fallback if no service data is available
+  if (!service || !bookingDetails) {
+    return (
+      <div className="min-h-screen py-8 container mx-auto mt-30 md:mt-15">
+        <div className="px-4">
+          <h1 className="text-3xl font-bold text-gray-800 mb-8">
+            Order Preview
+          </h1>
+          <p className="text-gray-600">No booking details available. Please return to the service page to make a booking.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen py-8 container mx-auto mt-30 md:mt-15">
+    <div className="min-h-screen py-8 container mx-auto mt-316 md:mt-0">
       <div className="px-4">
         <h1 className="text-3xl font-bold text-gray-800 mb-8">
           Order Preview
         </h1>
 
         <div className="">
-          <div className="relative h-64 bg-gradient-to-r from-orange-200 to-orange-300 rounded-2xl">
+          <div className="relative h-[500px] bg-gradient-to-r from-orange-200 to-orange-300 rounded-2xl">
             <img
-              src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
-              alt="Wedding venue with elegant floral decorations and warm lighting"
+              src={service.coverPhoto || "https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"}
+              alt={service.title || "Service image"}
               className="w-full h-full object-cover rounded-2xl"
             />
             <div className="absolute inset-0 bg-black/20 bg-opacity-20 rounded-2xl"></div>
           </div>
 
-          <div className=" mt-10">
+          <div className="mt-10">
             <h2 className="text-2xl font-semibold text-gray-800 mb-6">
-              Destination engagement and wedding hall, california
+              {service.title}
             </h2>
 
             <div className="mb-8">
@@ -70,36 +98,25 @@ const OrderPreview = () => {
                 Descriptions
               </h3>
               <p className="text-gray-600 leading-relaxed">
-                California offers stunning destination engagement and wedding
-                venues, from oceanfront resorts and lush vineyards to historic
-                estates and garden courtyards. Couples can enjoy picturesque
-                backdrops, luxury amenities, and customizable packages for an
-                unforgettable celebration.
+                {service.description}
               </p>
             </div>
 
             <div className="grid md:grid-cols-2 gap-8">
               <div className="space-y-5">
                 <h3 className="text-lg font-bold text-gray-700 mb-4">
-                  Booking info
+                  Booking Info
                 </h3>
 
                 <div className="bg-gray-50 p-4 rounded-2xl shadow-lg">
                   <div className="flex justify-between items-center mb-2">
                     <div>
-                      <p className="font-medium text-gray-800">Mar 25, 2025</p>
-                      <p className="text-gray-600">3:00 AM</p>
+                      <p className="font-medium text-gray-800">{formattedDate}</p>
+                      <p className="text-gray-600">{formattedTime}</p>
                     </div>
-                    <button
-                      className="text-black bg-gray-200 py-2 px-4 rounded-full font-medium hover:bg-gray-300 transition duration-200"
-                      onClick={handleChangeBooking}
-                    >
-                      Change
-                    </button>
                   </div>
                 </div>
 
-                {/* Event Location */}
                 <div className="bg-gray-50 p-4 rounded-2xl shadow-lg">
                   <div className="flex justify-between items-start mb-2">
                     <div>
@@ -108,49 +125,39 @@ const OrderPreview = () => {
                       </h4>
                       <div className="flex items-center text-gray-600">
                         <MapPin className="w-4 h-4 mr-2" />
-                        <span>775 Rolling Green Rd.</span>
+                        <span>{bookingDetails.location || "No location provided"}</span>
                       </div>
                     </div>
-                    <button
-                      className="text-black bg-gray-200 py-2 px-4 rounded-full font-medium hover:bg-gray-300 transition duration-200"
-                      onClick={handleChangeLocation}
-                    >
-                      Change
-                    </button>
                   </div>
                 </div>
               </div>
 
-              {/* Price Breakdown */}
               <div className="bg-gray-50 rounded-lg p-6 shadow-lg">
                 <h3 className="text-lg font-bold text-gray-700 mb-4">
-                  Price
+                  Price Breakdown
                 </h3>
 
                 <div className="space-y-3">
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Event Location</span>
-                    <span className="font-medium text-gray-800">$5,500</span>
+                    <span className="text-gray-600">{service.title}</span>
+                    <span className="font-medium text-gray-800">${service.basePrice}</span>
                   </div>
 
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Photographer x2</span>
-                    <span className="font-medium text-gray-800">$289</span>
-                  </div>
-
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Catering Package</span>
-                    <span className="font-medium text-gray-800">$1,522</span>
-                  </div>
+                  {bookingDetails.additionals?.map((add) => (
+                    <div key={add.id} className="flex justify-between">
+                      <span className="text-gray-600">{add.title}</span>
+                      <span className="font-medium text-gray-800">${add.price}</span>
+                    </div>
+                  ))}
 
                   <hr className="border-gray-300 my-4" />
 
                   <div className="flex justify-between">
                     <span className="font-semibold text-gray-800">Total</span>
-                    <span className="font-bold text-gray-800">$6,785</span>
+                    <span className="font-bold text-gray-800">${bookingDetails.totalPrice}</span>
                   </div>
                 </div>
-                {/* Next Button */}
+
                 <div className="mt-8 w-full">
                   <button
                     className="w-full rounded-full bg-gray-800 hover:bg-gray-900 text-white font-medium px-12 py-3 hover:shadow-xl transition duration-200"
@@ -165,7 +172,6 @@ const OrderPreview = () => {
         </div>
       </div>
 
-      {/* Payment Method Modal */}
       {showPaymentModal && (
         <div className="fixed inset-0 bg-black/60 bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl p-8 max-w-md w-full">
@@ -173,7 +179,6 @@ const OrderPreview = () => {
             <p className="text-gray-500 mb-6">Choose the type of payment you are looking for.</p>
             
             <div className="space-y-4 mb-8">
-              {/* Stripe Option */}
               <div 
                 className={`flex items-center justify-between p-4 border rounded-2xl hover:border-gray-300 cursor-pointer ${selectedPayment === 'Stripe' ? 'border-purple-600' : 'border-gray-200'}`}
                 onClick={() => handlePaymentSelect('Stripe')}
@@ -193,7 +198,6 @@ const OrderPreview = () => {
                 />
               </div>
               
-              {/* PayPal Option */}
               <div 
                 className={`flex items-center justify-between p-4 border rounded-2xl hover:border-gray-300 cursor-pointer ${selectedPayment === 'Paypal' ? 'border-blue-600' : 'border-gray-200'}`}
                 onClick={() => handlePaymentSelect('Paypal')}

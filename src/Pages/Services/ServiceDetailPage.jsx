@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { Star, Play, Heart, CircleCheckBig } from "lucide-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -12,13 +12,15 @@ import useSavedList from "../../hooks/useSavedList";
 
 const ServiceDetailPage = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [service, setService] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [bookingDate, setBookingDate] = useState(new Date("2025-09-05"));
-  const [bookingTime, setBookingTime] = useState(new Date("2025-09-05T09:00"));
+  const [bookingDate, setBookingDate] = useState(new Date());
+  const [bookingTime, setBookingTime] = useState(null);
+  const [userLocation, setUserLocation] = useState("");
+  const [selectedAdditionals, setSelectedAdditionals] = useState([]);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [selectedAdditionals, setSelectedAdditionals] = useState([]); // Track selected additionals
   const videoRef = useRef(null);
   const {
     savedServices,
@@ -35,8 +37,15 @@ const ServiceDetailPage = () => {
         setService(response.data);
         console.log(response.data, "service details-------------------");
         setLoading(false);
+        // Initialize booking time to the earliest available time
+        if (response.data.time_from) {
+          const [hours, minutes] = response.data.time_from.split(":");
+          const initialTime = new Date();
+          initialTime.setHours(hours, minutes, 0);
+          setBookingTime(initialTime);
+        }
       } catch (err) {
-        setError("Failed to fetch service details",);
+        setError("Failed to fetch service details");
         setLoading(false);
       }
     };
@@ -92,7 +101,6 @@ const ServiceDetailPage = () => {
     }
   };
 
-  // Handle additional selection
   const handleAdditionalToggle = (additionalId) => {
     setSelectedAdditionals((prev) =>
       prev.includes(additionalId)
@@ -101,13 +109,62 @@ const ServiceDetailPage = () => {
     );
   };
 
-  // Calculate total price
   const calculateTotalPrice = () => {
     const basePrice = parseFloat(service.price) || 0;
     const additionalPrice = service.additionals
       .filter((additional) => selectedAdditionals.includes(additional.id))
       .reduce((sum, additional) => sum + parseFloat(additional.price || 0), 0);
     return (basePrice + additionalPrice).toFixed(2);
+  };
+
+  const handleBookNow = () => {
+    if (!userLocation.trim()) {
+      Swal.fire({
+        position: "top-end",
+        icon: "error",
+        title: "Please enter a location",
+        showConfirmButton: false,
+        timer: 1500,
+        toast: true,
+      });
+      return;
+    }
+
+    navigate("/order-preview", {
+      state: {
+        service: {
+          id: service.id,
+          title: service.title,
+          basePrice: service.price,
+          coverPhoto: service.cover_photo,
+          description: service.description,
+        },
+        bookingDetails: {
+          date: bookingDate,
+          time: bookingTime,
+          location: userLocation,
+          additionals: service.additionals
+            .filter((add) => selectedAdditionals.includes(add.id))
+            .map((add) => ({
+              id: add.id,
+              title: add.title,
+              price: add.price,
+            })),
+          totalPrice: calculateTotalPrice(),
+        },
+      },
+    });
+  };
+
+  // Restrict time selection to seller's available time range
+  const getTimeConstraints = () => {
+    if (!service?.time_from || !service?.time_to) return {};
+    const [startHours, startMinutes] = service.time_from.split(":");
+    const [endHours, endMinutes] = service.time_to.split(":");
+    return {
+      minTime: new Date().setHours(startHours, startMinutes, 0),
+      maxTime: new Date().setHours(endHours, endMinutes, 0),
+    };
   };
 
   if (loading) {
@@ -435,6 +492,7 @@ const ServiceDetailPage = () => {
                           selected={bookingDate}
                           onChange={(date) => setBookingDate(date)}
                           dateFormat="MM/dd/yyyy"
+                          minDate={new Date()} // Restrict to future dates
                           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C8C1F5] text-sm"
                           placeholderText="Select a date"
                         />
@@ -451,6 +509,7 @@ const ServiceDetailPage = () => {
                           timeIntervals={15}
                           timeCaption="Time"
                           dateFormat="h:mm aa"
+                          {...getTimeConstraints()}
                           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C8C1F5] text-sm"
                           placeholderText="Select a time"
                         />
@@ -460,17 +519,23 @@ const ServiceDetailPage = () => {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Address
+                      Your Location
                     </label>
-                    <p className="text-sm text-gray-600">{service.location}</p>
+                    <input
+                      type="text"
+                      value={userLocation}
+                      onChange={(e) => setUserLocation(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C8C1F5] text-sm"
+                      placeholder="Enter your location"
+                    />
                   </div>
                   <div className="w-full">
-                    <Link
-                      to="/order-preview"
+                    <button
+                      onClick={handleBookNow}
                       className="block w-full bg-[#C8C1F5] hover:shadow-md hover:bg-[#b0a6f3] duration-500 text-gray-700 py-3 rounded-lg font-medium transition-colors text-center"
                     >
                       Book Now
-                    </Link>
+                    </button>
                   </div>
                 </div>
               </div>

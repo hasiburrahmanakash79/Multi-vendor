@@ -15,7 +15,7 @@ const useModal = () => {
 
 // Service Row Component
 const ServiceRow = ({ service, onEdit, onDelete }) => (
-  <div className="sm:grid sm:grid-cols-12 sm:gap-2 sm:p-3 sm:items-center sm:hover:bg-gray-50 sm:transition-colors sm:duration-300 flex flex-col bg-white rounded-xl shadow-md border border-gray-100 p-4 m-3 sm:m-0 sm:shadow-none sm:border-0 sm:bg-transparent transition-all duration-200">
+  <div className="sm:grid sm:grid-cols-14 sm:gap-2 sm:p-3 sm:items-center sm:hover:bg-gray-50 sm:transition-colors sm:duration-300 flex flex-col bg-white rounded-xl shadow-md border border-gray-100 p-4 m-3 sm:m-0 sm:shadow-none sm:border-0 sm:bg-transparent transition-all duration-200">
     {/* Service Info (Image, Title, Location) */}
     <div className="sm:col-span-4 flex items-start space-x-3 sm:items-center">
       <div className="w-16 h-12 sm:w-20 sm:h-14 rounded-lg overflow-hidden flex-shrink-0">
@@ -43,10 +43,20 @@ const ServiceRow = ({ service, onEdit, onDelete }) => (
       </div>
     </div>
 
-    {/* Orders */}
+    {/* Active Orders */}
     <div className="sm:col-span-2 mt-4 sm:mt-0 sm:text-center">
-      <span className="text-gray-600 text-xs sm:text-sm md:hidden flex font-semibold">Orders</span>
-      <div className="text-gray-600 text-xs sm:text-sm">{service.orders}</div>
+      <span className="text-gray-600 text-xs sm:text-sm md:hidden flex font-semibold">Active Orders</span>
+      <div className="text-gray-600 text-xs sm:text-sm">
+        {service.status === "Pending" ? "-" : service.active_orders}
+      </div>
+    </div>
+
+    {/* Completed Orders */}
+    <div className="sm:col-span-2 mt-4 sm:mt-0 sm:text-center">
+      <span className="text-gray-600 text-xs sm:text-sm md:hidden flex font-semibold">Completed Orders</span>
+      <div className="text-gray-600 text-xs sm:text-sm">
+        {service.status === "Pending" ? "-" : service.completed_orders}
+      </div>
     </div>
 
     {/* Available Time */}
@@ -86,10 +96,12 @@ ServiceRow.propTypes = {
     id: PropTypes.number.isRequired,
     title: PropTypes.string.isRequired,
     location: PropTypes.string.isRequired,
-    orders: PropTypes.number.isRequired,
+    active_orders: PropTypes.number.isRequired,
+    completed_orders: PropTypes.number.isRequired,
     time: PropTypes.string.isRequired,
     price: PropTypes.string.isRequired,
     image: PropTypes.string.isRequired,
+    status: PropTypes.string.isRequired,
   }).isRequired,
   onEdit: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
@@ -272,7 +284,7 @@ export default function MyServices() {
   const [editedService, setEditedService] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
   const editModal = useModal();
   const deleteModal = useModal();
 
@@ -282,7 +294,8 @@ export default function MyServices() {
         id: s.id,
         title: s.title,
         location: s.location,
-        orders: s.complete_orders || 0,
+        active_orders: s.active_orders || 0,
+        completed_orders: s.completed_orders || 0,
         time: `${s.time_from.slice(0, 5)}-${s.time_to.slice(0, 5)}`,
         price: `$${parseFloat(s.price).toFixed(2)}`,
         status: s.status === "Approved" ? "Active" : s.status,
@@ -295,7 +308,6 @@ export default function MyServices() {
   const activeCount = services.filter((s) => s.status === "Active").length;
   const pendingCount = services.filter((s) => s.status === "Pending").length;
   const suspendedCount = services.filter((s) => s.status === "Suspended").length;
-  const totalOrders = services.reduce((sum, s) => sum + s.orders, 0);
 
   // Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -417,9 +429,10 @@ export default function MyServices() {
         {/* Services Table */}
         <div className="bg-white rounded-lg shadow-md sm:bg-transparent sm:shadow-none sm:border-0">
           {/* Table Header */}
-          <div className="hidden sm:grid sm:grid-cols-12 sm:gap-2 sm:p-3 sm:border-b sm:border-gray-100 sm:bg-gray-50 sm:text-sm sm:font-semibold sm:text-gray-600">
+          <div className="hidden sm:grid sm:grid-cols-14 sm:gap-2 sm:p-3 sm:border-b sm:border-gray-100 sm:bg-gray-50 sm:text-sm sm:font-semibold sm:text-gray-600">
             <div className="sm:col-span-4">Service</div>
-            <div className="sm:col-span-2 sm:text-center">Orders ({totalOrders})</div>
+            <div className="sm:col-span-2 sm:text-center">Active Orders</div>
+            <div className="sm:col-span-2 sm:text-center">Completed Orders</div>
             <div className="sm:col-span-2 sm:text-center">Available Time</div>
             <div className="sm:col-span-2 sm:text-center">Price</div>
             <div className="sm:col-span-2 sm:text-center">Action</div>
@@ -450,7 +463,7 @@ export default function MyServices() {
           </div>
         </div>
 
-        {/* Pagination (only shown if filteredServices.length > 10) */}
+        {/* Pagination (shown if filteredServices.length > 10) */}
         {filteredServices.length > 10 && (
           <div className="flex justify-center items-center mt-6 gap-2 flex-wrap">
             <button
