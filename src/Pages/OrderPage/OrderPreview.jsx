@@ -2,25 +2,41 @@ import { useState, useEffect } from 'react';
 import { MapPin } from 'lucide-react';
 import useModal from '../../components/modal/useModal';
 import { useNavigate, useLocation } from 'react-router-dom';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import apiClient from "../../lib/api-client";
+import Swal from "sweetalert2";
 
 const OrderPreview = () => {
-  const { isOpen: showPaymentModal, openModal: openPaymentModal, closeModal: closePaymentModal } = useModal();
-  const [selectedPayment, setSelectedPayment] = useState(null);
+  const { isOpen: showBookingModal, openModal: openBookingModal, closeModal: closeBookingModal } = useModal();
+  const { isOpen: showLocationModal, openModal: openLocationModal, closeModal: closeLocationModal } = useModal();
   const navigate = useNavigate();
   const { state } = useLocation();
   
-  const { service, bookingDetails } = state || {};
+  const { service, bookingDetails, seller } = state || {};
   
+  // State for booking details
+  const [tempBookingDate, setTempBookingDate] = useState(
+    bookingDetails?.event_date ? new Date(bookingDetails.event_date) : new Date()
+  );
+  const [tempBookingTime, setTempBookingTime] = useState(
+    bookingDetails?.event_time 
+      ? new Date(`1970-01-01T${bookingDetails.event_time}:00`)
+      : null
+  );
+  const [tempLocation, setTempLocation] = useState(bookingDetails?.event_location || "");
+  const [updatedBookingDetails, setUpdatedBookingDetails] = useState(bookingDetails || {});
+
   // Format date and time for display
-  const formattedDate = bookingDetails?.date 
-    ? new Date(bookingDetails.date).toLocaleDateString('en-US', {
+  const formattedDate = updatedBookingDetails?.event_date 
+    ? new Date(updatedBookingDetails.event_date).toLocaleDateString('en-US', {
         month: 'short',
         day: 'numeric',
         year: 'numeric',
       }) 
     : 'N/A';
-  const formattedTime = bookingDetails?.time 
-    ? new Date(bookingDetails.time).toLocaleTimeString('en-US', {
+  const formattedTime = updatedBookingDetails?.event_time 
+    ? new Date(`1970-01-01T${updatedBookingDetails.event_time}:00`).toLocaleTimeString('en-US', {
         hour: 'numeric',
         minute: 'numeric',
         hour12: true,
@@ -31,34 +47,109 @@ const OrderPreview = () => {
     if (window.lucide) {
       window.lucide.createIcons();
     }
-  }, []);
+    // Initialize booking time if not set
+    if (!updatedBookingDetails.event_time && seller?.time_from) {
+      const [hours, minutes] = seller.time_from.split(":");
+      const initialTime = new Date();
+      initialTime.setHours(hours, minutes, 0);
+      setTempBookingTime(initialTime);
+      setUpdatedBookingDetails((prev) => ({ 
+        ...prev, 
+        event_time: `${hours}:${minutes}` 
+      }));
+    }
+  }, [seller?.time_from, updatedBookingDetails.event_time]);
 
-  const handlePaymentSelect = (paymentMethod) => {
-    setSelectedPayment(paymentMethod);
-  };
+  const handleBookService = async () => {
+    try {
+      const payload = {
+        service_id: updatedBookingDetails.service_id,
+        additional_service_ids: updatedBookingDetails.additional_service_ids || [],
+        event_time: updatedBookingDetails.event_time,
+        event_date: updatedBookingDetails.event_date,
+        event_location: updatedBookingDetails.event_location,
+      };
 
-  const handleContinue = () => {
-    if (selectedPayment) {
+      const response = await apiClient.post('/user/book-service', payload);
+      console.log('Booking successful:', response.data);
+
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Booking successful!",
+        showConfirmButton: false,
+        timer: 1500,
+        toast: true,
+      });
+
       navigate('/successful', { 
         state: { 
           service, 
-          bookingDetails, 
-          paymentMethod: selectedPayment 
+          bookingDetails: updatedBookingDetails, 
+          seller,
         } 
       });
-      console.log(`Proceeding with ${selectedPayment} payment`);
-      closePaymentModal();
-    } else {
-      alert('Please select a payment method');
+    } catch (error) {
+      console.error('Failed to book service:', error);
+      Swal.fire({
+        position: "top-end",
+        icon: "error",
+        title: "Failed to book service",
+        showConfirmButton: false,
+        timer: 1500,
+        toast: true,
+      });
     }
   };
 
-  const handleNext = () => {
-    openPaymentModal();
+  const handleSaveBooking = () => {
+    // Format date to YYYY-MM-DD
+    const formattedDate = tempBookingDate.toISOString().split('T')[0];
+    // Format time to HH:mm
+    const formattedTime = tempBookingTime
+      ? `${tempBookingTime.getHours().toString().padStart(2, '0')}:${tempBookingTime.getMinutes().toString().padStart(2, '0')}`
+      : updatedBookingDetails.event_time;
+
+    setUpdatedBookingDetails((prev) => ({
+      ...prev,
+      event_date: formattedDate,
+      event_time: formattedTime,
+    }));
+    closeBookingModal();
+  };
+
+  const handleSaveLocation = () => {
+    if (!tempLocation.trim()) {
+      Swal.fire({
+        position: "top-end",
+        icon: "error",
+        title: "Please enter a location",
+        showConfirmButton: false,
+        timer: 1500,
+        toast: true,
+      });
+      return;
+    }
+    setUpdatedBookingDetails((prev) => ({
+      ...prev,
+      event_location: tempLocation,
+    }));
+    closeLocationModal();
+  };
+
+  // Restrict time selection to seller's available time range
+  const getTimeConstraints = () => {
+    if (!seller?.time_from || !seller?.time_to) return {};
+    const [startHours, startMinutes] = seller.time_from.split(":");
+    const [endHours, endMinutes] = seller.time_to.split(":");
+    return {
+      minTime: new Date().setHours(startHours, startMinutes, 0),
+      maxTime: new Date().setHours(endHours, endMinutes, 0),
+    };
   };
 
   // Fallback if no service data is available
-  if (!service || !bookingDetails) {
+  if (!service || !updatedBookingDetails) {
     return (
       <div className="min-h-screen py-8 container mx-auto mt-30 md:mt-15">
         <div className="px-4">
@@ -114,6 +205,12 @@ const OrderPreview = () => {
                       <p className="font-medium text-gray-800">{formattedDate}</p>
                       <p className="text-gray-600">{formattedTime}</p>
                     </div>
+                    <button
+                      className="text-black bg-gray-200 py-2 px-4 rounded-full font-medium hover:bg-gray-300 transition duration-200"
+                      onClick={openBookingModal}
+                    >
+                      Change
+                    </button>
                   </div>
                 </div>
 
@@ -125,9 +222,15 @@ const OrderPreview = () => {
                       </h4>
                       <div className="flex items-center text-gray-600">
                         <MapPin className="w-4 h-4 mr-2" />
-                        <span>{bookingDetails.location || "No location provided"}</span>
+                        <span>{updatedBookingDetails.event_location || "No location provided"}</span>
                       </div>
                     </div>
+                    <button
+                      className="text-black bg-gray-200 py-2 px-4 rounded-full font-medium hover:bg-gray-300 transition duration-200"
+                      onClick={openLocationModal}
+                    >
+                      Change
+                    </button>
                   </div>
                 </div>
               </div>
@@ -143,7 +246,7 @@ const OrderPreview = () => {
                     <span className="font-medium text-gray-800">${service.basePrice}</span>
                   </div>
 
-                  {bookingDetails.additionals?.map((add) => (
+                  {updatedBookingDetails.additionals?.map((add) => (
                     <div key={add.id} className="flex justify-between">
                       <span className="text-gray-600">{add.title}</span>
                       <span className="font-medium text-gray-800">${add.price}</span>
@@ -154,14 +257,14 @@ const OrderPreview = () => {
 
                   <div className="flex justify-between">
                     <span className="font-semibold text-gray-800">Total</span>
-                    <span className="font-bold text-gray-800">${bookingDetails.totalPrice}</span>
+                    <span className="font-bold text-gray-800">${updatedBookingDetails.totalPrice}</span>
                   </div>
                 </div>
 
                 <div className="mt-8 w-full">
                   <button
                     className="w-full rounded-full bg-gray-800 hover:bg-gray-900 text-white font-medium px-12 py-3 hover:shadow-xl transition duration-200"
-                    onClick={handleNext}
+                    onClick={handleBookService}
                   >
                     Next
                   </button>
@@ -172,48 +275,42 @@ const OrderPreview = () => {
         </div>
       </div>
 
-      {showPaymentModal && (
+      {/* Booking Info Modal */}
+      {showBookingModal && (
         <div className="fixed inset-0 bg-black/60 bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl p-8 max-w-md w-full">
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">Payment method</h2>
-            <p className="text-gray-500 mb-6">Choose the type of payment you are looking for.</p>
+            <h2 className="text-2xl font-bold text-gray-800 mb-2">Change Booking Details</h2>
+            <p className="text-gray-500 mb-6">Select a new date and time for your booking.</p>
             
             <div className="space-y-4 mb-8">
-              <div 
-                className={`flex items-center justify-between p-4 border rounded-2xl hover:border-gray-300 cursor-pointer ${selectedPayment === 'Stripe' ? 'border-purple-600' : 'border-gray-200'}`}
-                onClick={() => handlePaymentSelect('Stripe')}
-              >
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-purple-600 rounded flex items-center justify-center">
-                    <span className="text-white font-bold text-sm">S</span>
-                  </div>
-                  <span className="font-medium text-gray-800">Stripe</span>
-                </div>
-                <input 
-                  type="radio" 
-                  name="payment" 
-                  checked={selectedPayment === 'Stripe'} 
-                  onChange={() => handlePaymentSelect('Stripe')} 
-                  className="text-purple-600 focus:ring-purple-600" 
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Select Date
+                </label>
+                <DatePicker
+                  selected={tempBookingDate}
+                  onChange={(date) => setTempBookingDate(date)}
+                  dateFormat="MM/dd/yyyy"
+                  minDate={new Date()} // Restrict to future dates
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C8C1F5] text-sm"
+                  placeholderText="Select a date"
                 />
               </div>
-              
-              <div 
-                className={`flex items-center justify-between p-4 border rounded-2xl hover:border-gray-300 cursor-pointer ${selectedPayment === 'Paypal' ? 'border-blue-600' : 'border-gray-200'}`}
-                onClick={() => handlePaymentSelect('Paypal')}
-              >
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">
-                    <span className="text-white font-bold text-sm">P</span>
-                  </div>
-                  <span className="font-medium text-gray-800">Paypal</span>
-                </div>
-                <input 
-                  type="radio" 
-                  name="payment" 
-                  checked={selectedPayment === 'Paypal'} 
-                  onChange={() => handlePaymentSelect('Paypal')} 
-                  className="text-blue-600 focus:ring-blue-600" 
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Select Time
+                </label>
+                <DatePicker
+                  selected={tempBookingTime}
+                  onChange={(time) => setTempBookingTime(time)}
+                  showTimeSelect
+                  showTimeSelectOnly
+                  timeIntervals={15}
+                  timeCaption="Time"
+                  dateFormat="h:mm aa"
+                  {...getTimeConstraints()}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C8C1F5] text-sm"
+                  placeholderText="Select a time"
                 />
               </div>
             </div>
@@ -221,15 +318,55 @@ const OrderPreview = () => {
             <div className="flex space-x-4">
               <button 
                 className="flex-1 py-3 px-6 border border-gray-300 rounded-full font-medium text-gray-700 hover:bg-gray-50 transition duration-200"
-                onClick={closePaymentModal}
+                onClick={closeBookingModal}
               >
                 Cancel
               </button>
               <button 
                 className="flex-1 py-3 px-6 bg-gray-800 hover:bg-gray-900 text-white rounded-full font-medium transition duration-200"
-                onClick={handleContinue}
+                onClick={handleSaveBooking}
               >
-                Continue
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Location Modal */}
+      {showLocationModal && (
+        <div className="fixed inset-0 bg-black/60 bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-8 max-w-md w-full">
+            <h2 className="text-2xl font-bold text-gray-800 mb-2">Change Location</h2>
+            <p className="text-gray-500 mb-6">Enter a new location for your booking.</p>
+            
+            <div className="space-y-4 mb-8">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Your Location
+                </label>
+                <input
+                  type="text"
+                  value={tempLocation}
+                  onChange={(e) => setTempLocation(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C8C1F5] text-sm"
+                  placeholder="Enter your location"
+                />
+              </div>
+            </div>
+            
+            <div className="flex space-x-4">
+              <button 
+                className="flex-1 py-3 px-6 border border-gray-300 rounded-full font-medium text-gray-700 hover:bg-gray-50 transition duration-200"
+                onClick={closeLocationModal}
+              >
+                Cancel
+              </button>
+              <button 
+                className="flex-1 py-3 px-6 bg-gray-800 hover:bg-gray-900 text-white rounded-full font-medium transition duration-200"
+                onClick={handleSaveLocation}
+              >
+                Save
               </button>
             </div>
           </div>

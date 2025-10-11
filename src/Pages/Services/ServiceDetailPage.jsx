@@ -130,6 +130,14 @@ const ServiceDetailPage = () => {
       return;
     }
 
+    // Format date to YYYY-MM-DD
+    const formattedDate = bookingDate.toISOString().split('T')[0];
+    
+    // Format time to HH:mm
+    const formattedTime = bookingTime
+      ? `${bookingTime.getHours().toString().padStart(2, '0')}:${bookingTime.getMinutes().toString().padStart(2, '0')}`
+      : '';
+
     navigate("/order-preview", {
       state: {
         service: {
@@ -139,10 +147,17 @@ const ServiceDetailPage = () => {
           coverPhoto: service.cover_photo,
           description: service.description,
         },
+        seller: {
+          time_from: service.time_from,
+          time_to: service.time_to,
+        },
         bookingDetails: {
-          date: bookingDate,
-          time: bookingTime,
-          location: userLocation,
+          service_id: service.id,
+          additional_service_ids: selectedAdditionals,
+          event_time: formattedTime,
+          event_date: formattedDate,
+          event_location: userLocation,
+          totalPrice: calculateTotalPrice(),
           additionals: service.additionals
             .filter((add) => selectedAdditionals.includes(add.id))
             .map((add) => ({
@@ -150,7 +165,6 @@ const ServiceDetailPage = () => {
               title: add.title,
               price: add.price,
             })),
-          totalPrice: calculateTotalPrice(),
         },
       },
     });

@@ -1,6 +1,15 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Edit, X, Calendar, MapPin, Mail, User, DollarSign, Clock } from "lucide-react";
+import {
+  Edit,
+  X,
+  Calendar,
+  MapPin,
+  Mail,
+  User,
+  DollarSign,
+  Clock,
+} from "lucide-react";
 import useSellerOrderList from "../../hooks/userSellerOrderList";
 import apiClient from "../../lib/api-client";
 import Swal from "sweetalert2";
@@ -14,7 +23,6 @@ const ManageOrder = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [newStatus, setNewStatus] = useState("");
   const itemsPerPage = 5;
-  console.log(orders);
 
   // Map the API response to match the structure expected by the component
   const formattedOrders = orders.map((order) => ({
@@ -46,6 +54,9 @@ const ManageOrder = () => {
   const pendingCount = formattedOrders.filter(
     (order) => order.status === "Pending"
   ).length;
+  const acceptedCount = formattedOrders.filter(
+    (order) => order.status === "Accepted"
+  ).length;
   const completedCount = formattedOrders.filter(
     (order) => order.status === "Completed"
   ).length;
@@ -75,6 +86,8 @@ const ManageOrder = () => {
         return "bg-red-100 text-red-800";
       case "Pending":
         return "bg-yellow-100 text-yellow-800";
+      case "Accepted":
+        return "bg-purple-100 text-purple-800";
       default:
         return "bg-gray-100 text-gray-800";
     }
@@ -82,10 +95,11 @@ const ManageOrder = () => {
 
   const getStatusColorForModal = (status) => {
     const colors = {
-      "Active": "bg-blue-100 text-blue-700 border-blue-200",
-      "Completed": "bg-green-100 text-green-700 border-green-200",
-      "Pending": "bg-yellow-100 text-yellow-700 border-yellow-200",
-      "Cancelled": "bg-red-100 text-red-700 border-red-200"
+      Active: "bg-blue-100 text-blue-700 border-blue-200",
+      Completed: "bg-green-100 text-green-700 border-green-200",
+      Pending: "bg-yellow-100 text-yellow-700 border-yellow-200",
+      Cancelled: "bg-red-100 text-red-700 border-red-200",
+      Accepted: "bg-purple-100 text-purple-700 border-purple-200",
     };
     return colors[status] || "bg-gray-100 text-gray-700 border-gray-200";
   };
@@ -105,6 +119,18 @@ const ManageOrder = () => {
 
   // Update status via API
   const handleStatusUpdate = async () => {
+    if (!newStatus || newStatus === selectedOrder.status) {
+      Swal.fire({
+        position: "top-end",
+        icon: "warning",
+        title: "Please select a different status",
+        showConfirmButton: false,
+        timer: 1500,
+        toast: true,
+      });
+      return;
+    }
+
     try {
       await apiClient.patch(`/seller/order/update-status/${selectedOrder.id}`, {
         status: newStatus,
@@ -132,6 +158,18 @@ const ManageOrder = () => {
     }
   };
 
+  // Determine allowed status options based on current status
+  const getAllowedStatuses = (currentStatus) => {
+    if (currentStatus === "Pending") {
+      return ["Accepted", "Cancelled"];
+    } else if (currentStatus === "Accepted") {
+      return ["Pending", "Cancelled"];
+    } else if (currentStatus === "Active") {
+      return ["Completed"];
+    }
+    return [];
+  };
+
   return (
     <div className="p-4 container mx-auto mt-16 md:mt-0 min-h-screen">
       <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-6">
@@ -144,6 +182,7 @@ const ManageOrder = () => {
           { label: `All Orders`, value: "All Orders" },
           { label: `Active (${activeCount})`, value: "Active" },
           { label: `Pending (${pendingCount})`, value: "Pending" },
+          { label: `Accepted (${acceptedCount})`, value: "Accepted" },
           { label: `Completed (${completedCount})`, value: "Completed" },
           { label: `Cancelled (${cancelledCount})`, value: "Cancelled" },
         ].map((tab) => (
@@ -255,15 +294,25 @@ const ManageOrder = () => {
                     </span>
                   </td>
                   <td className="px-4 py-3 sm:px-6 sm:py-4">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        openEditModal(order);
-                      }}
-                      className="text-purple-600 hover:text-purple-800"
-                    >
-                      <Edit size={18} />
-                    </button>
+                    {order.status === "Completed" ? (
+                      <span className="text-green-600 text-xs sm:text-sm">
+                        Order has been completed
+                      </span>
+                    ) : order.status === "Cancelled" ? (
+                      <span className="text-red-600 text-xs sm:text-sm">
+                        Order has been cancelled
+                      </span>
+                    ) : (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openEditModal(order);
+                        }}
+                        className="text-purple-600 hover:text-purple-800"
+                      >
+                        <Edit size={18} />
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))
@@ -276,7 +325,9 @@ const ManageOrder = () => {
       {editModalOpen && selectedOrder && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <h3 className="text-lg sm:text-xl font-bold mb-4">Edit Order Status</h3>
+            <h3 className="text-lg sm:text-xl font-bold mb-4">
+              Edit Order Status
+            </h3>
             <div className="space-y-4">
               <div>
                 <img
@@ -321,13 +372,14 @@ const ManageOrder = () => {
                   onChange={(e) => setNewStatus(e.target.value)}
                   className="mt-1 block w-full rounded-md p-2 border border-gray-200 outline-none text-sm"
                 >
-                  {["Active", "Pending", "Completed", "Cancelled"].map(
-                    (status) => (
-                      <option key={status} value={status}>
-                        {status}
-                      </option>
-                    )
-                  )}
+                  <option value={selectedOrder.status} disabled>
+                    {selectedOrder.status} (Current)
+                  </option>
+                  {getAllowedStatuses(selectedOrder.status).map((status) => (
+                    <option key={status} value={status}>
+                      {status}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
@@ -359,7 +411,9 @@ const ManageOrder = () => {
                 src={selectedOrder.bannerImage}
                 alt={selectedOrder.service}
                 className="w-full h-full object-cover"
-                onError={(e) => (e.target.src = "https://via.placeholder.com/800x300")}
+                onError={(e) =>
+                  (e.target.src = "https://via.placeholder.com/800x300")
+                }
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
               <button
@@ -369,8 +423,12 @@ const ManageOrder = () => {
                 <X className="w-5 h-5 text-gray-700" />
               </button>
               <div className="absolute bottom-4 left-6">
-                <h3 className="text-2xl font-bold text-white mb-1">{selectedOrder.service}</h3>
-                <p className="text-white/90 text-sm font-medium">Order ID: {selectedOrder.order_id}</p>
+                <h3 className="text-2xl font-bold text-white mb-1">
+                  {selectedOrder.service}
+                </h3>
+                <p className="text-white/90 text-sm font-medium">
+                  Order ID: {selectedOrder.order_id}
+                </p>
               </div>
             </div>
 
@@ -378,7 +436,11 @@ const ManageOrder = () => {
             <div className="p-6 sm:p-8">
               {/* Status Badge */}
               <div className="mb-6">
-                <span className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold border ${getStatusColorForModal(selectedOrder.status)}`}>
+                <span
+                  className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold border ${getStatusColorForModal(
+                    selectedOrder.status
+                  )}`}
+                >
                   <Clock className="w-4 h-4 mr-2" />
                   {selectedOrder.status}
                 </span>
@@ -392,8 +454,12 @@ const ManageOrder = () => {
                     <User className="w-5 h-5 text-purple-600" />
                   </div>
                   <div>
-                    <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold mb-1">Client Name</p>
-                    <p className="text-gray-900 font-medium">{selectedOrder.client}</p>
+                    <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold mb-1">
+                      Client Name
+                    </p>
+                    <p className="text-gray-900 font-medium">
+                      {selectedOrder.client}
+                    </p>
                   </div>
                 </div>
 
@@ -403,8 +469,12 @@ const ManageOrder = () => {
                     <Mail className="w-5 h-5 text-blue-600" />
                   </div>
                   <div>
-                    <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold mb-1">Email</p>
-                    <p className="text-gray-900 font-medium break-all">{selectedOrder.email}</p>
+                    <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold mb-1">
+                      Email
+                    </p>
+                    <p className="text-gray-900 font-medium break-all">
+                      {selectedOrder.email}
+                    </p>
                   </div>
                 </div>
 
@@ -414,8 +484,12 @@ const ManageOrder = () => {
                     <MapPin className="w-5 h-5 text-green-600" />
                   </div>
                   <div>
-                    <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold mb-1">Location</p>
-                    <p className="text-gray-900 font-medium">{selectedOrder.location}</p>
+                    <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold mb-1">
+                      Location
+                    </p>
+                    <p className="text-gray-900 font-medium">
+                      {selectedOrder.location}
+                    </p>
                   </div>
                 </div>
 
@@ -425,8 +499,12 @@ const ManageOrder = () => {
                     <Calendar className="w-5 h-5 text-orange-600" />
                   </div>
                   <div>
-                    <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold mb-1">Deadline</p>
-                    <p className="text-gray-900 font-medium">{selectedOrder.deadline}</p>
+                    <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold mb-1">
+                      Deadline
+                    </p>
+                    <p className="text-gray-900 font-medium">
+                      {selectedOrder.deadline}
+                    </p>
                   </div>
                 </div>
 
@@ -436,8 +514,12 @@ const ManageOrder = () => {
                     <DollarSign className="w-5 h-5 text-emerald-600" />
                   </div>
                   <div>
-                    <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold mb-1">Price</p>
-                    <p className="text-gray-900 font-bold text-lg">{selectedOrder.price}</p>
+                    <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold mb-1">
+                      Price
+                    </p>
+                    <p className="text-gray-900 font-bold text-lg">
+                      {selectedOrder.price}
+                    </p>
                   </div>
                 </div>
               </div>
