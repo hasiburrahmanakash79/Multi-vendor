@@ -10,7 +10,6 @@ const useSavedList = () => {
 
   const fetchSavedServices = useCallback(async () => {
     if (!user?.user_id) {
-      console.log("No user ID, skipping fetch");
       return;
     }
 
@@ -37,10 +36,10 @@ const useSavedList = () => {
       setLoading(true);
       if (isSaved) {
         await apiClient.delete(`/user/remove-saved-service/${serviceId}`);
-        console.log("Service unsaved:", serviceId);
+        // console.log("Service unsaved:", serviceId);
       } else {
         await apiClient.post(`/user/save-service/${serviceId}`);
-        console.log("Service saved:", serviceId);
+        // console.log("Service saved:", serviceId);
       }
       await fetchSavedServices();
       return true;
@@ -54,7 +53,7 @@ const useSavedList = () => {
   }, [user?.user_id, fetchSavedServices]);
 
   useEffect(() => {
-    console.log("Current user:", user);
+    // console.log("Current user:", user);
     fetchSavedServices();
   }, [fetchSavedServices, user]);
 

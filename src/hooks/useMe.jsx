@@ -18,7 +18,6 @@ const useMe = () => {
     try {
       setLoading(true);
       const res = await apiClient.get('/user/retrieve');
-      console.log('User data:', res.data); // Debug log
       setUser(res.data || null);
       setError(null);
     } catch (err) {

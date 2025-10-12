@@ -10,7 +10,6 @@ const useSellerServices = () => {
     try {
       setLoading(true);
       const res = await apiClient.get("/service/list");
-      console.log(res);
       setServices(res.data || null);
       setError(null);
     } catch (err) {

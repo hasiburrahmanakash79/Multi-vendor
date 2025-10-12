@@ -32,6 +32,7 @@ import MyServices from "../Pages/SellerPages/MyServices";
 import AddServices from "../Pages/SellerPages/AddServices";
 import ManageOrder from "../Pages/SellerPages/ManageOrder";
 import OrderPage from "../Pages/OrderPage/OrderPage";
+import CategoryProducts from "../Pages/CategoryProducts/CategoryProducts";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Homepage />,
+      },
+      {
+        path: "/category/:slug",
+        element: <CategoryProducts />,
       },
       {
         path: "/serviceDetails/:id",
@@ -119,43 +124,43 @@ const router = createBrowserRouter([
     children: [
       {
         path: "dashboard",
-        element: <AdminOverview/>
+        element: <AdminOverview />,
       },
       {
         path: "user",
-        element: <AllUser/>
+        element: <AllUser />,
       },
       {
         path: "userDetail/:id",
-        element: <UserDetail/>
+        element: <UserDetail />,
       },
       {
         path: "order",
-        element: <OrderList/>
+        element: <OrderList />,
       },
       {
         path: "order-details/:id",
-        element: <OrderDetailPage/>
+        element: <OrderDetailPage />,
       },
       {
         path: "service",
-        element: <AllService/>
+        element: <AllService />,
       },
       {
         path: "request",
-        element: <SellerRequest/>
+        element: <SellerRequest />,
       },
       {
         path: "request-details/:id",
-        element: <RequestDetails/>
+        element: <RequestDetails />,
       },
       {
         path: "content",
-        element: <ContentPage/>
+        element: <ContentPage />,
       },
       {
         path: "add-privacy",
-        element: <PrivacyPolicyUpload/>
+        element: <PrivacyPolicyUpload />,
       },
     ],
   },
@@ -173,7 +178,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/seller/onboarding",
-    element: <Onboarding/>,
+    element: <Onboarding />,
   },
 ]);
 

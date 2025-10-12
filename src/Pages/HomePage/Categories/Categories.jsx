@@ -1,6 +1,7 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import useCategoriesData from "../../../hooks/useCategoriesData";
+import { Link } from "react-router-dom";
 
 const Categories = () => {
   const { categories, loading, error } = useCategoriesData([]);
@@ -87,7 +88,7 @@ const Categories = () => {
               {categories.map((category, index) => {
                 const { bgColor } = getColorScheme(index);
                 return (
-                  <div key={category.id} className="flex-shrink-0 w-36 md:w-56 px-2">
+                  <Link to={`/category/${category.slug}`} key={category.id} className="flex-shrink-0 w-36 md:w-56 px-2">
                     <div
                       className={`${bgColor} rounded-2xl p-6 h-48 shadow-sm hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 cursor-pointer group`}
                     >
@@ -105,7 +106,7 @@ const Categories = () => {
                         {category.title}
                       </h3>
                     </div>
-                  </div>
+                  </Link>
                 );
               })}
             </div>

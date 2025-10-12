@@ -82,7 +82,7 @@ const OrderPreview = () => {
         toast: true,
       });
 
-      navigate('/successful', { 
+      navigate('/orders', { 
         state: { 
           service, 
           bookingDetails: updatedBookingDetails, 
