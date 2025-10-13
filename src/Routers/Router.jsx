@@ -33,6 +33,7 @@ import AddServices from "../Pages/SellerPages/AddServices";
 import ManageOrder from "../Pages/SellerPages/ManageOrder";
 import OrderPage from "../Pages/OrderPage/OrderPage";
 import CategoryProducts from "../Pages/CategoryProducts/CategoryProducts";
+import AdminLogin from "../Pages/Authentication/AdminLogin";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -167,6 +168,10 @@ const router = createBrowserRouter([
   {
     path: "/signin",
     element: <SignIn />,
+  },
+  {
+    path: "/admin-auth",
+    element: <AdminLogin />,
   },
   {
     path: "/signup",

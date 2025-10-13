@@ -1,5 +1,4 @@
 import logo from "../assets/logo/logo.png";
-import user from "../assets/icons/user.png";
 import Logout from "../assets/icons/logout.png";
 import HomeIconSvg from "../assets/icons/Home.svg"; // Import as string (to be replaced with component via @svgr/webpack)
 import UserIconSvg from "../assets/icons/Users.svg"; // Import as string (to be replaced with component via @svgr/webpack)
@@ -10,8 +9,12 @@ import PrivacyIconSvg from "../assets/icons/privacy.svg"; // Import as string (t
 import ServicesIconSvg from "../assets/icons/power-service.svg"; // Import as string (to be replaced with component via @svgr/webpack)
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import useMe from "../hooks/useMe";
+import { removeAuthTokens } from "../lib/cookie-utils";
 
 const Dashboard = () => {
+  const { user } = useMe();
+  console.log(user);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -26,8 +29,8 @@ const Dashboard = () => {
       cancelButtonText: "No, Cancel!",
     }).then((result) => {
       if (result.isConfirmed) {
-        localStorage.removeItem("userRole");
-        navigate("/signin");
+        removeAuthTokens()
+        navigate("/admin-auth");
       }
     });
   };
@@ -71,15 +74,19 @@ const Dashboard = () => {
         </nav>
 
         {/* Profile and Logout */}
-        <footer className="mt-28 p-2 absolute bottom-2 w-full">
+        <footer className="bottom-0 p-2 absolute w-full bg-white">
           <div className="flex items-center justify-center gap-x-3">
             <Link className="flex items-center gap-x-3 p-2 text-sm">
-              <div className="rounded-full p-3 bg-purple-50">
-                <img src={user} alt="Profile" className="w-5" />
+              <div className="rounded-full w-12 h-12 bg-purple-50 overflow-hidden flex items-center justify-center">
+                <img
+                  src={user?.photo}
+                  alt="Profile"
+                  className="w-full h-full object-cover"
+                />
               </div>
               <span>
-                <p className="font-bold">John Cena</p>
-                <p className="text-xs">Super Admin</p>
+                <p className="font-bold">{user?.full_name}</p>
+                <p className="text-xs">{user?.role}</p>
               </span>
             </Link>
             <button
