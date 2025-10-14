@@ -112,7 +112,7 @@ const RevenueCharts = () => {
   }
 
   return (
-    <div className="min-h-screen py-7 px-4 md:px-6">
+    <div className="min-h-screen mt-7">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Bar Chart: Monthly Revenue */}
         <div className="lg:col-span-2 bg-white rounded-xl p-6 shadow-sm border border-gray-200">

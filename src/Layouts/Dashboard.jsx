@@ -41,7 +41,7 @@ const Dashboard = () => {
     { title: "User", path: "/admin/user", icon: UserIconSvg },
     { title: "Order", path: "/admin/order", icon: ShoppingIconSvg },
     { title: "Services", path: "/admin/service", icon: ServicesIconSvg },
-    { title: "Seller request", path: "/admin/request", icon: LaborIconSvg },
+    { title: "service request", path: "/admin/request", icon: LaborIconSvg },
     { title: "Content", path: "/admin/content", icon: ContentIconSvg },
     { title: "Privacy", path: "/admin/add-privacy", icon: PrivacyIconSvg },
   ];

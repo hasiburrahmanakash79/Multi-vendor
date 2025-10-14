@@ -21,9 +21,7 @@ import UserDetail from "../Pages/AdminPages/AllUser/UserDetail";
 import OrderList from "../Pages/AdminPages/OrderPage/OrderList";
 import OrderDetailPage from "../Pages/AdminPages/OrderPage/OrderDetailPage";
 import AllService from "../Pages/AdminPages/Services/AllService";
-import SellerRequest from "../Pages/AdminPages/SellerRequest/SellerRequest";
 import PrivacyPolicyUpload from "../Pages/AdminPages/PrivacyPolicy/PrivacyPolicyUpload";
-import RequestDetails from "../Pages/AdminPages/SellerRequest/RequestDetails";
 import ContentPage from "../Pages/AdminPages/ContentPage/ContentPage";
 import ProfilePage from "../Pages/Authentication/Profile/ProfilePage";
 import Onboarding from "../Pages/Authentication/Onboarding";
@@ -34,6 +32,8 @@ import ManageOrder from "../Pages/SellerPages/ManageOrder";
 import OrderPage from "../Pages/OrderPage/OrderPage";
 import CategoryProducts from "../Pages/CategoryProducts/CategoryProducts";
 import AdminLogin from "../Pages/Authentication/AdminLogin";
+import ServiceRequest from "../Pages/AdminPages/ServiceRequest/ServiceRequest";
+import RequestDetails from "../Pages/AdminPages/ServiceRequest/RequestDetails";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -149,11 +149,11 @@ const router = createBrowserRouter([
       },
       {
         path: "request",
-        element: <SellerRequest />,
+        element: <ServiceRequest />,
       },
       {
         path: "request-details/:id",
-        element: <RequestDetails />,
+        element: <RequestDetails/>,
       },
       {
         path: "content",

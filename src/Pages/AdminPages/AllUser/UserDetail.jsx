@@ -2,6 +2,13 @@ import { Mail, MapPin, Calendar, TrendingUp, TrendingDown } from "lucide-react";
 import { Link } from "react-router-dom";
 import SectionTitle from "../../../components/SectionTitle";
 
+
+// buyer details api
+// /administration/user/details/4
+
+//seller details api 
+///administration/seller/details/2
+
 export default function UserDetailPage() {
   const user = {
     name: "Daniel Smith",
