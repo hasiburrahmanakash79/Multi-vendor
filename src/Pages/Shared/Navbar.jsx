@@ -16,6 +16,7 @@ import { removeAuthTokens } from "../../lib/cookie-utils";
 
 const Navbar = () => {
   const { user, loading, error } = useMe();
+  console.log(user);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);

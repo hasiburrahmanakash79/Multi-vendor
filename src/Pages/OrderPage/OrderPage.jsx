@@ -22,6 +22,8 @@ export default function OrderPage() {
     orders?.filter((order) => order.status === "Active").length || 0;
   const acceptedCount =
     orders?.filter((order) => order.status === "Accepted").length || 0;
+  const completedCount =
+    orders?.filter((order) => order.status === "Completed").length || 0;
   const cancelledCount =
     orders?.filter((order) => order.status === "Cancelled").length || 0;
   const pendingCount =
@@ -140,6 +142,16 @@ export default function OrderPage() {
           }`}
         >
           Pending ({pendingCount})
+        </button>
+        <button
+          onClick={() => setActiveTab("Completed")}
+          className={`pb-2 font-medium ${
+            activeTab === "Completed"
+              ? "text-purple-600 border-b-2 border-purple-600"
+              : "text-gray-500 hover:text-gray-700"
+          }`}
+        >
+          Completed ({completedCount})
         </button>
         <button
           onClick={() => setActiveTab("Cancelled")}

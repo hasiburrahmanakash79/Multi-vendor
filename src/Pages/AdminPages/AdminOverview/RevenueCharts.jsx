@@ -39,8 +39,8 @@ const BarTooltip = ({ active, payload, label }) => {
     return (
       <div className="bg-white p-2 border border-gray-200 rounded shadow-lg">
         <p className={`text-sm font-semibold ${COLORS.TEXT_PRIMARY}`}>{`Month: ${label}`}</p>
-        <p className={`text-sm ${COLORS.TEXT_SECONDARY}`}>{`This Year: $${payload[0].value.toLocaleString()}`}</p>
-        <p className={`text-sm ${COLORS.TEXT_SECONDARY}`}>{`Last Year: $${payload[1].value.toLocaleString()}`}</p>
+        <p className={`text-sm ${COLORS.TEXT_SECONDARY}`}>{`Last Year: $${payload[0].value.toLocaleString()}`}</p>
+        <p className={`text-sm ${COLORS.TEXT_SECONDARY}`}>{`This Year: $${payload[1].value.toLocaleString()}`}</p>
       </div>
     );
   }

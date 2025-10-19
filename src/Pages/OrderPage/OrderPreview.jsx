@@ -10,6 +10,7 @@ import Swal from "sweetalert2";
 const OrderPreview = () => {
   const { isOpen: showBookingModal, openModal: openBookingModal, closeModal: closeBookingModal } = useModal();
   const { isOpen: showLocationModal, openModal: openLocationModal, closeModal: closeLocationModal } = useModal();
+  const { isOpen: showConfirmModal, openModal: openConfirmModal, closeModal: closeConfirmModal } = useModal();
   const navigate = useNavigate();
   const { state } = useLocation();
   
@@ -100,6 +101,11 @@ const OrderPreview = () => {
         toast: true,
       });
     }
+    closeConfirmModal();
+  };
+
+  const handleConfirmOrder = () => {
+    openConfirmModal();
   };
 
   const handleSaveBooking = () => {
@@ -264,9 +270,9 @@ const OrderPreview = () => {
                 <div className="mt-8 w-full">
                   <button
                     className="w-full rounded-full bg-gray-800 hover:bg-gray-900 text-white font-medium px-12 py-3 hover:shadow-xl transition duration-200"
-                    onClick={handleBookService}
+                    onClick={handleConfirmOrder}
                   >
-                    Next
+                    Confirm Order
                   </button>
                 </div>
               </div>
@@ -367,6 +373,49 @@ const OrderPreview = () => {
                 onClick={handleSaveLocation}
               >
                 Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Confirmation Modal */}
+      {showConfirmModal && (
+        <div className="fixed inset-0 bg-black/60 bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-8 max-w-md w-full">
+            <h2 className="text-2xl font-bold text-gray-800 mb-2">Confirm Your Order</h2>
+            <p className="text-gray-500 mb-6">Are you sure you want to confirm this order?</p>
+            
+            <div className="space-y-4 mb-8">
+              <p className="text-gray-600">
+                <strong>Service:</strong> {service.title}
+              </p>
+              <p className="text-gray-600">
+                <strong>Date:</strong> {formattedDate}
+              </p>
+              <p className="text-gray-600">
+                <strong>Time:</strong> {formattedTime}
+              </p>
+              <p className="text-gray-600">
+                <strong>Location:</strong> {updatedBookingDetails.event_location || "No location provided"}
+              </p>
+              <p className="text-gray-600">
+                <strong>Total Price:</strong> ${updatedBookingDetails.totalPrice}
+              </p>
+            </div>
+            
+            <div className="flex space-x-4">
+              <button 
+                className="flex-1 py-3 px-6 border border-gray-300 rounded-full font-medium text-gray-700 hover:bg-gray-50 transition duration-200"
+                onClick={closeConfirmModal}
+              >
+                Cancel
+              </button>
+              <button 
+                className="flex-1 py-3 px-6 bg-gray-800 hover:bg-gray-900 text-white rounded-full font-medium transition duration-200"
+                onClick={handleBookService}
+              >
+                Confirm
               </button>
             </div>
           </div>

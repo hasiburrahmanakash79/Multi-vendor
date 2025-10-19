@@ -76,7 +76,7 @@ const Dashboard = () => {
         {/* Profile and Logout */}
         <footer className="bottom-0 p-2 absolute w-full bg-white">
           <div className="flex items-center justify-center gap-x-3">
-            <Link className="flex items-center gap-x-3 p-2 text-sm">
+            <Link to='/admin/dashboard' className="flex items-center gap-x-3 p-2 text-sm">
               <div className="rounded-full w-12 h-12 bg-purple-50 overflow-hidden flex items-center justify-center">
                 <img
                   src={user?.photo}

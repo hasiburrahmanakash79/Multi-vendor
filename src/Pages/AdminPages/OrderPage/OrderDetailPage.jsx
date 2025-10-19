@@ -5,13 +5,14 @@ import SectionTitle from "../../../components/SectionTitle";
 import useOrderList from "../../../dashboardHook/useAdminOrders";
 import { format } from "date-fns";
 
+
 const mapOrderToDetail = (raw) => ({
   user: {
     name: raw.buyer,
     email: "N/A",
     location: raw.location,
     joinDate: format(new Date(raw.created_at), "d MMM, yyyy"),
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+    avatar: raw.photo,
   },
   order: {
     title: raw.event_name,
@@ -24,7 +25,7 @@ const mapOrderToDetail = (raw) => ({
     total: `$${raw.amount}`,
   },
 });
-
+console.log(mapOrderToDetail);
 export default function OrderDetailPage() {
   const params = useParams();
   console.log("All useParams():", params);
@@ -43,6 +44,7 @@ export default function OrderDetailPage() {
     console.log("Available order_ids:", allOrderIds);
     
     const raw = orderList.orders.find((o) => o.order_id === orderIdFromUrl);
+    console.log(raw, "Raw");
     if (!raw) {
       setError("Order not found - ID mismatch");
       return;

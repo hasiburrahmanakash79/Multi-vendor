@@ -47,7 +47,7 @@ const ServiceRow = ({ service, onEdit, onDelete }) => (
     <div className="sm:col-span-2 mt-4 sm:mt-0 sm:text-center">
       <span className="text-gray-600 text-xs sm:text-sm md:hidden flex font-semibold">Active Orders</span>
       <div className="text-gray-600 text-xs sm:text-sm">
-        {service.status === "Pending" ? "-" : service.active_orders}
+        {service.status === "Pending"|| service.status === "Declined" ? "-" : service.active_orders}
       </div>
     </div>
 
@@ -55,7 +55,7 @@ const ServiceRow = ({ service, onEdit, onDelete }) => (
     <div className="sm:col-span-2 mt-4 sm:mt-0 sm:text-center">
       <span className="text-gray-600 text-xs sm:text-sm md:hidden flex font-semibold">Completed Orders</span>
       <div className="text-gray-600 text-xs sm:text-sm">
-        {service.status === "Pending" ? "-" : service.completed_orders}
+        {service.status === "Pending" || service.status === "Declined"  ? "-" : service.completed_orders}
       </div>
     </div>
 
@@ -73,6 +73,7 @@ const ServiceRow = ({ service, onEdit, onDelete }) => (
 
     {/* Actions */}
     <div className="sm:col-span-2 mt-4 sm:mt-0 sm:text-center">
+      {service.status === "Declined"  ? <p className="text-red-500">You service is not Approved</p> : 
       <div className="flex items-center justify-start sm:justify-center space-x-3">
         <button
           onClick={() => onEdit(service)}
@@ -87,7 +88,7 @@ const ServiceRow = ({ service, onEdit, onDelete }) => (
           <Trash2 className="w-4 h-4 sm:w-5 sm:h-5" />
         </button>
       </div>
-    </div>
+    }</div>
   </div>
 );
 
@@ -279,6 +280,7 @@ DeleteModal.propTypes = {
 // Main Component
 export default function MyServices() {
   const { service: serviceData, loading } = useSellerServices();
+  console.log(serviceData);
   const [activeTab, setActiveTab] = useState("Active");
   const [selectedService, setSelectedService] = useState(null);
   const [editedService, setEditedService] = useState(null);
@@ -308,6 +310,7 @@ export default function MyServices() {
   const activeCount = services.filter((s) => s.status === "Active").length;
   const pendingCount = services.filter((s) => s.status === "Pending").length;
   const suspendedCount = services.filter((s) => s.status === "Suspended").length;
+  const declinedCount = services.filter((s) => s.status === "Declined").length;
 
   // Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -408,6 +411,7 @@ export default function MyServices() {
             { label: `Active (${activeCount})`, value: "Active" },
             { label: `Pending (${pendingCount})`, value: "Pending" },
             { label: `Suspended (${suspendedCount})`, value: "Suspended" },
+            { label: `Declined (${declinedCount})`, value: "Declined" },
           ].map((tab) => (
             <button
               key={tab.value}

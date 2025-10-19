@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { Star, Play, Heart, CircleCheckBig } from "lucide-react";
+import { Star, Play, Heart, CircleCheckBig, MapPin } from "lucide-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import MobileAppSection from "../HomePage/MobileAppSection/MobileAppSection";
@@ -443,6 +443,7 @@ const ServiceDetailPage = () => {
                     <p className="text-sm text-gray-500">
                       Available {service.time_from} - {service.time_to}
                     </p>
+                    
                   </div>
                   <div className="ml-auto flex items-center space-x-1">
                     <Star className="w-4 h-4 text-yellow-400 fill-current" />
@@ -451,6 +452,15 @@ const ServiceDetailPage = () => {
                     </span>
                   </div>
                 </div>
+
+                <div className="mb-6">
+                    <label className="block text-md font-bold text-gray-700 mb-2">
+                      Location
+                    </label>
+                    <p className="text-sm text-gray-700 flex gap-1">
+                      <MapPin height={18}/> {service?.location}
+                    </p>
+                  </div>
 
                 <div className="mb-6">
                   <span className="text-2xl font-bold text-gray-900">
@@ -484,8 +494,8 @@ const ServiceDetailPage = () => {
                       {service.additionals
                         .filter((add) => selectedAdditionals.includes(add.id))
                         .map((add) => (
-                          <li key={add.id}>
-                            {add.title} (${add.price})
+                          <li key={add.id} className="">
+                           • {add.title} (${add.price})
                           </li>
                         ))}
                     </ul>
@@ -493,6 +503,7 @@ const ServiceDetailPage = () => {
                 )}
 
                 <div className="space-y-4 mb-6">
+                  
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Booking Date

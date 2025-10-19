@@ -2,91 +2,45 @@ import { useState } from "react";
 import { Check, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import SectionTitle from "../../../components/SectionTitle";
+import useServicesRequest from "../../../dashboardHook/useServicesRequest";
+import apiClient from "../../../lib/api-client";
+import Swal from "sweetalert2";
 
 const ServiceRequest = () => {
+  const { services, loading: servicesLoading, error: servicesError, refetch } = useServicesRequest([]);
+
+  // Transform fetched services to match table structure
+  const transformedServices = services.map((service) => ({
+    id: service.id,
+    eventName: service.title,
+    date: new Date(service.created_at).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    }),
+    location: service.location,
+    seller: service.seller,
+    service_type: service.category,
+    price: `$${parseFloat(service.price).toFixed(2)}`,
+    status: service.status,
+  }));
+
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
-  const [services, setServices] = useState([
-    {
-      id: "ORD-AX93K7-1",
-      eventName: "Catering",
-      date: "Jan 6, 2025",
-      location: "Overland Park, KS",
-      seller: "Phoenix Baker",
-      service_type: "Regular",
-      price: "$2,000",
-      status: "Active",
-    },
-    {
-      id: "ORD-AX93K7-2",
-      eventName: "Wedding photography expert in chicago",
-      date: "Jan 6, 2025",
-      location: "Overland Park, KS",
-      seller: "Drew Cano",
-      service_type: "Regular",
-      price: "$3,500",
-      status: "Canceled",
-    },
-    {
-      id: "ORD-AX93K7-3",
-      eventName: "Dj",
-      date: "Jan 6, 2025",
-      location: "Overland Park, KS",
-      seller: "Phoenix Baker",
-      service_type: "Regular",
-      price: "$1,800",
-      status: "Active",
-    },
-    {
-      id: "ORD-AX93K7-4",
-      eventName: "Catering",
-      date: "Jan 6, 2025",
-      location: "Overland Park, KS",
-      seller: "Drew Cano",
-      service_type: "Regular",
-      price: "$2,000",
-      status: "Pending",
-    },
-    {
-      id: "ORD-AX93K7-5",
-      eventName: "Wedding photography expert in chicago",
-      date: "Jan 6, 2025",
-      location: "Overland Park, KS",
-      seller: "Phoenix Baker",
-      service_type: "Regular",
-      price: "$3,500",
-      status: "Active",
-    },
-    {
-      id: "ORD-AX93K7-6",
-      eventName: "Dj",
-      date: "Jan 6, 2025",
-      location: "Overland Park, KS",
-      seller: "Drew Cano",
-      service_type: "Regular",
-      price: "$1,800",
-      status: "Canceled",
-    },
-    {
-      id: "ORD-AX93K7-7",
-      eventName: "Catering",
-      date: "Jan 6, 2025",
-      location: "Overland Park, KS",
-      seller: "Phoenix Baker",
-      service_type: "Custom",
-      price: "$2,000",
-      status: "Active",
-    },
-  ]);
-
+  const [isUpdating, setIsUpdating] = useState(false); // Track updating state
   const itemsPerPage = 10;
 
-  const filteredOrders = services.filter(
+  const filteredOrders = transformedServices.filter(
     (order) =>
-      order.eventName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      order.seller.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      order.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      order.service_type.toLowerCase().includes(searchQuery.toLowerCase())
+      order.id &&
+      order.eventName &&
+      order.seller &&
+      order.location &&
+      order.service_type &&
+      (order.eventName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        order.seller.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        order.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        order.service_type.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
@@ -104,32 +58,126 @@ const ServiceRequest = () => {
     setCurrentPage(1);
   };
 
+  // API client to update service status
+  const updateServiceStatus = async (id, status) => {
+    if (!id) {
+      console.error("Invalid service ID:", id);
+      alert("Cannot update service: Invalid ID");
+      return;
+    }
+    try {
+      setIsUpdating(true);
+      await apiClient.put(`/administration/service/request/update/${id}`, { status });
+      refetch();
+    } catch (error) {
+      console.error(`Error updating service ${id} to ${status}:`, error);
+      alert(`Failed to update service status: ${error.message}`);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  // Handle approving a single service
   const handleApprove = (id) => {
-    setServices((prev) =>
-      prev.map((service) =>
-        service.id === id ? { ...service, status: "Active" } : service
-      )
-    );
+    if (isUpdating) return; // Prevent multiple updates
+    updateServiceStatus(id, "Approved");
+    Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: "Service Approved",
+            showConfirmButton: false,
+            timer: 1500,
+            toast: true,
+          })
+    
   };
 
+  // Handle denying a single service
   const handleDeny = (id) => {
-    setServices((prev) =>
-      prev.map((service) =>
-        service.id === id ? { ...service, status: "Canceled" } : service
-      )
-    );
+    if (isUpdating) return; // Prevent multiple updates
+    updateServiceStatus(id, "Declined");
+    Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: "Service Declined",
+            showConfirmButton: false,
+            timer: 1500,
+            toast: true,
+          })
   };
 
-  const handleApproveAll = () => {
-    setServices((prev) =>
-      prev.map((service) => ({ ...service, status: "Active" }))
-    );
+  // Handle approving all services
+  const handleApproveAll = async () => {
+    if (isUpdating) return; // Prevent multiple updates
+    if (filteredOrders.length === 0) {
+      alert("No services to approve");
+      return;
+    }
+    try {
+      setIsUpdating(true);
+      await Promise.all(
+        filteredOrders.map((service) => {
+          if (!service.id) {
+            console.error("Invalid service ID in bulk approve:", service);
+            return Promise.reject(new Error("Invalid service ID"));
+          }
+          return apiClient.put(`/administration/service/request/update/${service.id}`, {
+            status: "Approved",
+          });
+        })
+      );
+      refetch();
+      Swal.fire({
+              position: "top-end",
+              icon: "success",
+              title: "All Service Approved",
+              showConfirmButton: false,
+              timer: 1500,
+              toast: true,
+            })
+    } catch (error) {
+      console.error("Error approving all services:", error);
+      alert("Failed to approve all services: " + error.message);
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
-  const handleDenyAll = () => {
-    setServices((prev) =>
-      prev.map((service) => ({ ...service, status: "Canceled" }))
-    );
+  // Handle denying all services
+  const handleDenyAll = async () => {
+    if (isUpdating) return; // Prevent multiple updates
+    if (filteredOrders.length === 0) {
+      alert("No services to deny");
+      return;
+    }
+    try {
+      setIsUpdating(true);
+      await Promise.all(
+        filteredOrders.map((service) => {
+          if (!service.id) {
+            console.error("Invalid service ID in bulk deny:", service);
+            return Promise.reject(new Error("Invalid service ID"));
+          }
+          return apiClient.put(`/administration/service/request/update/${service.id}`, {
+            status: "Declined",
+          });
+        })
+      );
+      refetch();
+      Swal.fire({
+              position: "top-end",
+              icon: "success",
+              title: "Service Declined",
+              showConfirmButton: false,
+              timer: 1500,
+              toast: true,
+            })
+    } catch (error) {
+      console.error("Error denying all services:", error);
+      alert("Failed to deny all services: " + error.message);
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
   const renderPaginationButtons = () => {
@@ -224,11 +272,27 @@ const ServiceRequest = () => {
     return buttons;
   };
 
+  if (servicesLoading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="text-gray-600 text-lg">Loading service requests...</div>
+      </div>
+    );
+  }
+
+  if (servicesError) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="text-red-600 text-lg">Error: {servicesError}</div>
+      </div>
+    );
+  }
+
   return (
-    <div className="">
+    <div className="p-6">
       <SectionTitle
-        title={"Service Request"}
-        description={"Track, manage and forecast your customers and orders."}
+        title="Service Request"
+        description="Track, manage, and forecast your customers and orders."
       />
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
@@ -237,13 +301,19 @@ const ServiceRequest = () => {
           <div className="flex gap-5">
             <button
               onClick={handleApproveAll}
-              className="py-2 px-4 bg-purple-200 text-black rounded-lg hover:shadow-xl"
+              disabled={isUpdating}
+              className={`py-2 px-4 bg-purple-200 text-black rounded-lg hover:shadow-xl ${
+                isUpdating ? "opacity-50 cursor-not-allowed" : ""
+              }`}
             >
               Approve All
             </button>
             <button
               onClick={handleDenyAll}
-              className="py-2 px-4 border border-gray-200 text-black rounded-lg hover:shadow-xl"
+              disabled={isUpdating}
+              className={`py-2 px-4 border border-gray-200 text-black rounded-lg hover:shadow-xl ${
+                isUpdating ? "opacity-50 cursor-not-allowed" : ""
+              }`}
             >
               Deny All
             </button>
@@ -252,7 +322,7 @@ const ServiceRequest = () => {
         <div className="pb-6">
           <input
             type="text"
-            placeholder="Search"
+            placeholder="Search service requests..."
             value={searchQuery}
             onChange={handleSearchChange}
             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -281,20 +351,43 @@ const ServiceRequest = () => {
                   >
                     <td className="p-4 text-gray-700">{service.seller}</td>
                     <td className="p-4 text-gray-700">
-                      <Link to={`/admin/request-details/${service.id}`}>
+                      <Link
+                        to={`/admin/request-details/${service.id}`}
+                        className="text-purple-600 hover:underline"
+                      >
                         {service.eventName}
                       </Link>
                     </td>
                     <td className="p-4 text-gray-700">{service.date}</td>
                     <td className="p-4 text-gray-700">{service.location}</td>
                     <td className="p-4 text-gray-700">{service.price}</td>
-                    <td className="p-4 text-gray-700">{service.status}</td>
+                    <td className="p-4 text-gray-700">
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs ${
+                          service.status === "Active"
+                            ? "bg-green-100 text-green-800"
+                            : service.status === "Canceled"
+                            ? "bg-red-100 text-red-800"
+                            : "bg-yellow-100 text-yellow-800"
+                        }`}
+                      >
+                        {service.status}
+                      </span>
+                    </td>
                     <td className="p-4">
                       <span className="flex items-center gap-6">
-                        <button onClick={() => handleApprove(service.id)}>
+                        <button
+                          onClick={() => handleApprove(service.id)}
+                          disabled={isUpdating}
+                          className={isUpdating ? "opacity-50 cursor-not-allowed" : ""}
+                        >
                           <Check className="text-green-500 hover:text-green-700" />
                         </button>
-                        <button onClick={() => handleDeny(service.id)}>
+                        <button
+                          onClick={() => handleDeny(service.id)}
+                          disabled={isUpdating}
+                          className={isUpdating ? "opacity-50 cursor-not-allowed" : ""}
+                        >
                           <X className="text-red-500 hover:text-red-700" />
                         </button>
                       </span>
@@ -304,10 +397,10 @@ const ServiceRequest = () => {
               ) : (
                 <tr>
                   <td
-                    colSpan="8"
+                    colSpan="7"
                     className="text-center py-6 text-gray-500 font-medium"
                   >
-                    No Request found matching your criteria.
+                    No service requests found matching your criteria.
                   </td>
                 </tr>
               )}
