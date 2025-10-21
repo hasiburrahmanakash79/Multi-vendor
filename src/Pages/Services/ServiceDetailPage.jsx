@@ -45,7 +45,7 @@ const ServiceDetailPage = () => {
           setBookingTime(initialTime);
         }
       } catch (err) {
-        setError("Failed to fetch service details");
+        setError("Failed to fetch service details", err);
         setLoading(false);
       }
     };
@@ -331,7 +331,7 @@ const ServiceDetailPage = () => {
                       <div>
                         <img
                           src={additional?.image}
-                          className="w-20 h-20 rounded-lg"
+                          className="w-20 h-20  object-cover rounded-lg"
                           alt={additional.title}
                         />
                       </div>

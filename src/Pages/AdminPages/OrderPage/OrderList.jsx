@@ -8,28 +8,29 @@ import {
 import { Link } from "react-router-dom";
 import SectionTitle from "../../../components/SectionTitle";
 import useOrderList from "../../../dashboardHook/useAdminOrders";
-import { format } from "date-fns"; // Add date-fns for formatting if needed, or use built-in
+import { format } from "date-fns";
 
 const OrderList = () => {
   const { orderList, loading } = useOrderList();
-  console.log(orderList, 'Order list ---------------------------------');
+  console.log("Order list response:", orderList); // Debug full response
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const itemsPerPage = 5;
 
   // Use dynamic data if available, fallback to static if loading or empty
   const ordersRaw = loading || !orderList || !orderList.orders ? [] : orderList.orders;
-  
+
   // Map to the required format and format date
   const orders = ordersRaw.map(order => ({
-    id: order.order_id,
+    id: order.id, // Use numeric id instead of order_id
+    order_id: order.order_id, // Keep order_id for display
     eventName: order.event_name,
-    date: format(new Date(order.event_date), 'MMM d, yyyy'), // Format date e.g., Oct 25, 2025
+    date: format(new Date(order.event_date), 'MMM d, yyyy'),
     location: order.location,
-    seller: order.seller,
-    buyer: order.buyer,
+    seller: order.seller.full_name, // Adjusted to match response structure
+    buyer: order.buyer.full_name, // Adjusted to match response structure
     price: `$${order.amount}`,
-    status: order.status, // Assuming status matches: Pending, Accepted, Cancelled, Active, Completed
+    status: order.status,
   }));
 
   // Dynamic stats from response
@@ -71,10 +72,8 @@ const OrderList = () => {
   const currentOrders = filteredOrders.slice(startIndex, endIndex);
 
   const handlePageChange = (page) => setCurrentPage(page);
-  const handlePreviousPage = () =>
-    setCurrentPage((prevApi => (prev) => (prev > 1 ? prev - 1 : prev)));
-  const handleNextPage = () =>
-    setCurrentPage((prev) => (prev < totalPages ? prev + 1 : prev));
+  const handlePreviousPage = () => setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev));
+  const handleNextPage = () => setCurrentPage((prev) => (prev < totalPages ? prev + 1 : prev));
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
     setCurrentPage(1);
@@ -173,7 +172,7 @@ const OrderList = () => {
   };
 
   if (loading) {
-    return <div>Loading orders...</div>; // Or a spinner component
+    return <div>Loading orders...</div>;
   }
 
   return (
@@ -247,7 +246,7 @@ const OrderList = () => {
                     key={order.id}
                     className="border-b border-gray-200 hover:bg-gray-50"
                   >
-                    <td className="p-4 text-gray-700">{order.id}</td>
+                    <td className="p-4 text-gray-700">{order.order_id}</td>
                     <td className="p-4 text-gray-700">
                       <Link to={`/admin/order-details/${order.id}`}>
                         {order.eventName}

@@ -2,61 +2,72 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Mail, MapPin, Calendar, ArrowLeft } from "lucide-react";
 import SectionTitle from "../../../components/SectionTitle";
-import useOrderList from "../../../dashboardHook/useAdminOrders";
+import useAdminOrderDetails from "../../../dashboardHook/useAdminOrderDetails";
 import { format } from "date-fns";
 
+const mapOrderToDetail = (raw) => {
+  console.log("Raw order data:", raw);
+  return {
+    user: {
+      name: raw.buyer.full_name,
+      email: "N/A",
+      location: raw.location,
+      joinDate: format(new Date(raw.created_at), "d MMM, yyyy"),
+      avatar: raw.buyer.photo,
+    },
+    order: {
+      title: raw.event_name,
+      description: "Custom event service – details will be provided by the seller.",
+      image: raw.service.cover_photo || "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=600&h=300&fit=crop",
+      eventLocation: raw.location,
+      eventStart: format(new Date(raw.event_date), "dd/MM/yyyy"),
+      eventEnd: format(new Date(raw.event_date), "dd/MM/yyyy"),
+      status: raw.status,
+      total: `$${raw.amount}`,
+    },
+  };
+};
 
-const mapOrderToDetail = (raw) => ({
-  user: {
-    name: raw.buyer,
-    email: "N/A",
-    location: raw.location,
-    joinDate: format(new Date(raw.created_at), "d MMM, yyyy"),
-    avatar: raw.photo,
-  },
-  order: {
-    title: raw.event_name,
-    description: "Custom event service – details will be provided by the seller.",
-    image: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=600&h=300&fit=crop",
-    eventLocation: raw.location,
-    eventStart: format(new Date(raw.event_date), "dd/MM/yyyy"),
-    eventEnd: format(new Date(raw.event_date), "dd/MM/yyyy"),
-    status: raw.status,
-    total: `$${raw.amount}`,
-  },
-});
-console.log(mapOrderToDetail);
 export default function OrderDetailPage() {
-  const params = useParams();
-  console.log("All useParams():", params);
-  const orderIdFromUrl = params.orderId || params.id || params["*"]; // Adjust based on console log key
-  console.log("Extracted orderId:", orderIdFromUrl);
-  
+  const { orderId } = useParams();
+  console.log("Extracted orderId from useParams:", orderId);
   const navigate = useNavigate();
-  const { orderList, loading } = useOrderList();
+  const { orderDetails, loading, error } = useAdminOrderDetails(orderId);
   const [detail, setDetail] = useState(null);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (loading || !orderList?.orders || !orderIdFromUrl) return;
-    
-    const allOrderIds = orderList.orders.map(o => o.order_id);
-    console.log("Available order_ids:", allOrderIds);
-    
-    const raw = orderList.orders.find((o) => o.order_id === orderIdFromUrl);
-    console.log(raw, "Raw");
-    if (!raw) {
-      setError("Order not found - ID mismatch");
-      return;
+    console.log("useAdminOrderDetails state:", { orderDetails, loading, error });
+    if (loading || !orderDetails) return;
+    try {
+      setDetail(mapOrderToDetail(orderDetails));
+    } catch (err) {
+      console.error("Error mapping order details:", err);
+      setDetail(null);
     }
-    setDetail(mapOrderToDetail(raw));
-  }, [orderList, loading, orderIdFromUrl]);
+  }, [orderDetails, loading]);
 
-  if (loading || !orderIdFromUrl) {
+  if (!orderId) {
+    console.log("No orderId provided in URL");
+    return (
+      <div className="p-6 text-center text-red-600">
+        Invalid order ID
+        <button
+          onClick={() => navigate(-1)}
+          className="ml-4 inline-flex items-center text-sm text-gray-600 hover:bg-gray-100 px-2 py-1 rounded"
+        >
+          <ArrowLeft className="w-4 h-4 mr-1" />
+          Back to Orders
+        </button>
+      </div>
+    );
+  }
+
+  if (loading) {
     return <div className="p-6 text-center text-gray-600">Loading order details…</div>;
   }
 
   if (error || !detail) {
+    console.log("Error or no details:", { error, detail });
     return (
       <div className="p-6 text-center text-red-600">
         {error || "Unable to load order details"}

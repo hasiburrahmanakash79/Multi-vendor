@@ -140,7 +140,7 @@ const router = createBrowserRouter([
         element: <OrderList />,
       },
       {
-        path: "order-details/:id",
+        path: "order-details/:orderId",
         element: <OrderDetailPage />,
       },
       {
