@@ -14,7 +14,7 @@ import { removeAuthTokens } from "../lib/cookie-utils";
 
 const Dashboard = () => {
   const { user } = useMe();
-  console.log(user);
+  // console.log(user);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -42,6 +42,7 @@ const Dashboard = () => {
     { title: "Order", path: "/admin/order", icon: ShoppingIconSvg },
     { title: "Services", path: "/admin/service", icon: ServicesIconSvg },
     { title: "service request", path: "/admin/request", icon: LaborIconSvg },
+    { title: "Subscriber List", path: "/admin/subscribers", icon: LaborIconSvg },
     { title: "Content", path: "/admin/content", icon: ContentIconSvg },
     { title: "Privacy", path: "/admin/add-privacy", icon: PrivacyIconSvg },
   ];

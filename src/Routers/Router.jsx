@@ -34,6 +34,7 @@ import CategoryProducts from "../Pages/CategoryProducts/CategoryProducts";
 import AdminLogin from "../Pages/Authentication/AdminLogin";
 import ServiceRequest from "../Pages/AdminPages/ServiceRequest/ServiceRequest";
 import RequestDetails from "../Pages/AdminPages/ServiceRequest/RequestDetails";
+import SubscriberList from "../Pages/AdminPages/SubscriberList/SubscriberList";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -132,7 +133,11 @@ const router = createBrowserRouter([
         element: <AllUser />,
       },
       {
-        path: "userDetail/:id",
+        path: "users/:id",
+        element: <UserDetail />,
+      },
+      {
+        path: "sellers/:id",
         element: <UserDetail />,
       },
       {
@@ -154,6 +159,10 @@ const router = createBrowserRouter([
       {
         path: "request-details/:id",
         element: <RequestDetails/>,
+      },
+      {
+        path: "subscribers",
+        element: <SubscriberList />,
       },
       {
         path: "content",

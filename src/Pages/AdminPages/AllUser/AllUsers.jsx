@@ -155,7 +155,11 @@ export default function AllUser() {
       );
 
       if (currentPage > 3) {
-        buttons.push(<span key="ellipsis1" className="text-gray-500">...</span>);
+        buttons.push(
+          <span key="ellipsis1" className="text-gray-500">
+            ...
+          </span>
+        );
       }
 
       const start = Math.max(2, currentPage - 1);
@@ -179,7 +183,11 @@ export default function AllUser() {
       }
 
       if (currentPage < totalPages - 2) {
-        buttons.push(<span key="ellipsis2" className="text-gray-500">...</span>);
+        buttons.push(
+          <span key="ellipsis2" className="text-gray-500">
+            ...
+          </span>
+        );
       }
 
       if (totalPages > 1) {
@@ -206,7 +214,9 @@ export default function AllUser() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-80">
-        <div className={`w-10 h-10 border-4 border-[${SPINNER_COLOR}] border-t-transparent rounded-full animate-spin`}></div>
+        <div
+          className={`w-10 h-10 border-4 border-[${SPINNER_COLOR}] border-t-transparent rounded-full animate-spin`}
+        ></div>
       </div>
     );
   }
@@ -251,7 +261,8 @@ export default function AllUser() {
         {/* Results Info */}
         <div className="mb-4">
           <p className="text-sm text-gray-600">
-            Showing {startIndex + 1}-{Math.min(endIndex, filteredUsers.length)} of {filteredUsers.length} results
+            Showing {startIndex + 1}-{Math.min(endIndex, filteredUsers.length)}{" "}
+            of {filteredUsers.length} results
           </p>
         </div>
 
@@ -285,7 +296,14 @@ export default function AllUser() {
                 currentUsers.map((user) => (
                   <tr key={user.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <Link to={`/admin/userDetail/${user.id}`} className="flex items-center">
+                      <Link
+                        to={
+                          user.userType === "Seller"
+                            ? `/admin/sellers/${user.id}`
+                            : `/admin/users/${user.id}`
+                        }
+                        className="flex items-center"
+                      >
                         {user.photo ? (
                           <img
                             src={user.photo}
@@ -303,7 +321,9 @@ export default function AllUser() {
                           </div>
                         )}
                         <div className="ml-3">
-                          <div className="text-sm font-medium text-gray-900">{user.name}</div>
+                          <div className="text-sm font-medium text-gray-900">
+                            {user.name}
+                          </div>
                         </div>
                       </Link>
                     </td>
@@ -311,15 +331,20 @@ export default function AllUser() {
                       <div className="text-sm text-gray-500">{user.email}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{user.joiningDate}</div>
+                      <div className="text-sm text-gray-900">
+                        {user.joiningDate}
+                      </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{user.phoneNumber}</div>
+                      <div className="text-sm text-gray-900">
+                        {user.phoneNumber}
+                      </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span
                         className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
-                          USER_TYPE_STYLES[user.userType] || "bg-gray-100 text-gray-800"
+                          USER_TYPE_STYLES[user.userType] ||
+                          "bg-gray-100 text-gray-800"
                         }`}
                       >
                         {user.userType}
@@ -337,7 +362,10 @@ export default function AllUser() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
+                  <td
+                    colSpan={6}
+                    className="px-6 py-12 text-center text-gray-500"
+                  >
                     No users found matching your criteria.
                   </td>
                 </tr>
@@ -362,7 +390,9 @@ export default function AllUser() {
               Previous
             </button>
 
-            <div className="flex items-center space-x-2">{renderPaginationButtons()}</div>
+            <div className="flex items-center space-x-2">
+              {renderPaginationButtons()}
+            </div>
 
             <button
               onClick={handleNextPage}

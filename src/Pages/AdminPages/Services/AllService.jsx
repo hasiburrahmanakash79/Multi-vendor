@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Link } from "react-router-dom";
 import SectionTitle from "../../../components/SectionTitle";
 import useServicesList from "../../../hooks/useServicesList";
 
 const AllService = () => {
-  const { services, loading: servicesLoading, error: servicesError } = useServicesList([]);
-  
+  const {
+    services,
+    loading: servicesLoading,
+    error: servicesError,
+  } = useServicesList([]);
+
   // Transform fetched services to match table structure
   const transformedServices = services.map((service) => ({
     id: service.id,
@@ -198,14 +201,7 @@ const AllService = () => {
                     className="border-b border-gray-200 hover:bg-gray-50"
                   >
                     <td className="p-4 text-gray-700">{service.id}</td>
-                    <td className="p-4 text-gray-700">
-                      <Link
-                        to={`/admin/order-details/${service.id}`}
-                        className="text-purple-600 hover:underline"
-                      >
-                        {service.eventName}
-                      </Link>
-                    </td>
+                    <td className="p-4 text-gray-700">{service.eventName}</td>
                     <td className="p-4 text-gray-700">{service.date}</td>
                     <td className="p-4 text-gray-700">{service.location}</td>
                     <td className="p-4 text-gray-700">{service.seller}</td>
