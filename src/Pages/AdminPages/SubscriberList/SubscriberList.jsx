@@ -21,7 +21,7 @@ const SubscriberList = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="w-16 h-16 border-4 border-purple-300 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-slate-600 text-lg">Loading subscribers...</p>
         </div>
       </div>
@@ -34,7 +34,7 @@ const SubscriberList = () => {
         {/* Header Section */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+            <div className="w-12 h-12 bg-purple-300 rounded-xl flex items-center justify-center shadow-lg">
               <Users className="w-6 h-6 text-white" />
             </div>
             <div>
@@ -50,8 +50,8 @@ const SubscriberList = () => {
                 <p className="text-sm text-slate-600 mb-1">Total Subscribers</p>
                 <p className="text-4xl font-bold text-slate-900">{subscriberList?.length || 0}</p>
               </div>
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
-                <Mail className="w-8 h-8 text-blue-600" />
+              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center">
+                <Mail className="w-8 h-8 text-purple-300" />
               </div>
             </div>
           </div>
@@ -63,12 +63,12 @@ const SubscriberList = () => {
             {subscriberList.map((subscriber, index) => (
               <div
                 key={subscriber.email_address}
-                className="bg-white rounded-xl shadow-sm border border-slate-200 p-5 hover:shadow-md transition-all duration-200 hover:border-blue-300 group"
+                className="bg-white rounded-xl shadow-sm border border-slate-200 p-5 hover:shadow-md transition-all duration-200 hover:border-purple-300 group"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
                 <div className="flex items-center gap-4">
                   {/* Avatar */}
-                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-lg shadow-md group-hover:scale-110 transition-transform">
+                  <div className="w-12 h-12 bg-gradient-to-br from-purple-300 to-purple-300 rounded-full flex items-center justify-center text-white font-semibold text-lg shadow-md group-hover:scale-110 transition-transform">
                     {getInitials(subscriber.email_address)}
                   </div>
 

@@ -35,6 +35,7 @@ import AdminLogin from "../Pages/Authentication/AdminLogin";
 import ServiceRequest from "../Pages/AdminPages/ServiceRequest/ServiceRequest";
 import RequestDetails from "../Pages/AdminPages/ServiceRequest/RequestDetails";
 import SubscriberList from "../Pages/AdminPages/SubscriberList/SubscriberList";
+import Advertisement from "../Pages/AdminPages/SubscriberList/Advertisement";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -163,6 +164,10 @@ const router = createBrowserRouter([
       {
         path: "subscribers",
         element: <SubscriberList />,
+      },
+      {
+        path: "advertisement",
+        element: <Advertisement />,
       },
       {
         path: "content",
