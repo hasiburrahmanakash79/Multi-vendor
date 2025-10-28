@@ -127,7 +127,7 @@ export default function SellerOverview() {
   };
 
   return (
-    <div className="min-h-screen container mx-auto mt-16 md:mt-0 p-4 sm:p-6 lg:p-8">
+    <div className="min-h-screen container mx-auto p-4 sm:p-6 lg:p-8">
       {/* Header */}
       <div className="mb-6 sm:mb-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">

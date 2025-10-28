@@ -101,7 +101,7 @@ export default function ServiceTimeline() {
   const daysLeft = calculateDaysLeft();
 
   return (
-    <div className="min-h-screen py-8 container mx-auto mt-16 md:mt-0 px-4">
+    <div className="min-h-screen py-8 container mx-auto  px-4">
       <div className="mb-6">
         <Link
           to="/manage-orders"

@@ -195,7 +195,7 @@ const ServiceDetailPage = () => {
 
   return (
     <div className="min-h-screen">
-      <div className="container mx-auto mt-16 md:mt-0">
+      <div className="container mx-auto ">
         <div className="px-4 py-8">
           {saveError && (
             <div className="text-red-500 text-center mb-4">{saveError}</div>

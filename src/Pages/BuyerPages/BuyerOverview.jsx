@@ -120,7 +120,7 @@ export default function BuyerOverview() {
   };
 
   return (
-    <div className="min-h-screen container mx-auto p-4 sm:p-6 lg:p-8">
+    <div className="min-h-screen container mx-auto">
       <div className="">
         {/* Header */}
         <div className="mb-6 sm:mb-8">

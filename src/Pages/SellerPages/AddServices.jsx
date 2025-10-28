@@ -534,7 +534,7 @@ const AddServices = () => {
               required
             />
           </div>
-          <div className="grid grid-cols-2 gap-7">
+          <div className="grid md:grid-cols-2 gap-7">
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
                 Cover Photo *
@@ -597,7 +597,7 @@ const AddServices = () => {
             <label className="block text-sm font-semibold text-gray-700 mb-2">
               Portfolio (Up to 5 images) *
             </label>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+            <div className="grid sm:grid-cols-3 md:grid-cols-5 gap-4">
               {portfolioFiles.map((file, index) => (
                 <div key={index} className="relative group">
                   <img
@@ -681,38 +681,43 @@ const AddServices = () => {
               </div>
             </div>
           )}
-          <div className="flex flex-col sm:flex-row justify-between gap-4">
-            <div className="flex gap-5">
-              <button
-                onClick={() => setShowAdditionalModal(true)}
-                className="px-6 py-3 bg-indigo-100 text-blue-600 rounded-full hover:bg-indigo-200 border border-indigo-300 transition-colors duration-200 font-semibold"
-              >
-                +  Add Additional
-              </button>
-              <button
-                onClick={() => setShowBenefitModal(true)}
-                className="px-6 py-3 bg-green-100 text-green-600 rounded-full hover:bg-green-200 border border-green-300 transition-colors duration-200 font-semibold"
-              >
-                + Add Benefit
-              </button>
-            </div>
-            <button
-              onClick={async () => {
-                if (isSubmitting) return;
-                setIsSubmitting(true);
-                try {
-                  await handleSubmit();
-                } finally {
-                  setIsSubmitting(false);
-                }
-              }}
-              disabled={isSubmitting}
-              className={`px-6 py-3 bg-[#c8c1f5] text-gray-600 rounded-full hover:bg-[#beb6f5] transition-colors duration-200 font-semibold ${isSubmitting ? "opacity-60 cursor-not-allowed" : ""
-                }`}
-            >
-              {isSubmitting ? "Submitting..." : "Submit"}
-            </button>
-          </div>
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4 flex-wrap">
+  {/* Left Side Buttons */}
+  <div className="flex flex-col sm:flex-row gap-3 sm:gap-5 w-full sm:w-auto">
+    <button
+      onClick={() => setShowAdditionalModal(true)}
+      className="w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3 bg-indigo-100 text-blue-600 rounded-full hover:bg-indigo-200 border border-indigo-300 transition-colors duration-200 font-semibold text-sm sm:text-base"
+    >
+      + Add Additional
+    </button>
+    <button
+      onClick={() => setShowBenefitModal(true)}
+      className="w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3 bg-green-100 text-green-600 rounded-full hover:bg-green-200 border border-green-300 transition-colors duration-200 font-semibold text-sm sm:text-base"
+    >
+      + Add Benefit
+    </button>
+  </div>
+
+  {/* Submit Button */}
+  <button
+    onClick={async () => {
+      if (isSubmitting) return;
+      setIsSubmitting(true);
+      try {
+        await handleSubmit();
+      } finally {
+        setIsSubmitting(false);
+      }
+    }}
+    disabled={isSubmitting}
+    className={`w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3 bg-[#c8c1f5] text-gray-600 rounded-full hover:bg-[#beb6f5] transition-colors duration-200 font-semibold text-sm sm:text-base ${
+      isSubmitting ? "opacity-60 cursor-not-allowed" : ""
+    }`}
+  >
+    {isSubmitting ? "Submitting..." : "Submit"}
+  </button>
+</div>
+
         </div>
       </div>
 

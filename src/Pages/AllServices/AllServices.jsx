@@ -217,7 +217,7 @@ const AllServices = () => {
     );
 
   return (
-    <div className="py-6 px-4 min-h-screen container mx-auto mt-16 md:mt-0">
+    <div className="py-6 px-4 min-h-screen container mx-auto">
       {saveError && (
         <div className="text-red-500 text-center mb-4">{saveError}</div>
       )}

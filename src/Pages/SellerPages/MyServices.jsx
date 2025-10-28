@@ -15,7 +15,7 @@ const useModal = () => {
 
 // Service Row Component
 const ServiceRow = ({ service, onEdit, onDelete }) => (
-  <div className="sm:grid sm:grid-cols-14 sm:gap-2 sm:p-3 sm:items-center sm:hover:bg-gray-50 sm:transition-colors sm:duration-300 flex flex-col bg-white rounded-xl shadow-md border border-gray-100 p-4 m-3 sm:m-0 sm:shadow-none sm:border-0 sm:bg-transparent transition-all duration-200">
+  <div className="sm:grid sm:grid-cols-14 sm:gap-2 sm:p-3 sm:items-center sm:hover:bg-gray-50 sm:transition-colors sm:duration-300 flex flex-col bg-white rounded-xl shadow-md border border-gray-100 p-4 mb-3 sm:m-0 sm:shadow-none sm:border-0 sm:bg-transparent transition-all duration-200">
     {/* Service Info (Image, Title, Location) */}
     <div className="sm:col-span-4 flex items-start space-x-3 sm:items-center">
       <div className="w-16 h-12 sm:w-20 sm:h-14 rounded-lg overflow-hidden flex-shrink-0">
@@ -385,8 +385,8 @@ export default function MyServices() {
   }
 
   return (
-    <div className="min-h-screen container mx-auto px-4 sm:px-6 py-4 sm:py-8 mt-16 md:mt-0">
-      <main>
+    <div className="min-h-screen container mx-auto px-4 sm:px-6 py-4 sm:py-8">
+      <div>
         {/* Page Header */}
         <div className="flex justify-between items-center mb-6 gap-3">
           <h1 className="text-xl sm:text-2xl font-bold text-gray-800">My Services</h1>
@@ -514,7 +514,7 @@ export default function MyServices() {
           service={selectedService}
           onDelete={handleDelete}
         />
-      </main>
+      </div>
     </div>
   );
 }
