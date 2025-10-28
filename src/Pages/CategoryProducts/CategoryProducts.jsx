@@ -4,12 +4,23 @@ import { Heart } from "lucide-react";
 import Swal from "sweetalert2";
 import useServicesList from "../../hooks/useServicesList";
 import useSavedList from "../../hooks/useSavedList";
+import { useState } from "react";
 
 const CategoryProducts = () => {
   const { slug } = useParams();
   const { services, loading: servicesLoading } = useServicesList([]);
-  const { savedServices, saveService, loading: saveLoading, error: saveError } = useSavedList();
-  
+  const {
+    savedServices,
+    folders,
+    loading: saveLoading,
+    error: saveError,
+    saveServiceToFolder,
+    createFolder,
+  } = useSavedList();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedServiceId, setSelectedServiceId] = useState(null);
+
   // Filter services by category slug
   const filteredServices = services.filter(
     (service) => service.category?.slug?.toLowerCase() === slug.toLowerCase()
@@ -23,44 +34,61 @@ const CategoryProducts = () => {
     );
   }
 
-  // Check if a service is saved
   const isServiceSaved = (serviceId) => {
     return savedServices.some((saved) => saved.service?.id === serviceId);
   };
 
-  const handleSaveService = async (serviceId) => {
+  const openSaveModal = (e, serviceId) => {
+    e.preventDefault();
     if (isServiceSaved(serviceId)) {
       Swal.fire({
-        position: "top-end",
-        showConfirmButton: false,
-        timer: 1500,
-        toast: true,
-        text: "You have already saved this service.",
         icon: "info",
+        title: "Already Saved",
+        text: "This service is already in your saved list.",
+        toast: true,
+        position: "top-end",
+        timer: 2000,
+        showConfirmButton: false,
       });
       return;
     }
+    setSelectedServiceId(serviceId);
+    setIsModalOpen(true);
+  };
 
-    console.log("Saving service with ID:", serviceId);
-    const success = await saveService(serviceId);
+  const handleSaveToFolder = async (listTitle) => {
+    const success = await saveServiceToFolder(selectedServiceId, listTitle);
     if (success) {
       Swal.fire({
-        position: "top-end",
         icon: "success",
-        title: "Service saved successfully",
-        showConfirmButton: false,
-        timer: 1500,
+        title: "Saved!",
+        text: "Service added to your list.",
         toast: true,
-      });
-    } else {
-      Swal.fire({
         position: "top-end",
-        icon: "error",
-        title: "Failed to save service",
-        showConfirmButton: false,
         timer: 1500,
-        toast: true,
+        showConfirmButton: false,
       });
+      setIsModalOpen(false);
+    }
+  };
+
+  const handleCreateAndSave = async () => {
+    const { value: folderName } = await Swal.fire({
+      title: "Create New List",
+      input: "text",
+      inputLabel: "List Name",
+      inputPlaceholder: "e.g., Photography, Design Ideas",
+      showCancelButton: true,
+      inputValidator: (value) => {
+        if (!value?.trim()) return "List name is required!";
+      },
+    });
+
+    if (folderName) {
+      const newFolder = await createFolder(folderName);
+      if (newFolder) {
+        await handleSaveToFolder(folderName);
+      }
     }
   };
 
@@ -122,27 +150,70 @@ const CategoryProducts = () => {
                   <span className="flex items-baseline">
                     <p className="font-semibold text-gray-800">${service.price}</p>
                   </span>
-                  <span className="bg-gray-100 p-2 rounded-full hover:bg-gray-200 transition-colors duration-300">
+                  <button
+                    onClick={(e) => openSaveModal(e, service.id)}
+                    className="p-2 rounded-full hover:bg-gray-100 transition"
+                  >
                     <Heart
-                      className={`w-5 h-5 cursor-pointer transition-colors duration-300 ${
+                      className={`w-5 h-5 transition-colors ${
                         saveLoading
                           ? "text-gray-400 animate-pulse"
                           : isServiceSaved(service.id)
                           ? "text-red-500 fill-red-500"
                           : "text-gray-400 hover:text-red-500"
                       }`}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handleSaveService(service.id);
-                      }}
                     />
-                  </span>
+                  </button>
                 </div>
               </Link>
             ))}
           </div>
         )}
       </div>
+
+      {/* Save Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6 animate-fadeIn">
+            <h3 className="text-xl font-bold text-gray-800 mb-4">Save to List</h3>
+
+            <div className="space-y-2 max-h-64 overflow-y-auto">
+              {folders.length > 0 ? (
+                folders.map((folder) => (
+                  <button
+                    key={folder.id}
+                    onClick={() => handleSaveToFolder(folder.title)}
+                    className="w-full text-left p-3 rounded-lg hover:bg-gray-100 transition flex justify-between items-center"
+                    disabled={saveLoading}
+                  >
+                    <span className="font-medium">{folder.title}</span>
+                    {saveLoading && <span className="text-xs text-gray-500">Saving...</span>}
+                  </button>
+                ))
+              ) : (
+                <p className="text-gray-500 text-center py-4">No lists yet. Create one!</p>
+              )}
+            </div>
+
+            <div className="mt-6 pt-4">
+              <button
+                onClick={handleCreateAndSave}
+                className="w-full bg-[#1E40AF] text-white py-2.5 rounded-lg font-medium hover:bg-[#1E3A8A] transition"
+                disabled={saveLoading}
+              >
+                {saveLoading ? "Creating..." : "+ Create New List"}
+              </button>
+            </div>
+
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="mt-3 w-full text-gray-600 hover:text-gray-800 font-medium"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

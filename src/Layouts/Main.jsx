@@ -20,4 +20,3 @@ const Main = () => {
 };
 
 export default Main;
-//  className="container mx-auto mt-30 md:mt-15"

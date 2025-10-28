@@ -27,11 +27,11 @@ export default function AccountSettings() {
     confirm: '',
   });
   const [passwordError, setPasswordError] = useState('');
-  const [notifications, setNotifications] = useState({
-    popup: true,
-    chat: true,
-    updates: false,
-  });
+  // const [notifications, setNotifications] = useState({
+  //   popup: true,
+  //   chat: true,
+  //   updates: false,
+  // });
 
   // Update fullName, phone, and image preview states when user data changes
   useEffect(() => {
@@ -57,12 +57,12 @@ export default function AccountSettings() {
     }
   };
 
-  const handleToggle = (key) => {
-    setNotifications((prev) => ({
-      ...prev,
-      [key]: !prev[key],
-    }));
-  };
+  // const handleToggle = (key) => {
+  //   setNotifications((prev) => ({
+  //     ...prev,
+  //     [key]: !prev[key],
+  //   }));
+  // };
 
   const handlePasswordChange = (e) => {
     const { name, value } = e.target;
@@ -610,7 +610,7 @@ export default function AccountSettings() {
   }
 
   return (
-    <div className="min-h-screen container mx-auto mt-16 md:mt-0">
+    <div className="min-h-screen container mx-auto">
       <div className="px-4 py-8">
         {/* Header */}
         <div className="flex items-center space-x-4 mb-8">

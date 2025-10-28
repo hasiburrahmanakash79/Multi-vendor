@@ -14,10 +14,13 @@ const AllServices = () => {
   } = useServicesList([]);
   const {
     savedServices,
-    saveService,
+    folders,
     loading: saveLoading,
     error: saveError,
+    saveServiceToFolder,
+    createFolder,
   } = useSavedList();
+  console.log(services);
 
   // State for filters, search, and pagination
   const [searchTerm, setSearchTerm] = useState("");
@@ -25,6 +28,9 @@ const AllServices = () => {
     category: [],
     priceRange: [0, 200],
     rating: 0,
+    location: "",
+    timeFrom: "",
+    timeTo: "",
   });
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6; // Number of services per page
@@ -45,42 +51,60 @@ const AllServices = () => {
     return savedServices.some((saved) => saved.service.id === serviceId);
   };
 
-  // Handle saving a service
-  const handleSaveService = async (serviceId) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedServiceId, setSelectedServiceId] = useState(null);
+
+  const openSaveModal = (e, serviceId) => {
+    e.preventDefault();
     if (isServiceSaved(serviceId)) {
       Swal.fire({
-        position: "top-end",
-        showConfirmButton: false,
-        timer: 1500,
-        toast: true,
-        text: "You have already saved this service.",
         icon: "info",
+        title: "Already Saved",
+        text: "This service is already in your saved list.",
+        toast: true,
+        position: "top-end",
+        timer: 2000,
+        showConfirmButton: false,
       });
       return;
     }
+    setSelectedServiceId(serviceId);
+    setIsModalOpen(true);
+  };
 
-    console.log("Saving service with ID:", serviceId);
-    const success = await saveService(serviceId);
+  const handleSaveToFolder = async (listTitle) => {
+    const success = await saveServiceToFolder(selectedServiceId, listTitle);
     if (success) {
-      console.log("Service saved successfully");
       Swal.fire({
-        position: "top-end",
         icon: "success",
-        title: "Service saved successfully",
-        showConfirmButton: false,
-        timer: 1500,
+        title: "Saved!",
+        text: "Service added to your list.",
         toast: true,
-      });
-    } else {
-      console.error("Failed to save service");
-      Swal.fire({
         position: "top-end",
-        icon: "error",
-        title: "Failed to save service",
-        showConfirmButton: false,
         timer: 1500,
-        toast: true,
+        showConfirmButton: false,
       });
+      setIsModalOpen(false);
+    }
+  };
+
+  const handleCreateAndSave = async () => {
+    const { value: folderName } = await Swal.fire({
+      title: "Create New List",
+      input: "text",
+      inputLabel: "List Name",
+      inputPlaceholder: "e.g., Photography, Design Ideas",
+      showCancelButton: true,
+      inputValidator: (value) => {
+        if (!value?.trim()) return "List name is required!";
+      },
+    });
+
+    if (folderName) {
+      const newFolder = await createFolder(folderName);
+      if (newFolder) {
+        await handleSaveToFolder(folderName);
+      }
     }
   };
 
@@ -97,8 +121,14 @@ const AllServices = () => {
       parseFloat(service.price) <= filters.priceRange[1];
     const matchesRating =
       filters.rating === 0 || service.average_rating >= filters.rating;
+    const matchesLocation = service.location
+      .toLowerCase()
+      .includes(filters.location.toLowerCase());
+    const matchesTime =
+      (!filters.timeFrom || service.time_from >= filters.timeFrom) &&
+      (!filters.timeTo || service.time_to <= filters.timeTo);
 
-    return matchesSearch && matchesCategory && matchesPrice && matchesRating;
+    return matchesSearch && matchesCategory && matchesPrice && matchesRating && matchesLocation && matchesTime;
   });
 
   // Pagination logic
@@ -149,6 +179,21 @@ const AllServices = () => {
     const value = parseFloat(e.target.value);
     setFilters((prev) => ({ ...prev, rating: value }));
     setCurrentPage(1); // Reset to first page on filter change
+  };
+
+  const handleLocationChange = (e) => {
+    setFilters((prev) => ({ ...prev, location: e.target.value }));
+    setCurrentPage(1);
+  };
+
+  const handleTimeFromChange = (e) => {
+    setFilters((prev) => ({ ...prev, timeFrom: e.target.value }));
+    setCurrentPage(1);
+  };
+
+  const handleTimeToChange = (e) => {
+    setFilters((prev) => ({ ...prev, timeTo: e.target.value }));
+    setCurrentPage(1);
   };
 
   // Pagination navigation
@@ -255,6 +300,44 @@ const AllServices = () => {
               <span className="text-sm text-gray-600">
                 {filters.rating.toFixed(1)}
               </span>
+            </div>
+          </div>
+
+          {/* Location Filter */}
+          <div className="mb-6 border border-gray-200 bg-[#D7D4EE] rounded-xl">
+            <div className="px-4 pt-3 pb-1">
+              <h4 className="text-sm font-medium text-gray-700 mb-2">Location</h4>
+            </div>
+            <div className="bg-white p-5 border border-gray-200 rounded-xl">
+              <input
+                type="text"
+                placeholder="Search location..."
+                value={filters.location}
+                onChange={handleLocationChange}
+                className="w-full px-4 py-2 text-sm border border-gray-200 outline-none rounded-lg"
+              />
+            </div>
+          </div>
+
+          {/* Available Time Filter */}
+          <div className="mb-6 border border-gray-200 bg-[#D7D4EE] rounded-xl">
+            <div className="px-4 pt-3 pb-1">
+              <h4 className="text-sm font-medium text-gray-700 mb-2">Available Time</h4>
+            </div>
+            <div className="flex items-center gap-2 bg-white p-5 border border-gray-200 rounded-xl">
+              <input
+                type="time"
+                value={filters.timeFrom}
+                onChange={handleTimeFromChange}
+                className="w-1/2 px-4 py-2 text-sm border border-gray-200 outline-none rounded-lg"
+              />
+              <span className="text-sm text-gray-600">to</span>
+              <input
+                type="time"
+                value={filters.timeTo}
+                onChange={handleTimeToChange}
+                className="w-1/2 px-4 py-2 text-sm border border-gray-200 outline-none rounded-lg"
+              />
             </div>
           </div>
         </div>
@@ -370,10 +453,7 @@ const AllServices = () => {
                             ? "text-red-500 fill-red-500"
                             : "text-gray-400 hover:text-red-500"
                         }`}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          handleSaveService(service.id);
-                        }}
+                        onClick={(e) => openSaveModal(e, service.id)}
                       />
                     </span>
                   </div>
@@ -419,6 +499,50 @@ const AllServices = () => {
           </div>
         </div>
       </div>
+
+      {/* Save Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6 animate-fadeIn">
+            <h3 className="text-xl font-bold text-gray-800 mb-4">Save to List</h3>
+
+            <div className="space-y-2 max-h-64 overflow-y-auto">
+              {folders.length > 0 ? (
+                folders.map((folder) => (
+                  <button
+                    key={folder.id}
+                    onClick={() => handleSaveToFolder(folder.title)}
+                    className="w-full text-left p-3 rounded-lg hover:bg-gray-100 transition flex justify-between items-center"
+                    disabled={saveLoading}
+                  >
+                    <span className="font-medium">{folder.title}</span>
+                    {saveLoading && <span className="text-xs text-gray-500">Saving...</span>}
+                  </button>
+                ))
+              ) : (
+                <p className="text-gray-500 text-center py-4">No lists yet. Create one!</p>
+              )}
+            </div>
+
+            <div className="mt-6 pt-4 border-t">
+              <button
+                onClick={handleCreateAndSave}
+                className="w-full bg-[#1E40AF] text-white py-2.5 rounded-lg font-medium hover:bg-[#1E3A8A] transition"
+                disabled={saveLoading}
+              >
+                {saveLoading ? "Creating..." : "+ Create New List"}
+              </button>
+            </div>
+
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="mt-3 w-full text-gray-600 hover:text-gray-800 font-medium"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

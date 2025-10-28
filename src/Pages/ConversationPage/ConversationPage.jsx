@@ -967,7 +967,7 @@ export default function ConversationPage() {
   };
 
   return (
-    <div className="flex h-[93vh] bg-white  mt-16 md:mt-0">
+    <div className="flex bg-white">
       <button
         className="lg:hidden fixed top-4 left-4 z-20 p-2 bg-[#C8C1F5] text-black rounded-full"
         onClick={() => setShowSidebar(!showSidebar)}
@@ -1072,7 +1072,7 @@ export default function ConversationPage() {
       <div className="flex-1 flex flex-col">
         {currentContact ? (
           <>
-            <div className="p-3 sm:p-4 border-b border-gray-200 bg-white relative">
+            <div className="p-3 sm:p-4 border-b border-gray-200 fixed bg-white w-full">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 sm:gap-3">
                   <button
@@ -1090,7 +1090,6 @@ export default function ConversationPage() {
                     </h2>
                     <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 text-xs sm:text-sm text-gray-500">
                       <span>Last seen: {currentContact.lastSeen}</span>
-                      <span>{currentContact.localTime}</span>
                     </div>
                   </div>
                 </div>
@@ -1100,7 +1099,7 @@ export default function ConversationPage() {
               </div>
             </div>
 
-            <div className="flex-1 p-2 sm:p-4 overflow-y-auto bg-gray-50">
+            <div className="flex-1 p-2 sm:p-4 overflow-y-auto md:pt-0 pt-18 md:pb-0 pb-28">
               {currentContact.messages.map((msg) => (
                 <div
                   key={msg.id}
@@ -1209,7 +1208,7 @@ export default function ConversationPage() {
               ))}
             </div>
 
-            <div className="p-3 sm:p-4 border-t border-gray-200 bg-white">
+            <div className="p-3 sm:p-4 border-t mb-14 fixed bottom-0 w-full border-gray-200 bg-white">
               <div className="flex items-center gap-2 sm:gap-3">
                 <div className="flex-1 relative">
                   <input
