@@ -53,7 +53,7 @@ export default function AllUser() {
   const [activeTab, setActiveTab] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-
+console.log(userList);
   // Map API userList to UI format
   const mappedUsers = useMemo(() => {
     return (

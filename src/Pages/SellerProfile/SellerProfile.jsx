@@ -19,8 +19,7 @@ const SellerProfile = () => {
       try {
         setLoading(true);
         const response = await apiClient.get(`/user/view-seller/${id}`);
-        console.log(response, "Seller details-------------------");
-        setSeller(response.data); // Set the API response data
+        setSeller(response.data);
         console.log(response.data, "Seller details-------------------");
         setLoading(false);
       } catch (err) {

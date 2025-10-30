@@ -157,26 +157,26 @@ const OrderPreview = () => {
   // Fallback if no service data is available
   if (!service || !updatedBookingDetails) {
     return (
-      <div className="min-h-screen py-8 container mx-auto mt-30 md:mt-15">
+      <div className="min-h-screen py-8 container mx-auto">
         <div className="px-4">
-          <h1 className="text-3xl font-bold text-gray-800 mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-8">
             Order Preview
           </h1>
-          <p className="text-gray-600">No booking details available. Please return to the service page to make a booking.</p>
+          <p className="text-sm sm:text-base text-gray-600">No booking details available. Please return to the service page to make a booking.</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen py-8 container mx-auto mt-316 md:mt-0">
-      <div className="px-4">
-        <h1 className="text-3xl font-bold text-gray-800 mb-8">
+    <div className="min-h-screen py-6 sm:py-8 container mx-auto">
+      <div className="px-4 sm:px-6 lg:px-8">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6 sm:mb-8">
           Order Preview
         </h1>
 
         <div className="">
-          <div className="relative h-[500px] bg-gradient-to-r from-orange-200 to-orange-300 rounded-2xl">
+          <div className="relative h-[200px] sm:h-[300px] md:h-[400px] lg:h-[500px] bg-gradient-to-r from-orange-200 to-orange-300 rounded-2xl">
             <img
               src={service.coverPhoto || "https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"}
               alt={service.title || "Service image"}
@@ -185,34 +185,34 @@ const OrderPreview = () => {
             <div className="absolute inset-0 bg-black/20 bg-opacity-20 rounded-2xl"></div>
           </div>
 
-          <div className="mt-10">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+          <div className="mt-6 sm:mt-10">
+            <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-4 sm:mb-6">
               {service.title}
             </h2>
 
-            <div className="mb-8">
-              <h3 className="text-lg font-bold text-gray-700 mb-3">
+            <div className="mb-6 sm:mb-8">
+              <h3 className="text-base sm:text-lg font-bold text-gray-700 mb-2 sm:mb-3">
                 Descriptions
               </h3>
-              <p className="text-gray-600 leading-relaxed">
+              <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
                 {service.description}
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-8">
-              <div className="space-y-5">
-                <h3 className="text-lg font-bold text-gray-700 mb-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+              <div className="space-y-4 sm:space-y-5">
+                <h3 className="text-base sm:text-lg font-bold text-gray-700 mb-3 sm:mb-4">
                   Booking Info
                 </h3>
 
-                <div className="bg-gray-50 p-4 rounded-2xl shadow-lg">
+                <div className="bg-gray-50 p-3 sm:p-4 rounded-2xl shadow-lg">
                   <div className="flex justify-between items-center mb-2">
                     <div>
-                      <p className="font-medium text-gray-800">{formattedDate}</p>
-                      <p className="text-gray-600">{formattedTime}</p>
+                      <p className="text-sm sm:text-base font-medium text-gray-800">{formattedDate}</p>
+                      <p className="text-xs sm:text-sm text-gray-600">{formattedTime}</p>
                     </div>
                     <button
-                      className="text-black bg-gray-200 py-2 px-4 rounded-full font-medium hover:bg-gray-300 transition duration-200"
+                      className="text-sm text-black bg-gray-200 py-1 sm:py-2 px-3 sm:px-4 rounded-full font-medium hover:bg-gray-300 transition duration-200"
                       onClick={openBookingModal}
                     >
                       Change
@@ -220,19 +220,19 @@ const OrderPreview = () => {
                   </div>
                 </div>
 
-                <div className="bg-gray-50 p-4 rounded-2xl shadow-lg">
+                <div className="bg-gray-50 p-3 sm:p-4 rounded-2xl shadow-lg">
                   <div className="flex justify-between items-start mb-2">
                     <div>
-                      <h4 className="font-medium text-gray-800 mb-1">
+                      <h4 className="text-sm sm:text-base font-medium text-gray-800 mb-1">
                         Event Location
                       </h4>
-                      <div className="flex items-center text-gray-600">
+                      <div className="flex items-center text-xs sm:text-sm text-gray-600">
                         <MapPin className="w-4 h-4 mr-2" />
                         <span>{updatedBookingDetails.event_location || "No location provided"}</span>
                       </div>
                     </div>
                     <button
-                      className="text-black bg-gray-200 py-2 px-4 rounded-full font-medium hover:bg-gray-300 transition duration-200"
+                      className="text-sm text-black bg-gray-200 py-1 sm:py-2 px-3 sm:px-4 rounded-full font-medium hover:bg-gray-300 transition duration-200"
                       onClick={openLocationModal}
                     >
                       Change
@@ -241,35 +241,35 @@ const OrderPreview = () => {
                 </div>
               </div>
 
-              <div className="bg-gray-50 rounded-lg p-6 shadow-lg">
-                <h3 className="text-lg font-bold text-gray-700 mb-4">
+              <div className="bg-gray-50 rounded-lg p-4 sm:p-6 shadow-lg">
+                <h3 className="text-base sm:text-lg font-bold text-gray-700 mb-3 sm:mb-4">
                   Price Breakdown
                 </h3>
 
-                <div className="space-y-3">
+                <div className="space-y-2 sm:space-y-3">
                   <div className="flex justify-between">
-                    <span className="text-gray-600">{service.title}</span>
-                    <span className="font-medium text-gray-800">${service.basePrice}</span>
+                    <span className="text-xs sm:text-sm text-gray-600">{service.title}</span>
+                    <span className="text-xs sm:text-sm font-medium text-gray-800">${service.basePrice}</span>
                   </div>
 
                   {updatedBookingDetails.additionals?.map((add) => (
                     <div key={add.id} className="flex justify-between">
-                      <span className="text-gray-600">{add.title}</span>
-                      <span className="font-medium text-gray-800">${add.price}</span>
+                      <span className="text-xs sm:text-sm text-gray-600">{add.title}</span>
+                      <span className="text-xs sm:text-sm font-medium text-gray-800">${add.price}</span>
                     </div>
                   ))}
 
-                  <hr className="border-gray-300 my-4" />
+                  <hr className="border-gray-300 my-3 sm:my-4" />
 
                   <div className="flex justify-between">
-                    <span className="font-semibold text-gray-800">Total</span>
-                    <span className="font-bold text-gray-800">${updatedBookingDetails.totalPrice}</span>
+                    <span className="text-sm sm:text-base font-semibold text-gray-800">Total</span>
+                    <span className="text-sm sm:text-base font-bold text-gray-800">${updatedBookingDetails.totalPrice}</span>
                   </div>
                 </div>
 
-                <div className="mt-8 w-full">
+                <div className="mt-6 sm:mt-8 w-full">
                   <button
-                    className="w-full rounded-full bg-gray-800 hover:bg-gray-900 text-white font-medium px-12 py-3 hover:shadow-xl transition duration-200"
+                    className="w-full rounded-full bg-gray-800 hover:bg-gray-900 text-white font-medium px-8 sm:px-12 py-2 sm:py-3 hover:shadow-xl transition duration-200 text-sm sm:text-base"
                     onClick={handleConfirmOrder}
                   >
                     Confirm Order
@@ -284,13 +284,13 @@ const OrderPreview = () => {
       {/* Booking Info Modal */}
       {showBookingModal && (
         <div className="fixed inset-0 bg-black/60 bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-8 max-w-md w-full">
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">Change Booking Details</h2>
-            <p className="text-gray-500 mb-6">Select a new date and time for your booking.</p>
+          <div className="bg-white rounded-2xl p-4 sm:p-8 max-w-md w-full">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2">Change Booking Details</h2>
+            <p className="text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6">Select a new date and time for your booking.</p>
             
-            <div className="space-y-4 mb-8">
+            <div className="space-y-4 mb-6 sm:mb-8">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                   Select Date
                 </label>
                 <DatePicker
@@ -298,12 +298,12 @@ const OrderPreview = () => {
                   onChange={(date) => setTempBookingDate(date)}
                   dateFormat="MM/dd/yyyy"
                   minDate={new Date()} // Restrict to future dates
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C8C1F5] text-sm"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C8C1F5] text-xs sm:text-sm"
                   placeholderText="Select a date"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                   Select Time
                 </label>
                 <DatePicker
@@ -315,21 +315,21 @@ const OrderPreview = () => {
                   timeCaption="Time"
                   dateFormat="h:mm aa"
                   {...getTimeConstraints()}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C8C1F5] text-sm"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C8C1F5] text-xs sm:text-sm"
                   placeholderText="Select a time"
                 />
               </div>
             </div>
             
-            <div className="flex space-x-4">
+            <div className="flex space-x-3 sm:space-x-4">
               <button 
-                className="flex-1 py-3 px-6 border border-gray-300 rounded-full font-medium text-gray-700 hover:bg-gray-50 transition duration-200"
+                className="flex-1 py-2 sm:py-3 px-4 sm:px-6 border border-gray-300 rounded-full font-medium text-gray-700 hover:bg-gray-50 transition duration-200 text-xs sm:text-sm"
                 onClick={closeBookingModal}
               >
                 Cancel
               </button>
               <button 
-                className="flex-1 py-3 px-6 bg-gray-800 hover:bg-gray-900 text-white rounded-full font-medium transition duration-200"
+                className="flex-1 py-2 sm:py-3 px-4 sm:px-6 bg-gray-800 hover:bg-gray-900 text-white rounded-full font-medium transition duration-200 text-xs sm:text-sm"
                 onClick={handleSaveBooking}
               >
                 Save
@@ -342,34 +342,34 @@ const OrderPreview = () => {
       {/* Location Modal */}
       {showLocationModal && (
         <div className="fixed inset-0 bg-black/60 bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-8 max-w-md w-full">
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">Change Location</h2>
-            <p className="text-gray-500 mb-6">Enter a new location for your booking.</p>
+          <div className="bg-white rounded-2xl p-4 sm:p-8 max-w-md w-full">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2">Change Location</h2>
+            <p className="text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6">Enter a new location for your booking.</p>
             
-            <div className="space-y-4 mb-8">
+            <div className="space-y-4 mb-6 sm:mb-8">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                   Your Location
                 </label>
                 <input
                   type="text"
                   value={tempLocation}
                   onChange={(e) => setTempLocation(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C8C1F5] text-sm"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C8C1F5] text-xs sm:text-sm"
                   placeholder="Enter your location"
                 />
               </div>
             </div>
             
-            <div className="flex space-x-4">
+            <div className="flex space-x-3 sm:space-x-4">
               <button 
-                className="flex-1 py-3 px-6 border border-gray-300 rounded-full font-medium text-gray-700 hover:bg-gray-50 transition duration-200"
+                className="flex-1 py-2 sm:py-3 px-4 sm:px-6 border border-gray-300 rounded-full font-medium text-gray-700 hover:bg-gray-50 transition duration-200 text-xs sm:text-sm"
                 onClick={closeLocationModal}
               >
                 Cancel
               </button>
               <button 
-                className="flex-1 py-3 px-6 bg-gray-800 hover:bg-gray-900 text-white rounded-full font-medium transition duration-200"
+                className="flex-1 py-2 sm:py-3 px-4 sm:px-6 bg-gray-800 hover:bg-gray-900 text-white rounded-full font-medium transition duration-200 text-xs sm:text-sm"
                 onClick={handleSaveLocation}
               >
                 Save
@@ -382,37 +382,37 @@ const OrderPreview = () => {
       {/* Confirmation Modal */}
       {showConfirmModal && (
         <div className="fixed inset-0 bg-black/60 bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-8 max-w-md w-full">
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">Confirm Your Order</h2>
-            <p className="text-gray-500 mb-6">Are you sure you want to confirm this order?</p>
+          <div className="bg-white rounded-2xl p-4 sm:p-8 max-w-md w-full">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2">Confirm Your Order</h2>
+            <p className="text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6">Are you sure you want to confirm this order?</p>
             
-            <div className="space-y-4 mb-8">
-              <p className="text-gray-600">
+            <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
+              <p className="text-xs sm:text-sm text-gray-600">
                 <strong>Service:</strong> {service.title}
               </p>
-              <p className="text-gray-600">
+              <p className="text-xs sm:text-sm text-gray-600">
                 <strong>Date:</strong> {formattedDate}
               </p>
-              <p className="text-gray-600">
+              <p className="text-xs sm:text-sm text-gray-600">
                 <strong>Time:</strong> {formattedTime}
               </p>
-              <p className="text-gray-600">
+              <p className="text-xs sm:text-sm text-gray-600">
                 <strong>Location:</strong> {updatedBookingDetails.event_location || "No location provided"}
               </p>
-              <p className="text-gray-600">
+              <p className="text-xs sm:text-sm text-gray-600">
                 <strong>Total Price:</strong> ${updatedBookingDetails.totalPrice}
               </p>
             </div>
             
-            <div className="flex space-x-4">
+            <div className="flex space-x-3 sm:space-x-4">
               <button 
-                className="flex-1 py-3 px-6 border border-gray-300 rounded-full font-medium text-gray-700 hover:bg-gray-50 transition duration-200"
+                className="flex-1 py-2 sm:py-3 px-4 sm:px-6 border border-gray-300 rounded-full font-medium text-gray-700 hover:bg-gray-50 transition duration-200 text-xs sm:text-sm"
                 onClick={closeConfirmModal}
               >
                 Cancel
               </button>
               <button 
-                className="flex-1 py-3 px-6 bg-gray-800 hover:bg-gray-900 text-white rounded-full font-medium transition duration-200"
+                className="flex-1 py-2 sm:py-3 px-4 sm:px-6 bg-gray-800 hover:bg-gray-900 text-white rounded-full font-medium transition duration-200 text-xs sm:text-sm"
                 onClick={handleBookService}
               >
                 Confirm
