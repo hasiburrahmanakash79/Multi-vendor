@@ -5,7 +5,7 @@ import ScrollToTop from "../components/ScrollToTop";
 
 const Main = () => {
   const location = useLocation();
-  const hideFooter = location.pathname === "/conversation";
+  const hideFooter = /^\/conversation(\/|$)/.test(location.pathname);
 
   return (
     <div className="">

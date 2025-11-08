@@ -275,7 +275,6 @@ export default function AccountSettings() {
                     />
                   </div>
                 </div>
-                {user?.photo && (
                   <button
                     onClick={() => setEditingImage(true)}
                     className="flex items-center space-x-1 text-gray-600 hover:text-purple-600 transition-colors duration-300"
@@ -283,7 +282,6 @@ export default function AccountSettings() {
                     <Edit2 className="w-4 h-4" />
                     <span>Edit</span>
                   </button>
-                )}
               </div>
             )}
 

@@ -2,32 +2,66 @@ import { FaStar } from "react-icons/fa";
 import { FiMessageCircle } from "react-icons/fi";
 import badge from "../../assets/icons/badge.png";
 import { RiStarFill } from "react-icons/ri";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import apiClient from "../../lib/api-client";
 import useMe from "../../hooks/useMe";
+
 const SellerProfile = () => {
   const { user } = useMe();
   const [seller, setSeller] = useState(null);
+  const [conversations, setConversations] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const { id } = useParams();
+  console.log(conversations, "conversations ------");
+  console.log(seller, "seller ------");
 
-  // Fetch service details when component mounts
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  // Fetch seller details and conversations when component mounts
   useEffect(() => {
-    const fetchServiceDetails = async () => {
+    const fetchSellerDetails = async () => {
       try {
         setLoading(true);
         const response = await apiClient.get(`/user/view-seller/${id}`);
         setSeller(response.data);
         console.log(response.data, "Seller details-------------------");
-        setLoading(false);
       } catch (err) {
-        setLoading(false);
+        console.error("Error fetching seller:", err);
       }
     };
-    fetchServiceDetails();
+
+    const fetchConvos = async () => {
+      try {
+        const res = await apiClient.get("/chat/conversations");
+        setConversations(res.data || []);
+      } catch (err) {
+        console.error("Error fetching conversations:", err);
+      }
+    };
+
+    fetchSellerDetails();
+    fetchConvos();
+    setLoading(false);
   }, [id]);
+
+  const handleMessage = () => {
+    if (!seller) return;
+
+    const existing = conversations.find(
+      (convo) => convo.chat_with.id === seller.user_id
+    );
+
+    if (existing) {
+      navigate(`/conversation/${existing.conversation_id}`);
+    } else {
+      // New: Navigate to chatting route and pass state to create new conversation
+      navigate("/conversation/new", { 
+        state: { receiver: { id: seller.user_id, full_name: seller.full_name, photo: seller.photo }, createNew: true } 
+      });
+    }
+  };
 
   if (loading) {
     return (
@@ -84,8 +118,11 @@ const SellerProfile = () => {
                 <p>Reviews</p>
               </div>
             </div>
-            {user.role !== "Seller" && (
-              <button className="text-gray-700 px-4 py-2 rounded-full hover:bg-gray-200 transition-colors flex gap-2 bg-gray-100 text-sm sm:text-base">
+            {user?.role !== "Seller" && (
+              <button
+                onClick={handleMessage}
+                className="text-gray-700 px-4 py-2 rounded-full hover:bg-gray-200 transition-colors flex gap-2 bg-gray-100 text-sm sm:text-base"
+              >
                 <FiMessageCircle className="w-5 h-5 sm:w-6 sm:h-6" /> Message
               </button>
             )}

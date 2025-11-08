@@ -69,7 +69,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/conversation/:id",
-        element: <Chatting />,
+        element: <ConversationPage />,
       },
       {
         path: "/notification",
