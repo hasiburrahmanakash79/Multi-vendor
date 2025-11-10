@@ -11,7 +11,10 @@ import {
   Trash2,
   ImagePlus,
   Plus,
+  LocationEditIcon,
+  LocateIcon,
   Calendar,
+  TimerIcon,
 } from "lucide-react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import axios from "axios";
@@ -29,13 +32,15 @@ if (!crypto.randomUUID) {
   };
 }
 export default function ConversationPage() {
-  const { user, loading} = useMe();
+  const { user, loading } = useMe();
   console.log(user);
-  
-  
-  const {service} = useSellerServices([])
-  const activeServices = service?.filter(s => s.status === "Approved");
-console.log(activeServices, "---------------------------------------------------------Active Services");
+
+  const { service } = useSellerServices([]);
+  const activeServices = service?.filter((s) => s.status === "Approved");
+  console.log(
+    activeServices,
+    "---------------------------------------------------------Active Services"
+  );
 
   const [conversations, setConversations] = useState([]);
   const [messages, setMessages] = useState({});
@@ -64,12 +69,14 @@ console.log(activeServices, "---------------------------------------------------
   const [showServiceModal, setShowServiceModal] = useState(false);
   const [showOfferModal, setShowOfferModal] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
-  const [offerDescription, setOfferDescription] = useState('');
-  const [offerTerms, setOfferTerms] = useState('');
-  const [eventLocation, setEventLocation] = useState('');
-  const [eventStart, setEventStart] = useState('');
-  const [eventEnd, setEventEnd] = useState('');
-  const [price, setPrice] = useState('');
+  const [offerDescription, setOfferDescription] = useState("");
+  const [eventLocation, setEventLocation] = useState("");
+  const [placeId, setPlaceId] = useState("");
+  const [latitude, setLatitude] = useState("");
+  const [longitude, setLongitude] = useState("");
+  const [eventDate, setEventDate] = useState("");
+  const [eventTime, setEventTime] = useState("");
+  const [price, setPrice] = useState("");
 
   // Handle image upload
   const handleImageUpload = (e) => {
@@ -112,11 +119,15 @@ console.log(activeServices, "---------------------------------------------------
       if (message.trim()) {
         formData.append("text", message.trim());
       }
-      const response = await axios.post("http://10.10.12.10:3000/api/chat/send-image", formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.post(
+        "http://10.10.12.10:3000/api/chat/send-image",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       const data = response.data;
       setMessages((prev) => {
         const prevMsgs = prev[selectedConvoId] || [];
@@ -147,7 +158,10 @@ console.log(activeServices, "---------------------------------------------------
       });
     } catch (err) {
       console.error(err);
-      setErrorMessage("Error sending image: " + (err.response ? JSON.stringify(err.response.data) : err.message));
+      setErrorMessage(
+        "Error sending image: " +
+          (err.response ? JSON.stringify(err.response.data) : err.message)
+      );
     }
   };
 
@@ -158,45 +172,56 @@ console.log(activeServices, "---------------------------------------------------
 
   // Send offer
   const sendOffer = async () => {
-    if (!selectedConvoId || selectedConvoId === "new" || !selectedService) return;
+    if (!selectedConvoId || selectedConvoId === "new" || !selectedService)
+      return;
     const convo = conversations.find((c) => c.id === selectedConvoId);
     if (!convo) return;
     setErrorMessage("");
     try {
       const offerData = {
-        service_id: selectedService.id,
         description: offerDescription,
-        terms: offerTerms,
         location: eventLocation,
-        start: eventStart,
-        end: eventEnd,
-        price: price,
+        place_id: placeId,
+        latitude,
+        longitude,
+        event_time: eventTime,
+        event_date: eventDate,
+        price,
       };
-      const formData = new FormData();
-      formData.append("conversation", selectedConvoId.toString());
-      formData.append("receiver", convo.chat_with.id.toString());
-      formData.append("message_type", "Offer");
-      formData.append("offer_data", JSON.stringify(offerData));
-      const response = await axios.post("http://10.10.12.10:3000/api/chat/send-offer", formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const data = response.data;
-      setMessages((prev) => {
-        const prevMsgs = prev[selectedConvoId] || [];
-        return { ...prev, [selectedConvoId]: [...prevMsgs, data] };
-      });
-      // Update conversation preview and last_message
-      setConversations((prev) => {
-        return prev
+      const payload = {
+        type: "chat.message",
+        receiver: convo.chat_with.id,
+        service: selectedService.id,
+        conversation: selectedConvoId,
+        message_type: "Offer",
+        offer_data: offerData,
+      };
+      socket.send(JSON.stringify(payload));
+      // Optimistic add with temp ID
+      const tempId = `temp-${Date.now()}`;
+      const newMsg = {
+        ...payload,
+        sender: currentUser
+          ? { id: currentUser.user_id, full_name: currentUser.full_name }
+          : { id: -1, full_name: "Me" },
+        receiver: convo.chat_with,
+        created_at: new Date().toISOString(),
+        id: tempId, // For dedupe
+      };
+      setMessages((prev) => ({
+        ...prev,
+        [selectedConvoId]: [...(prev[selectedConvoId] || []), newMsg],
+      }));
+      // Update preview
+      setConversations((prev) =>
+        prev
           .map((c) =>
             c.id === selectedConvoId
               ? {
                   ...c,
-                  last_message: data,
+                  last_message: newMsg,
                   preview: "[Offer]",
-                  time: data.created_at,
+                  time: newMsg.created_at,
                 }
               : c
           )
@@ -208,20 +233,25 @@ console.log(activeServices, "---------------------------------------------------
               ? new Date(b.last_message.created_at).getTime()
               : 0;
             return timeB - timeA;
-          });
-      });
+          })
+      );
       setShowOfferModal(false);
       // Reset form
-      setOfferDescription('');
-      setOfferTerms('');
-      setEventLocation('');
-      setEventStart('');
-      setEventEnd('');
-      setPrice('');
+      setOfferDescription("");
+      setEventLocation("");
+      setPlaceId("");
+      setLatitude("");
+      setLongitude("");
+      setEventDate("");
+      setEventTime("");
+      setPrice("");
       setSelectedService(null);
     } catch (err) {
       console.error(err);
-      setErrorMessage("Error sending offer: " + (err.response ? JSON.stringify(err.response.data) : err.message));
+      setErrorMessage(
+        "Error sending offer: " +
+          (err.response ? JSON.stringify(err.response.data) : err.message)
+      );
     }
   };
 
@@ -427,7 +457,11 @@ console.log(activeServices, "---------------------------------------------------
                         ? {
                             ...c,
                             last_message: data,
-                            preview: data.text ? data.text + (data.media ? " [Image]" : "") : (data.media ? "[Image]" : ""),
+                            preview: data.text
+                              ? data.text + (data.media ? " [Image]" : "")
+                              : data.media
+                              ? "[Image]"
+                              : "",
                             time: data.created_at,
                           }
                         : c
@@ -725,6 +759,78 @@ console.log(activeServices, "---------------------------------------------------
   }
   console.log(currentConvo, "-----------------------------");
 
+  // Handle accept offer
+  const handleAcceptOffer = async (messageId) => {
+    try {
+      await axios.post(
+        `http://10.10.12.10:3000/api/chat/accept-offer/${messageId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      // Update message status or add confirmation message
+      setMessages((prev) => {
+        const updatedMsgs = prev[selectedConvoId].map((msg) =>
+          msg.id === messageId ? { ...msg, status: "accepted" } : msg
+        );
+        return { ...prev, [selectedConvoId]: updatedMsgs };
+      });
+    } catch (err) {
+      console.error("Error accepting offer:", err);
+    }
+  };
+
+  // Handle decline offer
+  const handleDeclineOffer = async (messageId) => {
+    try {
+      await axios.post(
+        `http://10.10.12.10:3000/api/chat/decline-offer/${messageId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      // Update message status or add confirmation message
+      setMessages((prev) => {
+        const updatedMsgs = prev[selectedConvoId].map((msg) =>
+          msg.id === messageId ? { ...msg, status: "declined" } : msg
+        );
+        return { ...prev, [selectedConvoId]: updatedMsgs };
+      });
+    } catch (err) {
+      console.error("Error declining offer:", err);
+    }
+  };
+
+  // Handle withdraw offer
+  const handleWithdrawOffer = async (messageId) => {
+    try {
+      await axios.post(
+        `http://10.10.12.10:3000/api/chat/withdraw-offer/${messageId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      // Update message status or add confirmation message
+      setMessages((prev) => {
+        const updatedMsgs = prev[selectedConvoId].map((msg) =>
+          msg.id === messageId ? { ...msg, status: "withdrawn" } : msg
+        );
+        return { ...prev, [selectedConvoId]: updatedMsgs };
+      });
+    } catch (err) {
+      console.error("Error withdrawing offer:", err);
+    }
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -819,7 +925,12 @@ console.log(activeServices, "---------------------------------------------------
                     </div>
                   </div>
                   <p className="text-xs sm:text-sm text-gray-500 truncate mt-1">
-                    {convo.last_message?.text ? convo.last_message.text + (convo.last_message?.media ? " [Image]" : "") : (convo.last_message?.media ? "Image" : "")}
+                    {convo.last_message?.text
+                      ? convo.last_message.text +
+                        (convo.last_message?.media ? " [Image]" : "")
+                      : convo.last_message?.media
+                      ? "Image"
+                      : ""}
                   </p>
                 </div>
               </div>
@@ -921,30 +1032,106 @@ console.log(activeServices, "---------------------------------------------------
                   }`}
                 >
                   <div
-                    className={`max-w-[70%] sm:max-w-[60%] rounded-2xl sm:rounded-3xl p-3 sm:p-4 shadow-md ${
-                      msg.sender.id === currentUser?.user_id
-                        ? "bg-[#C8C1F5] text-black rounded-br-none"
-                        : "bg-white text-gray-800 rounded-bl-none"
-                    }`}
+                    className={`max-w-[70%] sm:max-w-[60%] rounded-2xl sm:rounded-3xl p-3 sm:p-4 shadow-md
+    ${
+      msg.sender.id === currentUser?.user_id
+        ? msg.message_type === "Offer" || msg.media
+          ? "bg-white text-gray-800 rounded-br-none"
+          : "bg-[#C8C1F5] text-black rounded-br-none"
+        : "bg-white text-gray-800 rounded-bl-none"
+    }`}
                   >
                     {msg.media && (
                       <img
                         src={msg.media}
                         alt="message media"
-                        className="max-w-full h-auto rounded"
+                        className="max-w-full h-auto rounded-xl"
                       />
                     )}
                     {msg.text && (
-                      <p className={`text-xs sm:text-sm break-words ${msg.media ? "mt-2" : ""}`}>{msg.text}</p>
+                      <p
+                        className={`text-xs sm:text-sm break-words ${
+                          msg.media ? "mt-2" : ""
+                        }`}
+                      >
+                        {msg.text}
+                      </p>
+                    )}
+                    {msg.message_type === "Offer" && (
+                      <div className="p-2 bg-gray-100 rounded-xl">
+                        <h4 className="font-bold pb-2">Custom Offer Details</h4>
+                        <p>
+                          <span className="font-semibold">Description:</span>{" "}
+                          {msg?.offer?.description}
+                        </p>
+                        <div className="text-gray-500 py-2 text-xs">
+                          <p className="flex gap-1 items-center">
+                            <LocateIcon className="w-4" /> Location:{" "}
+                            {msg?.offer?.location}
+                          </p>
+                          <p className="flex gap-1 items-center">
+                            <Calendar className="w-4" /> Date:{" "}
+                            {msg?.offer?.event_date}
+                          </p>
+                          <p className="flex gap-1 items-center">
+                            <TimerIcon className="w-4" /> Time:{" "}
+                            {msg?.offer?.event_time}
+                          </p>
+                        </div>
+                        <div className="bg-white p-2 rounded mt-2 flex items-center gap-2">
+                          <img
+                            src={msg?.offer?.service?.cover_photo}
+                            alt={msg?.offer?.service?.title}
+                            className="w-14 h-14 object-cover rounded"
+                          />
+                          <div>
+                            <h5 className="font-semibold">
+                              {msg?.offer?.service?.title}
+                            </h5>
+                            <p className="text-base font-medium">
+                              Offer Price:{" "}
+                              <span className="text-green-600 font-semibold">
+                                ${msg?.offer?.price}
+                              </span>{" "}
+                              <span className="text-gray-400 line-through text-sm ml-1">
+                                ${msg?.offer?.service?.price}
+                              </span>
+                            </p>
+                          </div>
+                        </div>
+                        {msg?.sender?.id === currentUser?.user_id ? (
+                          <button
+                            onClick={() => handleWithdrawOffer(msg?.id)}
+                            className="mt-2 bg-red-100 text-red-600 px-4 py-2 rounded text-sm w-full"
+                          >
+                            Withdraw offer
+                          </button>
+                        ) : (
+                          <div className="flex gap-2 mt-2">
+                            <button
+                              onClick={() => handleDeclineOffer(msg?.id)}
+                              className="bg-red-100 text-red-600 px-4 py-2 rounded text-sm flex-1"
+                            >
+                              Decline
+                            </button>
+                            <button
+                              onClick={() => handleAcceptOffer(msg?.id)}
+                              className="bg-purple-100 text-purple-600 px-4 py-2 rounded text-sm flex-1"
+                            >
+                              Accept
+                            </button>
+                          </div>
+                        )}
+                      </div>
                     )}
                     <div
                       className={`text-xs mt-1 ${
-                        msg.sender.id === currentUser?.user_id
+                        msg?.sender?.id === currentUser?.user_id
                           ? "text-gray-700"
                           : "text-gray-500"
                       }`}
                     >
-                      {new Date(msg.created_at).toLocaleTimeString([], {
+                      {new Date(msg?.created_at).toLocaleTimeString([], {
                         hour: "2-digit",
                         minute: "2-digit",
                       })}
@@ -998,38 +1185,39 @@ console.log(activeServices, "---------------------------------------------------
                   {/* Image upload and Create Offer buttons inside input */}
                   <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
                     {/* Image Upload Button */}
-                    <label className={`cursor-pointer p-1.5 sm:p-2 hover:bg-gray-200 rounded-full transition-colors ${(!selectedConvoId || selectedConvoId === "new") ? "opacity-50 cursor-not-allowed" : ""}`}>
+                    <label
+                      className={`cursor-pointer p-1.5 sm:p-2 hover:bg-gray-200 rounded-full transition-colors ${
+                        !selectedConvoId || selectedConvoId === "new"
+                          ? "opacity-50 cursor-not-allowed"
+                          : ""
+                      }`}
+                    >
                       <ImagePlus className="w-4 sm:w-5 h-4 sm:h-5 text-gray-600" />
                       <input
                         type="file"
                         accept="image/*"
                         onChange={handleImageUpload}
-                        disabled={
-                          !selectedConvoId ||
-                          selectedConvoId === "new"
-                        }
+                        disabled={!selectedConvoId || selectedConvoId === "new"}
                         className="hidden"
                       />
                     </label>
 
                     {/* Create Offer Button */}
-                    {
-                      user && user.role === "Seller" && (
-                        <button
-                          onClick={handleCreateOffer}
-                          disabled={
-                            !isConnected ||
-                            !selectedConvoId ||
-                            selectedConvoId === "new"
-                          }
-                          className="p-1.5 hover:bg-gray-200 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 bg-gray-200"
-                          title="Create Offer"
-                        >
-                          <Plus className="w-4 sm:w-5 h-4 sm:h-5 text-gray-600" />{" "}
-                          Create Offer
-                        </button>
-                      )
-                    }
+                    {user && user.role === "Seller" && (
+                      <button
+                        onClick={handleCreateOffer}
+                        disabled={
+                          !isConnected ||
+                          !selectedConvoId ||
+                          selectedConvoId === "new"
+                        }
+                        className="p-1.5 hover:bg-gray-200 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 bg-gray-200"
+                        title="Create Offer"
+                      >
+                        <Plus className="w-4 sm:w-5 h-4 sm:h-5 text-gray-600" />{" "}
+                        Create Offer
+                      </button>
+                    )}
                   </div>
                 </div>
 
@@ -1055,6 +1243,7 @@ console.log(activeServices, "---------------------------------------------------
               : "Select a conversation to start chatting"}
           </div>
         )}
+      </div>
       {/* Service Selection Modal */}
       {showServiceModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -1067,7 +1256,9 @@ console.log(activeServices, "---------------------------------------------------
             </div>
             <div className="space-y-4">
               {activeServices.map((service) => {
-                const truncatedDesc = service.description.split(' ').slice(0, 10).join(' ') + (service.description.split(' ').length > 10 ? '...' : '');
+                const truncatedDesc =
+                  service.description.split(" ").slice(0, 10).join(" ") +
+                  (service.description.split(" ").length > 10 ? "..." : "");
                 return (
                   <div
                     key={service.id}
@@ -1107,73 +1298,109 @@ console.log(activeServices, "---------------------------------------------------
               </button>
             </div>
             <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-1">Describe your offers</label>
+              <div className="flex gap-4">
+                <img
+                  src={selectedService.cover_photo}
+                  alt={selectedService.title}
+                  className="w-24 h-24 object-cover rounded-xl"
+                />
                 <textarea
                   value={offerDescription}
+                  placeholder="Write description"
                   onChange={(e) => setOfferDescription(e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded"
+                  className="w-full p-2 border border-gray-300 rounded-xl resize-none"
                   rows={3}
                 />
               </div>
-              <div>
-                <h3 className="text-md font-semibold mb-2">Set up payment offer</h3>
-                <label className="block text-sm font-medium mb-1">Define the terms of your offer and what it includes.</label>
-                <textarea
-                  value={offerTerms}
-                  onChange={(e) => setOfferTerms(e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded"
-                  rows={3}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Event Location</label>
-                <div className="relative">
+              <div className="space-y-5 p-4 border border-gray-100 rounded-xl shadow-lg">
+                <div>
+                  <h3 className="text-md font-semibold">
+                    Set up payment offer
+                  </h3>
+                  <label className="block text-sm font-medium mb-5">
+                    Define the terms of your offer and what it includes.
+                  </label>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">
+                    Event Location
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={eventLocation}
+                      onChange={(e) => setEventLocation(e.target.value)}
+                      placeholder="Select location"
+                      className="w-full p-2 pr-10 border border-gray-300 rounded"
+                    />
+                    <div className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400">
+                      <LocationEditIcon className="w-5 h-5" />
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">
+                    Place ID
+                  </label>
                   <input
                     type="text"
-                    value={eventLocation}
-                    onChange={(e) => setEventLocation(e.target.value)}
-                    placeholder="Select location"
-                    className="w-full p-2 pr-10 border border-gray-300 rounded"
+                    value={placeId}
+                    onChange={(e) => setPlaceId(e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded"
                   />
-                  <div className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400">
-                    <Calendar className="w-5 h-5" />
-                  </div>
                 </div>
-              </div>
-              <div className="flex gap-4">
-                <div className="flex-1">
-                  <label className="block text-sm font-medium mb-1">Event Start</label>
-                  <div className="relative">
+                <div className="flex gap-4">
+                  <div className="flex-1">
+                    <label className="block text-sm font-medium mb-1">
+                      Latitude
+                    </label>
                     <input
                       type="text"
-                      value={eventStart}
-                      onChange={(e) => setEventStart(e.target.value)}
-                      placeholder="DD/MM/YYYY"
+                      value={latitude}
+                      onChange={(e) => setLatitude(e.target.value)}
                       className="w-full p-2 border border-gray-300 rounded"
                     />
-                    <div className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400">
-                      <Calendar className="w-5 h-5" />
-                    </div>
                   </div>
-                </div>
-                <div className="flex-1">
-                  <label className="block text-sm font-medium mb-1">Event End</label>
-                  <div className="relative">
+                  <div className="flex-1">
+                    <label className="block text-sm font-medium mb-1">
+                      Longitude
+                    </label>
                     <input
                       type="text"
-                      value={eventEnd}
-                      onChange={(e) => setEventEnd(e.target.value)}
-                      placeholder="DD/MM/YYYY"
+                      value={longitude}
+                      onChange={(e) => setLongitude(e.target.value)}
                       className="w-full p-2 border border-gray-300 rounded"
                     />
-                    <div className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400">
-                      <Calendar className="w-5 h-5" />
-                    </div>
+                  </div>
+                </div>
+                <div className="flex gap-4">
+                  <div className="flex-1">
+                    <label className="block text-sm font-medium mb-1">
+                      Event Date
+                    </label>
+                    <input
+                      type="date"
+                      value={eventDate}
+                      onChange={(e) => setEventDate(e.target.value)}
+                      className="w-full p-2 border border-gray-300 rounded"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <label className="block text-sm font-medium mb-1">
+                      Event Time
+                    </label>
+                    <input
+                      type="time"
+                      value={eventTime}
+                      onChange={(e) => setEventTime(e.target.value)}
+                      className="w-full p-2 border border-gray-300 rounded"
+                    />
                   </div>
                 </div>
                 <div className="flex-1">
-                  <label className="block text-sm font-medium mb-1">Price</label>
+                  <label className="block text-sm font-medium mb-1">
+                    Price
+                  </label>
                   <input
                     type="text"
                     value={price}
@@ -1192,7 +1419,6 @@ console.log(activeServices, "---------------------------------------------------
           </div>
         </div>
       )}
-      </div>
     </div>
   );
 }
