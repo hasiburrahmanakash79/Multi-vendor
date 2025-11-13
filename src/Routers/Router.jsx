@@ -37,7 +37,6 @@ import RequestDetails from "../Pages/AdminPages/ServiceRequest/RequestDetails";
 import SubscriberList from "../Pages/AdminPages/SubscriberList/SubscriberList";
 import Advertisement from "../Pages/AdminPages/SubscriberList/Advertisement";
 import Categories from "../Pages/AdminPages/Categories/Categories";
-import Chatting from "../Pages/ConversationPage/Chatting";
 const router = createBrowserRouter([
   {
     path: "/",

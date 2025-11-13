@@ -5,6 +5,8 @@ import PropTypes from "prop-types";
 import useSellerServices from "../../hooks/useSellerServices";
 import apiClient from "../../lib/api-client";
 import Swal from "sweetalert2";
+import { MapContainer, TileLayer, useMapEvents } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
 
 // Modal hook for managing open/close state
 const useModal = () => {
@@ -16,7 +18,7 @@ const useModal = () => {
 
 // Service Row Component
 const ServiceRow = ({ service, onEdit, onDelete }) => (
-  <div className="sm:grid sm:grid-cols-14 sm:gap-2 sm:p-3 sm:items-center sm:hover:bg-gray-50 sm:transition-colors sm:duration-300 flex flex-col bg-white rounded-xl shadow-md border border-gray-100 p-4 mb-3 sm:m-0 sm:shadow-none sm:border-0 sm:bg-transparent transition-all duration-200">
+  <div className="sm:grid sm:grid-cols-16 sm:gap-2 sm:p-3 sm:items-center sm:hover:bg-gray-50 sm:transition-colors sm:duration-300 flex flex-col bg-white rounded-xl shadow-md border border-gray-100 p-4 mb-3 sm:m-0 sm:shadow-none sm:border-0 sm:bg-transparent transition-all duration-200">
     {/* Service Info (Image, Title, Location) */}
     <div className="sm:col-span-4 flex items-start space-x-3 sm:items-center">
       <div className="w-16 h-12 sm:w-20 sm:h-14 rounded-lg overflow-hidden flex-shrink-0">
@@ -31,8 +33,10 @@ const ServiceRow = ({ service, onEdit, onDelete }) => (
         <h3 className="font-medium text-gray-800 text-sm sm:text-base line-clamp-3">
           {service.title}
         </h3>
+        <span className="text-sm text-gray-500 block">{service.type}</span>
         <div className="flex items-center text-gray-500 mt-1.5">
-          <svg
+          <div className="w-5">
+            <svg
             className="w-4 h-4 mr-1.5"
             fill="currentColor"
             viewBox="0 0 20 20"
@@ -43,6 +47,7 @@ const ServiceRow = ({ service, onEdit, onDelete }) => (
               clipRule="evenodd"
             />
           </svg>
+          </div>
           <span className="text-xs sm:text-sm line-clamp-1">
             {service.location}
           </span>
@@ -50,6 +55,13 @@ const ServiceRow = ({ service, onEdit, onDelete }) => (
       </div>
     </div>
 
+    {/* Active Orders */}
+    <div className="sm:col-span-2 mt-4 sm:mt-0 sm:text-center">
+      <span className="text-gray-600 text-xs sm:text-sm md:hidden flex font-semibold">
+        Service Type
+      </span>
+      <span className="text-sm text-gray-500 block">{service.type}</span>
+    </div>
     {/* Active Orders */}
     <div className="sm:col-span-2 mt-4 sm:mt-0 sm:text-center">
       <span className="text-gray-600 text-xs sm:text-sm md:hidden flex font-semibold">
@@ -126,6 +138,7 @@ ServiceRow.propTypes = {
     price: PropTypes.string.isRequired,
     cover_photo: PropTypes.string.isRequired,
     status: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
   }).isRequired,
   onEdit: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
@@ -300,6 +313,81 @@ const EditModal = ({
 }) => {
   const coverFileInput = useRef(null);
   const videoFileInput = useRef(null);
+  const [showMapModal, setShowMapModal] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const mapRef = useRef();
+
+  const MapClickHandler = ({ onClick }) => {
+    useMapEvents({
+      click: (e) => onClick(e.latlng),
+    });
+    return null;
+  };
+
+  const handleMapClick = async (latlng) => {
+    const { lat, lng } = latlng;
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`
+      );
+      const data = await response.json();
+      const address = data.display_name || "";
+      const place_id = data.place_id || "";
+      onChange({ target: { name: "latitude", value: lat } });
+      onChange({ target: { name: "longitude", value: lng } });
+      onChange({ target: { name: "location", value: address } });
+      onChange({ target: { name: "place_id", value: place_id } });
+      setShowMapModal(false);
+    } catch (error) {
+      console.error(error);
+      Swal.fire({
+        icon: "error",
+        title: "Geocode Error",
+        text: "Failed to get location details.",
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+      });
+    }
+  };
+
+  const handleSearch = async () => {
+    if (!searchQuery.trim()) return;
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(searchQuery)}`
+      );
+      const data = await response.json();
+      if (data.length > 0) {
+        const { lat, lon } = data[0];
+        if (mapRef.current) {
+          mapRef.current.setView([parseFloat(lat), parseFloat(lon)], 13);
+        }
+      } else {
+        Swal.fire({
+          icon: "info",
+          title: "No Results",
+          text: "No location found for the search query.",
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      Swal.fire({
+        icon: "error",
+        title: "Search Error",
+        text: "Failed to search location.",
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+      });
+    }
+  };
 
   // const addNewAdditional = () => {
   //   setUpdatedAdditionals((prev) => [
@@ -357,6 +445,20 @@ const EditModal = ({
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
+                Type
+              </label>
+              <select
+                name="type"
+                value={service.type}
+                onChange={onChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-purple-600 focus:border-purple-600 text-sm"
+              >
+                <option value="Service">Service</option>
+                <option value="Event">Event</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
                 Service Title
               </label>
               <input
@@ -382,13 +484,23 @@ const EditModal = ({
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Location
               </label>
-              <input
-                type="text"
-                name="location"
-                value={service.location}
-                onChange={onChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-purple-600 focus:border-purple-600 text-sm"
-              />
+              <div className="flex items-center gap-4">
+                <input
+                  type="text"
+                  name="location"
+                  value={service.location}
+                  onChange={onChange}
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:ring-purple-600 focus:border-purple-600 text-sm"
+                  placeholder="Select location from map"
+                  disabled
+                />
+                <button
+                  onClick={() => setShowMapModal(true)}
+                  className="px-4 py-2 bg-indigo-100 text-blue-600 rounded-md hover:bg-indigo-200 transition-colors duration-200 font-semibold text-sm"
+                >
+                  Select on Map
+                </button>
+              </div>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -663,6 +775,51 @@ const EditModal = ({
           </button>
         </div>
       </div>
+
+      {showMapModal && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+          <div className="bg-white p-6 sm:p-8 rounded-2xl w-full max-w-4xl shadow-2xl transform transition-all duration-300">
+            <h3 className="text-xl font-bold text-gray-800 mb-4">
+              Select Location on Map
+            </h3>
+            <div className="flex mb-4">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search for a location..."
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <button
+                onClick={handleSearch}
+                className="px-4 py-2 bg-blue-500 text-white rounded-r-lg hover:bg-blue-600"
+              >
+                Search
+              </button>
+            </div>
+            <MapContainer
+              ref={mapRef}
+              center={[service.latitude || 0, service.longitude || 0]}
+              zoom={service.latitude ? 13 : 2}
+              style={{ height: "400px", width: "100%" }}
+            >
+              <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              />
+              <MapClickHandler onClick={handleMapClick} />
+            </MapContainer>
+            <div className="flex justify-end mt-6">
+              <button
+                onClick={() => setShowMapModal(false)}
+                className="px-6 py-2 bg-gray-200 text-gray-800 rounded-full hover:bg-gray-300 transition-colors duration-200"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
@@ -673,6 +830,7 @@ EditModal.propTypes = {
   service: PropTypes.shape({
     id: PropTypes.number,
     category: PropTypes.object,
+    type: PropTypes.string,
     title: PropTypes.string,
     description: PropTypes.string,
     location: PropTypes.string,
@@ -880,6 +1038,7 @@ export default function MyServices() {
         serviceData.map((s) => ({
           id: s.id,
           category: s.category,
+          type: s.service_type,
           title: s.title,
           description: s.description,
           location: s.location,
@@ -930,6 +1089,7 @@ export default function MyServices() {
       const fullService = response.data;
       setSelectedService({
         ...fullService,
+        type: fullService.service_type,
         time_from: fullService.time_from.slice(0, 5),
         time_to: fullService.time_to.slice(0, 5),
         price: `$${parseFloat(fullService.price).toFixed(2)}`,
@@ -997,6 +1157,7 @@ export default function MyServices() {
     if (!editedService) return;
     try {
       const formData = new FormData();
+      formData.append("type", editedService.type);
       formData.append("category", editedService.category.id);
       formData.append("title", editedService.title);
       formData.append("description", editedService.description);
@@ -1108,6 +1269,7 @@ export default function MyServices() {
           s.id === updatedServiceFromApi.id
             ? {
                 ...s,
+                type: updatedServiceFromApi.service_type,
                 title: updatedServiceFromApi.title,
                 description: updatedServiceFromApi.description,
                 location: updatedServiceFromApi.location,
@@ -1235,8 +1397,9 @@ export default function MyServices() {
         {/* Services Table */}
         <div className="bg-white rounded-lg shadow-md sm:bg-transparent sm:shadow-none sm:border-0">
           {/* Table Header */}
-          <div className="hidden sm:grid sm:grid-cols-14 sm:gap-2 sm:p-3 sm:border-b sm:border-gray-100 sm:bg-gray-50 sm:text-sm sm:font-semibold sm:text-gray-600">
+          <div className="hidden sm:grid sm:grid-cols-16 sm:gap-2 sm:p-3 sm:border-b sm:border-gray-100 sm:bg-gray-50 sm:text-sm sm:font-semibold sm:text-gray-600">
             <div className="sm:col-span-4">Service</div>
+            <div className="sm:col-span-2 sm:text-center">Service Type</div>
             <div className="sm:col-span-2 sm:text-center">Active Orders</div>
             <div className="sm:col-span-2 sm:text-center">Completed Orders</div>
             <div className="sm:col-span-2 sm:text-center">Available Time</div>

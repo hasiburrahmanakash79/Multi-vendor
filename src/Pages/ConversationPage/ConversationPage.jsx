@@ -4,22 +4,20 @@ import {
   Send,
   X,
   Search,
-  MoreHorizontal,
   Menu,
-  Archive,
-  BellOff,
-  Trash2,
   ImagePlus,
   Plus,
   LocationEditIcon,
   LocateIcon,
   Calendar,
   TimerIcon,
+  CloudSnow,
 } from "lucide-react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import axios from "axios";
 import useSellerServices from "../../hooks/useSellerServices";
 import useMe from "../../hooks/useMe";
+import { Link } from "react-router";
 // Polyfill for crypto.randomUUID if not supported
 if (!crypto.randomUUID) {
   crypto.randomUUID = function randomUUID() {
@@ -33,14 +31,10 @@ if (!crypto.randomUUID) {
 }
 export default function ConversationPage() {
   const { user, loading } = useMe();
-  console.log(user);
 
   const { service } = useSellerServices([]);
+  console.log(service);
   const activeServices = service?.filter((s) => s.status === "Approved");
-  console.log(
-    activeServices,
-    "---------------------------------------------------------Active Services"
-  );
 
   const [conversations, setConversations] = useState([]);
   const [messages, setMessages] = useState({});
@@ -60,8 +54,6 @@ export default function ConversationPage() {
   const navigate = useNavigate();
   const location = useLocation(); // To access state for new conversations
   const { id } = useParams();
-  console.log(currentUser);
-  console.log(conversations, "conversations ");
 
   const [selectedImage, setSelectedImage] = useState(null);
   const [imageFile, setImageFile] = useState(null);
@@ -71,9 +63,6 @@ export default function ConversationPage() {
   const [selectedService, setSelectedService] = useState(null);
   const [offerDescription, setOfferDescription] = useState("");
   const [eventLocation, setEventLocation] = useState("");
-  const [placeId, setPlaceId] = useState("");
-  const [latitude, setLatitude] = useState("");
-  const [longitude, setLongitude] = useState("");
   const [eventDate, setEventDate] = useState("");
   const [eventTime, setEventTime] = useState("");
   const [price, setPrice] = useState("");
@@ -181,9 +170,6 @@ export default function ConversationPage() {
       const offerData = {
         description: offerDescription,
         location: eventLocation,
-        place_id: placeId,
-        latitude,
-        longitude,
         event_time: eventTime,
         event_date: eventDate,
         price,
@@ -239,9 +225,6 @@ export default function ConversationPage() {
       // Reset form
       setOfferDescription("");
       setEventLocation("");
-      setPlaceId("");
-      setLatitude("");
-      setLongitude("");
       setEventDate("");
       setEventTime("");
       setPrice("");
@@ -266,8 +249,6 @@ export default function ConversationPage() {
       sendMessage();
     }
   };
-
-  console.log(messages, "Messages ");
   // Fetch current user
   useEffect(() => {
     const fetchCurrentUser = async () => {
@@ -300,7 +281,6 @@ export default function ConversationPage() {
           },
         }
       );
-      console.log(res, "database-------------------------------");
       if (res.ok) {
         let data = await res.json();
         // Sort by last message time descending
@@ -342,7 +322,6 @@ export default function ConversationPage() {
       const url = `ws://10.10.12.10:3000/ws/chat?token=${token}`;
       ws = new WebSocket(url);
       ws.onopen = () => {
-        console.log("Connected to WebSocket");
         setIsConnected(true);
         setSocket(ws);
         setErrorMessage("");
@@ -507,6 +486,19 @@ export default function ConversationPage() {
             } else {
               console.error("No conversation ID in message data:", data);
             }
+          } else if (result.type === "chat.update_offer") {
+            const { message_id, status } = result;
+            setMessages((prev) => {
+              const newMessages = { ...prev };
+              Object.keys(newMessages).forEach((convoId) => {
+                newMessages[convoId] = newMessages[convoId].map((msg) =>
+                  msg.id === message_id
+                    ? { ...msg, offer: { ...msg.offer, status } }
+                    : msg
+                );
+              });
+              return newMessages;
+            });
           }
         } catch (err) {
           console.error("Invalid JSON received:", err);
@@ -516,6 +508,7 @@ export default function ConversationPage() {
         console.error("WebSocket error:", error);
         setIsConnected(false);
         setErrorMessage("Connection error occurred.");
+        console.log(error);
       };
       ws.onclose = (event) => {
         console.log(
@@ -564,6 +557,7 @@ export default function ConversationPage() {
               },
             }
           );
+          console.log(res);
           if (res.ok) {
             const data = await res.json();
             setMessages((prev) => ({ ...prev, [selectedConvoId]: data }));
@@ -578,7 +572,7 @@ export default function ConversationPage() {
       // Join conversation if not already joined
       if (socket && isConnected && !joinedConvos.has(selectedConvoId)) {
         const convo = conversations.find((c) => c.id === selectedConvoId);
-        console.log(convo);
+        console.log(convo, "--------------------Convo");
         if (convo) {
           const payload = {
             type: "chat.join",
@@ -643,10 +637,9 @@ export default function ConversationPage() {
       }
       const payload = {
         type: "chat.join",
-        data: { conversation_id: generatedId }, // Empty or generated for new
+        data: { conversation_id: generatedId },
         receiver: receiverId,
       };
-      console.log("Sending join:", payload);
       socket.send(JSON.stringify(payload));
     } else {
       setErrorMessage("Not connected. Cannot join conversation.");
@@ -710,6 +703,7 @@ export default function ConversationPage() {
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
   };
+  console.log(messages, "messages ----------------------------710");
 
   const filteredConversations = conversations.filter((convo) => {
     const matchesSearch = convo.chat_with.full_name
@@ -717,31 +711,6 @@ export default function ConversationPage() {
       .includes(searchTerm.toLowerCase());
     return matchesSearch;
   });
-  const handleDropdownAction = (action) => {
-    if (action === "archive") {
-      alert(`Archived chat with ${currentConvo?.chat_with.full_name}`);
-    } else if (action === "mute") {
-      alert(`Muted notifications for ${currentConvo?.chat_with.full_name}`);
-    } else if (action === "delete") {
-      if (
-        window.confirm(
-          `Are you sure you want to delete the chat with ${currentConvo?.chat_with.full_name}?`
-        )
-      ) {
-        setConversations((prev) =>
-          prev.filter((convo) => convo.id !== selectedConvoId)
-        );
-        setMessages((prev) => {
-          const newMessages = { ...prev };
-          delete newMessages[selectedConvoId];
-          return newMessages;
-        });
-        setSelectedConvoId(null);
-        setShowSidebar(false);
-      }
-    }
-    setShowDropdown(false);
-  };
   const toggleSidebar = () => {
     setShowSidebar(!showSidebar);
   };
@@ -757,79 +726,76 @@ export default function ConversationPage() {
       },
     };
   }
-  console.log(currentConvo, "-----------------------------");
 
   // Handle accept offer
-  const handleAcceptOffer = async (messageId) => {
-    try {
-      await axios.post(
-        `http://10.10.12.10:3000/api/chat/accept-offer/${messageId}`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+  const handleAcceptOffer = (messageId) => {
+    if (!socket || !isConnected) return;
+    // Optimistic update
+    setMessages((prev) => {
+      const updatedMsgs = prev[selectedConvoId].map((msg) =>
+        msg.id === messageId
+          ? { ...msg, offer: { ...msg.offer, status: "Accepted" } }
+          : msg
       );
-      // Update message status or add confirmation message
-      setMessages((prev) => {
-        const updatedMsgs = prev[selectedConvoId].map((msg) =>
-          msg.id === messageId ? { ...msg, status: "accepted" } : msg
-        );
-        return { ...prev, [selectedConvoId]: updatedMsgs };
-      });
-    } catch (err) {
-      console.error("Error accepting offer:", err);
-    }
+      console.log(updatedMsgs, "Update Message____");
+      return { ...prev, [selectedConvoId]: updatedMsgs };
+    });
+    // Send via socket
+    const payload = {
+      type: "chat.update_offer",
+      message_id: messageId,
+      status: "Accepted",
+    };
+    socket.send(JSON.stringify(payload));
   };
 
   // Handle decline offer
-  const handleDeclineOffer = async (messageId) => {
-    try {
-      await axios.post(
-        `http://10.10.12.10:3000/api/chat/decline-offer/${messageId}`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+  const handleDeclineOffer = (messageId) => {
+    if (!socket || !isConnected) return;
+    // Optimistic update
+    setMessages((prev) => {
+      const updatedMsgs = prev[selectedConvoId].map((msg) =>
+        msg.id === messageId
+          ? { ...msg, offer: { ...msg.offer, status: "Declined" } }
+          : msg
       );
-      // Update message status or add confirmation message
-      setMessages((prev) => {
-        const updatedMsgs = prev[selectedConvoId].map((msg) =>
-          msg.id === messageId ? { ...msg, status: "declined" } : msg
-        );
-        return { ...prev, [selectedConvoId]: updatedMsgs };
-      });
-    } catch (err) {
-      console.error("Error declining offer:", err);
-    }
+      return { ...prev, [selectedConvoId]: updatedMsgs };
+    });
+    // Send via socket
+    const payload = {
+      type: "chat.update_offer",
+      message_id: messageId,
+      status: "Declined",
+    };
+    socket.send(JSON.stringify(payload));
   };
 
   // Handle withdraw offer
-  const handleWithdrawOffer = async (messageId) => {
-    try {
-      await axios.post(
-        `http://10.10.12.10:3000/api/chat/withdraw-offer/${messageId}`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+  const handleWithdrawOffer = (messageId) => {
+    if (!socket || !isConnected) return;
+    // Optimistic update
+    setMessages((prev) => {
+      const updatedMsgs = prev[selectedConvoId].map((msg) =>
+        msg.id === messageId
+          ? { ...msg, offer: { ...msg.offer, status: "Withdrawn" } }
+          : msg
       );
-      // Update message status or add confirmation message
-      setMessages((prev) => {
-        const updatedMsgs = prev[selectedConvoId].map((msg) =>
-          msg.id === messageId ? { ...msg, status: "withdrawn" } : msg
-        );
-        return { ...prev, [selectedConvoId]: updatedMsgs };
-      });
-    } catch (err) {
-      console.error("Error withdrawing offer:", err);
-    }
+      console.log(updatedMsgs, "------------Update message");
+      return { ...prev, [selectedConvoId]: updatedMsgs };
+    });
+    // Send via socket
+    const payload = {
+      type: "chat.update_offer",
+      message_id: messageId,
+      status: "Withdrawn",
+    };
+    console.log(payload, "Payload --------- 790");
+    socket.send(JSON.stringify(payload));
   };
+  console.log(
+    selectedConvoId,
+    " selectedConvoId ---------------------------------- 793"
+  );
 
   if (loading) {
     return <div>Loading...</div>;
@@ -986,38 +952,7 @@ export default function ConversationPage() {
                     </div>
                   </div>
                 </div>
-                <button
-                  onClick={() => setShowDropdown(!showDropdown)}
-                  className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-                >
-                  <MoreHorizontal className="w-5 h-5 text-gray-400" />
-                </button>
               </div>
-              {showDropdown && (
-                <div
-                  ref={dropdownRef}
-                  className="absolute right-2 sm:right-4 top-10 sm:top-12 bg-white border border-gray-200 rounded-lg shadow-lg z-10 overflow-hidden"
-                >
-                  <button
-                    onClick={() => handleDropdownAction("archive")}
-                    className="flex items-center gap-2 w-full text-left px-3 sm:px-4 py-2 text-xs sm:text-sm text-gray-700 hover:bg-gray-100 transition-colors"
-                  >
-                    <Archive className="w-4 h-4" /> Archive Chat
-                  </button>
-                  <button
-                    onClick={() => handleDropdownAction("mute")}
-                    className="flex items-center gap-2 w-full text-left px-3 sm:px-4 py-2 text-xs sm:text-sm text-gray-700 hover:bg-gray-100 transition-colors"
-                  >
-                    <BellOff className="w-4 h-4" /> Mute Notifications
-                  </button>
-                  <button
-                    onClick={() => handleDropdownAction("delete")}
-                    className="flex items-center gap-2 w-full text-left px-3 sm:px-4 py-2 text-xs sm:text-sm text-red-600 hover:bg-red-50 transition-colors"
-                  >
-                    <Trash2 className="w-4 h-4" /> Delete Chat
-                  </button>
-                </div>
-              )}
             </div>
             {/* Messages */}
             <div className="flex-1 p-2 sm:p-4 overflow-y-auto bg-gray-50 flex flex-col-reverse">
@@ -1058,7 +993,7 @@ export default function ConversationPage() {
                       </p>
                     )}
                     {msg.message_type === "Offer" && (
-                      <div className="p-2 bg-gray-100 rounded-xl">
+                      <div className="p-2 bg-gray-100 rounded-xl max-w-96">
                         <h4 className="font-bold pb-2">Custom Offer Details</h4>
                         <p>
                           <span className="font-semibold">Description:</span>{" "}
@@ -1099,29 +1034,88 @@ export default function ConversationPage() {
                             </p>
                           </div>
                         </div>
-                        {msg?.sender?.id === currentUser?.user_id ? (
-                          <button
-                            onClick={() => handleWithdrawOffer(msg?.id)}
-                            className="mt-2 bg-red-100 text-red-600 px-4 py-2 rounded text-sm w-full"
-                          >
-                            Withdraw offer
-                          </button>
-                        ) : (
-                          <div className="flex gap-2 mt-2">
-                            <button
-                              onClick={() => handleDeclineOffer(msg?.id)}
-                              className="bg-red-100 text-red-600 px-4 py-2 rounded text-sm flex-1"
-                            >
-                              Decline
-                            </button>
-                            <button
-                              onClick={() => handleAcceptOffer(msg?.id)}
-                              className="bg-purple-100 text-purple-600 px-4 py-2 rounded text-sm flex-1"
-                            >
-                              Accept
-                            </button>
-                          </div>
-                        )}
+                        {(() => {
+                          const isSeller =
+                            msg?.sender?.id === currentUser?.user_id;
+
+                          if (msg?.offer?.status === "Pending") {
+                            if (isSeller) {
+                              return (
+                                <button
+                                  onClick={() => handleWithdrawOffer(msg?.id)}
+                                  className="mt-2 bg-red-100 text-red-600 px-4 py-2 rounded text-sm w-full"
+                                >
+                                  Withdraw offer
+                                </button>
+                              );
+                            } else {
+                              return (
+                                <div className="flex gap-2 mt-2">
+                                  <button
+                                    onClick={() => handleDeclineOffer(msg?.id)}
+                                    className="bg-red-100 text-red-600 px-4 py-2 rounded text-sm flex-1"
+                                  >
+                                    Decline
+                                  </button>
+                                  <button
+                                    onClick={() => handleAcceptOffer(msg?.id)}
+                                    className="bg-purple-100 text-purple-600 px-4 py-2 rounded text-sm flex-1"
+                                  >
+                                    Accept
+                                  </button>
+                                </div>
+                              );
+                            }
+                          } else if (msg?.offer?.status === "Accepted") {
+                            if (isSeller) {
+                              return (
+                                <p className="mt-2 text-green-600 text-xs text-center font-semibold">
+                                  Order Accepted
+                                </p>
+                              );
+                            } else {
+                              return (
+                                <div className="w-full mt-3">
+                                  <Link
+                                    to="/orders"
+                                    state={{ activeTab: "Accepted" }}
+                                    className="mt-2 bg-green-100 flex items-center justify-center text-green-600 px-4 py-2 rounded text-sm w-full"
+                                  >
+                                    View Order Details
+                                  </Link>
+                                </div>
+                              );
+                            }
+                          } else if (msg?.offer?.status === "Declined") {
+                            if (isSeller) {
+                              return (
+                                <p className="mt-2 text-red-500 text-xs text-center font-semibold">
+                                  User Declined the offer
+                                </p>
+                              );
+                            } else {
+                              return (
+                                <p className="mt-2 text-red-500 text-xs text-center font-semibold">
+                                  You Declined the offer
+                                </p>
+                              );
+                            }
+                          } else if (msg?.offer?.status === "Withdrawn") {
+                            if (isSeller) {
+                              return (
+                                <p className="mt-2 text-red-500 text-xs text-center font-semibold">
+                                  You withdrew the offer
+                                </p>
+                              );
+                            } else {
+                              return (
+                                <p className="mt-2 text-red-500 text-xs text-center font-semibold">
+                                  Seller withdrew the offer
+                                </p>
+                              );
+                            }
+                          }
+                        })()}
                       </div>
                     )}
                     <div
@@ -1336,41 +1330,6 @@ export default function ConversationPage() {
                     <div className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400">
                       <LocationEditIcon className="w-5 h-5" />
                     </div>
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">
-                    Place ID
-                  </label>
-                  <input
-                    type="text"
-                    value={placeId}
-                    onChange={(e) => setPlaceId(e.target.value)}
-                    className="w-full p-2 border border-gray-300 rounded"
-                  />
-                </div>
-                <div className="flex gap-4">
-                  <div className="flex-1">
-                    <label className="block text-sm font-medium mb-1">
-                      Latitude
-                    </label>
-                    <input
-                      type="text"
-                      value={latitude}
-                      onChange={(e) => setLatitude(e.target.value)}
-                      className="w-full p-2 border border-gray-300 rounded"
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <label className="block text-sm font-medium mb-1">
-                      Longitude
-                    </label>
-                    <input
-                      type="text"
-                      value={longitude}
-                      onChange={(e) => setLongitude(e.target.value)}
-                      className="w-full p-2 border border-gray-300 rounded"
-                    />
                   </div>
                 </div>
                 <div className="flex gap-4">

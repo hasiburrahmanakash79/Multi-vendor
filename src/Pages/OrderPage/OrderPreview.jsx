@@ -9,7 +9,6 @@ import Swal from "sweetalert2";
 
 const OrderPreview = () => {
   const { isOpen: showBookingModal, openModal: openBookingModal, closeModal: closeBookingModal } = useModal();
-  const { isOpen: showLocationModal, openModal: openLocationModal, closeModal: closeLocationModal } = useModal();
   const { isOpen: showConfirmModal, openModal: openConfirmModal, closeModal: closeConfirmModal } = useModal();
   const navigate = useNavigate();
   const { state } = useLocation();
@@ -25,7 +24,6 @@ const OrderPreview = () => {
       ? new Date(`1970-01-01T${bookingDetails.event_time}:00`)
       : null
   );
-  const [tempLocation, setTempLocation] = useState(bookingDetails?.event_location || "");
   const [updatedBookingDetails, setUpdatedBookingDetails] = useState(bookingDetails || {});
 
   // Format date and time for display
@@ -124,24 +122,7 @@ const OrderPreview = () => {
     closeBookingModal();
   };
 
-  const handleSaveLocation = () => {
-    if (!tempLocation.trim()) {
-      Swal.fire({
-        position: "top-end",
-        icon: "error",
-        title: "Please enter a location",
-        showConfirmButton: false,
-        timer: 1500,
-        toast: true,
-      });
-      return;
-    }
-    setUpdatedBookingDetails((prev) => ({
-      ...prev,
-      event_location: tempLocation,
-    }));
-    closeLocationModal();
-  };
+ 
 
   // Restrict time selection to seller's available time range
   const getTimeConstraints = () => {
@@ -168,6 +149,8 @@ const OrderPreview = () => {
     );
   }
 
+
+  console.log(updatedBookingDetails);
   return (
     <div className="min-h-screen py-6 sm:py-8 container mx-auto">
       <div className="px-4 sm:px-6 lg:px-8">
@@ -231,12 +214,6 @@ const OrderPreview = () => {
                         <span>{updatedBookingDetails.event_location || "No location provided"}</span>
                       </div>
                     </div>
-                    <button
-                      className="text-sm text-black bg-gray-200 py-1 sm:py-2 px-3 sm:px-4 rounded-full font-medium hover:bg-gray-300 transition duration-200"
-                      onClick={openLocationModal}
-                    >
-                      Change
-                    </button>
                   </div>
                 </div>
               </div>
@@ -331,46 +308,6 @@ const OrderPreview = () => {
               <button 
                 className="flex-1 py-2 sm:py-3 px-4 sm:px-6 bg-gray-800 hover:bg-gray-900 text-white rounded-full font-medium transition duration-200 text-xs sm:text-sm"
                 onClick={handleSaveBooking}
-              >
-                Save
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Location Modal */}
-      {showLocationModal && (
-        <div className="fixed inset-0 bg-black/60 bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-4 sm:p-8 max-w-md w-full">
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2">Change Location</h2>
-            <p className="text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6">Enter a new location for your booking.</p>
-            
-            <div className="space-y-4 mb-6 sm:mb-8">
-              <div>
-                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
-                  Your Location
-                </label>
-                <input
-                  type="text"
-                  value={tempLocation}
-                  onChange={(e) => setTempLocation(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C8C1F5] text-xs sm:text-sm"
-                  placeholder="Enter your location"
-                />
-              </div>
-            </div>
-            
-            <div className="flex space-x-3 sm:space-x-4">
-              <button 
-                className="flex-1 py-2 sm:py-3 px-4 sm:px-6 border border-gray-300 rounded-full font-medium text-gray-700 hover:bg-gray-50 transition duration-200 text-xs sm:text-sm"
-                onClick={closeLocationModal}
-              >
-                Cancel
-              </button>
-              <button 
-                className="flex-1 py-2 sm:py-3 px-4 sm:px-6 bg-gray-800 hover:bg-gray-900 text-white rounded-full font-medium transition duration-200 text-xs sm:text-sm"
-                onClick={handleSaveLocation}
               >
                 Save
               </button>

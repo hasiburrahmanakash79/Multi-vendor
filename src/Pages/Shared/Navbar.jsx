@@ -443,7 +443,7 @@ import {
   Home,
   LogIn,
 } from "lucide-react";
-import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import logo from "../../assets/logo/logo.png";
 import useMe from "../../hooks/useMe";
 import { removeAuthTokens } from "../../lib/cookie-utils";
@@ -451,7 +451,6 @@ import { removeAuthTokens } from "../../lib/cookie-utils";
 const Navbar = () => {
   const { user, loading, error } = useMe();
   const navigate = useNavigate();
-  const location = useLocation();
 
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);

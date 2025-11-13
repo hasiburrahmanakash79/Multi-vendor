@@ -118,25 +118,34 @@ const ServiceDetailPage = () => {
   };
 
   const handleBookNow = () => {
-    if (!userLocation.trim()) {
-      Swal.fire({
-        position: "top-end",
-        icon: "error",
-        title: "Please enter a location",
-        showConfirmButton: false,
-        timer: 1500,
-        toast: true,
-      });
-      return;
+    let eventLocation;
+    if (service.service_type === "Event") {
+      eventLocation = service.location;
+    } else {
+      eventLocation = userLocation;
+      if (!eventLocation.trim()) {
+        Swal.fire({
+          position: "top-end",
+          icon: "error",
+          title: "Please enter a location",
+          showConfirmButton: false,
+          timer: 1500,
+          toast: true,
+        });
+        return;
+      }
     }
 
     // Format date to YYYY-MM-DD
-    const formattedDate = bookingDate.toISOString().split('T')[0];
-    
+    const formattedDate = bookingDate.toISOString().split("T")[0];
+
     // Format time to HH:mm
     const formattedTime = bookingTime
-      ? `${bookingTime.getHours().toString().padStart(2, '0')}:${bookingTime.getMinutes().toString().padStart(2, '0')}`
-      : '';
+      ? `${bookingTime.getHours().toString().padStart(2, "0")}:${bookingTime
+          .getMinutes()
+          .toString()
+          .padStart(2, "0")}`
+      : "";
 
     navigate("/order-preview", {
       state: {
@@ -156,7 +165,7 @@ const ServiceDetailPage = () => {
           additional_service_ids: selectedAdditionals,
           event_time: formattedTime,
           event_date: formattedDate,
-          event_location: userLocation,
+          event_location: eventLocation,
           totalPrice: calculateTotalPrice(),
           additionals: service.additionals
             .filter((add) => selectedAdditionals.includes(add.id))
@@ -443,7 +452,6 @@ const ServiceDetailPage = () => {
                     <p className="text-sm text-gray-500">
                       Available {service.time_from} - {service.time_to}
                     </p>
-                    
                   </div>
                   <div className="ml-auto flex items-center space-x-1">
                     <Star className="w-4 h-4 text-yellow-400 fill-current" />
@@ -454,13 +462,16 @@ const ServiceDetailPage = () => {
                 </div>
 
                 <div className="mb-6">
-                    <label className="block text-md font-bold text-gray-700 mb-2">
-                      Location
-                    </label>
-                    <p className="text-sm text-gray-700 flex gap-1">
-                      <MapPin height={18}/> {service?.location}
-                    </p>
+                  <label className="block text-md font-bold text-gray-700 mb-2">
+                    Location
+                  </label>
+                  <div className="flex gap-2">
+                    <div className="w-5 pt-1"><MapPin height={18} /></div>
+                  <p className="text-sm text-gray-700 flex gap-1">
+                    {service?.location}
+                  </p>
                   </div>
+                </div>
 
                 <div className="mb-6">
                   <span className="text-2xl font-bold text-gray-900">
@@ -495,7 +506,7 @@ const ServiceDetailPage = () => {
                         .filter((add) => selectedAdditionals.includes(add.id))
                         .map((add) => (
                           <li key={add.id} className="">
-                           • {add.title} (${add.price})
+                            • {add.title} (${add.price})
                           </li>
                         ))}
                     </ul>
@@ -503,7 +514,6 @@ const ServiceDetailPage = () => {
                 )}
 
                 <div className="space-y-4 mb-6">
-                  
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Booking Date
@@ -542,18 +552,21 @@ const ServiceDetailPage = () => {
                     </div>
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Your Location
-                    </label>
-                    <input
-                      type="text"
-                      value={userLocation}
-                      onChange={(e) => setUserLocation(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C8C1F5] text-sm"
-                      placeholder="Enter your location"
-                    />
-                  </div>
+                  {service.service_type === "Service" && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Your Location
+                      </label>
+                      <input
+                        type="text"
+                        value={userLocation}
+                        onChange={(e) => setUserLocation(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C8C1F5] text-sm"
+                        placeholder="Enter your location"
+                      />
+                    </div>
+                  )}
+
                   <div className="w-full">
                     <button
                       onClick={handleBookNow}

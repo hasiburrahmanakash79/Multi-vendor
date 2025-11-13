@@ -1,11 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useUserOrder from "../../hooks/useUserOrder";
 import useModal from "../../components/modal/useModal";
 import Swal from "sweetalert2";
+import { useLocation } from "react-router";
+import { CloudHail } from "lucide-react";
 
 export default function OrderPage() {
   const { orders, isLoading } = useUserOrder();
   const [activeTab, setActiveTab] = useState("Active");
+  const location = useLocation();
+  const initialTab = location.state?.activeTab;
+  console.log("Initial Tab:", initialTab);
+  console.log(orders, "order");
+
+  useEffect(()=>{
+    if (initialTab) {
+      setActiveTab(initialTab);
+    }
+  },[initialTab])
 
   const {
     isOpen: showPaymentModal,
