@@ -1,10 +1,11 @@
 import { RiStarFill } from "react-icons/ri";
 import { Heart } from "lucide-react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useServicesList from "../../hooks/useServicesList";
 import useSavedList from "../../hooks/useSavedList";
 import Swal from "sweetalert2";
+import useMe from "../../hooks/useMe";
 
 const AllServices = () => {
   const {
@@ -21,6 +22,7 @@ const AllServices = () => {
     createFolder,
   } = useSavedList();
   console.log(services);
+  const { user } = useMe();
 
   // State for filters, search, and pagination
   const [searchTerm, setSearchTerm] = useState("");
@@ -52,10 +54,16 @@ const AllServices = () => {
   };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [selectedServiceId, setSelectedServiceId] = useState(null);
+  const navigate = useNavigate();
 
   const openSaveModal = (e, serviceId) => {
     e.preventDefault();
+    if (!user) {
+      setIsLoginModalOpen(true);
+      return;
+    }
     if (isServiceSaved(serviceId)) {
       Swal.fire({
         icon: "info",
@@ -536,6 +544,28 @@ const AllServices = () => {
 
             <button
               onClick={() => setIsModalOpen(false)}
+              className="mt-3 w-full text-gray-600 hover:text-gray-800 font-medium"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Login Modal */}
+      {isLoginModalOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6 animate-fadeIn">
+            <h3 className="text-xl font-bold text-gray-800 mb-4">Login Required</h3>
+            <p className="text-gray-600 mb-6">Please login first to save this item.</p>
+            <button
+              onClick={() => navigate("/signin")}
+              className="w-full bg-[#1E40AF] text-white py-2.5 rounded-lg font-medium hover:bg-[#1E3A8A] transition"
+            >
+              Login
+            </button>
+            <button
+              onClick={() => setIsLoginModalOpen(false)}
               className="mt-3 w-full text-gray-600 hover:text-gray-800 font-medium"
             >
               Cancel

@@ -4,11 +4,12 @@ import { Star, Play, Heart, CircleCheckBig, MapPin } from "lucide-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import MobileAppSection from "../HomePage/MobileAppSection/MobileAppSection";
-import ServicesPackages from "../HomePage/ServicesPackages/ServicesPackages";
 import event from "../../assets/videos/event.mp4";
 import apiClient from "../../lib/api-client";
 import Swal from "sweetalert2";
 import useSavedList from "../../hooks/useSavedList";
+import SimilarServices from "./SimilarServices";
+import useMe from "../../hooks/useMe";
 
 const ServiceDetailPage = () => {
   const { id } = useParams();
@@ -21,13 +22,19 @@ const ServiceDetailPage = () => {
   const [userLocation, setUserLocation] = useState("");
   const [selectedAdditionals, setSelectedAdditionals] = useState([]);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [selectedServiceId, setSelectedServiceId] = useState(null);
   const videoRef = useRef(null);
   const {
     savedServices,
-    saveService,
+    folders,
     loading: saveLoading,
     error: saveError,
+    saveServiceToFolder,
+    createFolder,
   } = useSavedList();
+  const { user } = useMe();
 
   useEffect(() => {
     const fetchServiceDetails = async () => {
@@ -56,41 +63,60 @@ const ServiceDetailPage = () => {
     return savedServices.some((saved) => saved.service.id === serviceId);
   };
 
-  const handleSaveService = async (serviceId) => {
+  const openSaveModal = (serviceId) => {
+    if (!user) {
+      setIsLoginModalOpen(true);
+      return;
+    }
     if (isServiceSaved(serviceId)) {
       Swal.fire({
-        position: "top-end",
-        showConfirmButton: false,
-        timer: 1500,
-        toast: true,
-        text: "You have already saved this service.",
         icon: "info",
+        title: "Already Saved",
+        text: "This service is already in your saved list.",
+        toast: true,
+        position: "top-end",
+        timer: 2000,
+        showConfirmButton: false,
       });
       return;
     }
+    setSelectedServiceId(serviceId);
+    setIsModalOpen(true);
+  };
 
-    console.log("Saving service with ID:", serviceId);
-    const success = await saveService(serviceId);
+  const handleSaveToFolder = async (listTitle) => {
+    const success = await saveServiceToFolder(selectedServiceId, listTitle);
     if (success) {
-      console.log("Service saved successfully");
       Swal.fire({
-        position: "top-end",
         icon: "success",
-        title: "Service saved successfully",
-        showConfirmButton: false,
-        timer: 1500,
+        title: "Saved!",
+        text: "Service added to your list.",
         toast: true,
-      });
-    } else {
-      console.error("Failed to save service");
-      Swal.fire({
         position: "top-end",
-        icon: "error",
-        title: "Failed to save service",
-        showConfirmButton: false,
         timer: 1500,
-        toast: true,
+        showConfirmButton: false,
       });
+      setIsModalOpen(false);
+    }
+  };
+
+  const handleCreateAndSave = async () => {
+    const { value: folderName } = await Swal.fire({
+      title: "Create New List",
+      input: "text",
+      inputLabel: "List Name",
+      inputPlaceholder: "e.g., Photography, Design Ideas",
+      showCancelButton: true,
+      inputValidator: (value) => {
+        if (!value?.trim()) return "List name is required!";
+      },
+    });
+
+    if (folderName) {
+      const newFolder = await createFolder(folderName);
+      if (newFolder) {
+        await handleSaveToFolder(folderName); // Use the title string directly
+      }
     }
   };
 
@@ -119,6 +145,10 @@ const ServiceDetailPage = () => {
 
   const handleBookNow = () => {
     let eventLocation;
+    if (!user) {
+      setIsLoginModalOpen(true);
+      return;
+    }
     if (service.service_type === "Event") {
       eventLocation = service.location;
     } else {
@@ -216,7 +246,7 @@ const ServiceDetailPage = () => {
             <div className="flex items-center space-x-4">
               <button
                 className="flex items-center space-x-2 text-gray-600 hover:text-purple-600"
-                onClick={() => handleSaveService(service.id)}
+                onClick={() => openSaveModal(service.id)}
               >
                 <Heart
                   className={`w-4 h-4 cursor-pointer transition-colors duration-300 ${
@@ -472,6 +502,14 @@ const ServiceDetailPage = () => {
                   </p>
                   </div>
                 </div>
+                <div className="mb-6">
+                  <label className="block text-md font-bold text-gray-700 mb-2">
+                    Service Type
+                  </label>
+                  <p className="text-sm text-gray-700 flex gap-1">
+                    {service?.service_type}
+                  </p>
+                </div>
 
                 <div className="mb-6">
                   <span className="text-2xl font-bold text-gray-900">
@@ -582,11 +620,77 @@ const ServiceDetailPage = () => {
         </div>
 
         <div className="pb-10">
-          <ServicesPackages />
+          <SimilarServices />
         </div>
       </div>
 
       <MobileAppSection />
+
+      {/* Save Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6 animate-fadeIn">
+            <h3 className="text-xl font-bold text-gray-800 mb-4">Save to List</h3>
+
+            <div className="space-y-2 max-h-64 overflow-y-auto">
+              {folders.length > 0 ? (
+                folders.map((folder) => (
+                  <button
+                    key={folder.id}
+                    onClick={() => handleSaveToFolder(folder.title)} // Use title string
+                    className="w-full text-left p-3 rounded-lg hover:bg-gray-100 transition flex justify-between items-center"
+                    disabled={saveLoading}
+                  >
+                    <span className="font-medium">{folder.title}</span>
+                    {saveLoading && <span className="text-xs text-gray-500">Saving...</span>}
+                  </button>
+                ))
+              ) : (
+                <p className="text-gray-500 text-center py-4">No lists yet. Create one!</p>
+              )}
+            </div>
+
+            <div className="mt-6 pt-4 ">
+              <button
+                onClick={handleCreateAndSave}
+                className="w-full bg-[#1E40AF] text-white py-2.5 rounded-lg font-medium hover:bg-[#1E3A8A] transition"
+                disabled={saveLoading}
+              >
+                {saveLoading ? "Creating..." : "+ Create New List"}
+              </button>
+            </div>
+
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="mt-3 w-full text-gray-600 hover:text-gray-800 font-medium"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Login Modal */}
+      {isLoginModalOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6 animate-fadeIn">
+            <h3 className="text-xl font-bold text-gray-800 mb-4">Login Required</h3>
+            <p className="text-gray-600 mb-6">Please login first to save this item.</p>
+            <button
+              onClick={() => navigate("/signin")}
+              className="w-full bg-[#1E40AF] text-white py-2.5 rounded-lg font-medium hover:bg-[#1E3A8A] transition"
+            >
+              Login
+            </button>
+            <button
+              onClick={() => setIsLoginModalOpen(false)}
+              className="mt-3 w-full text-gray-600 hover:text-gray-800 font-medium"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -11,13 +11,16 @@ import {
   LocateIcon,
   Calendar,
   TimerIcon,
-  CloudSnow,
+  RotateCcw,
+  ZoomIn,
+  ZoomOut,
+  CheckCheck,
 } from "lucide-react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import axios from "axios";
 import useSellerServices from "../../hooks/useSellerServices";
 import useMe from "../../hooks/useMe";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 // Polyfill for crypto.randomUUID if not supported
 if (!crypto.randomUUID) {
   crypto.randomUUID = function randomUUID() {
@@ -66,6 +69,17 @@ export default function ConversationPage() {
   const [eventDate, setEventDate] = useState("");
   const [eventTime, setEventTime] = useState("");
   const [price, setPrice] = useState("");
+
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [selectedModalImage, setSelectedModalImage] = useState(null);
+  const [zoomLevel, setZoomLevel] = useState(1);
+  const [translateX, setTranslateX] = useState(0);
+  const [translateY, setTranslateY] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [startY, setStartY] = useState(0);
+
+  const textareaRef = useRef(null);
 
   // Handle image upload
   const handleImageUpload = (e) => {
@@ -797,21 +811,74 @@ export default function ConversationPage() {
     " selectedConvoId ---------------------------------- 793"
   );
 
+  // Open image modal
+  const openImageModal = (imageUrl) => {
+    setSelectedModalImage(imageUrl);
+    setIsImageModalOpen(true);
+    setZoomLevel(1);
+    setTranslateX(0);
+    setTranslateY(0);
+  };
+
+  // Handle mouse down
+  const handleMouseDown = (e) => {
+    if (zoomLevel <= 1) return;
+    setIsDragging(true);
+    setStartX(e.clientX - translateX);
+    setStartY(e.clientY - translateY);
+  };
+
+  // Handle mouse move
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+    setTranslateX(e.clientX - startX);
+    setTranslateY(e.clientY - startY);
+  };
+
+  // Handle mouse up/leave
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  // Set sidebar visibility based on selection and screen size
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 1024) {
+        setShowSidebar(!selectedConvoId);
+      } else {
+        setShowSidebar(true);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize(); // Initial check
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, [selectedConvoId]);
+
+  // Auto-resize textarea
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${Math.min(
+        textareaRef.current.scrollHeight,
+        100
+      )}px`; // Max 5 lines approx (20px per line)
+    }
+  }, [message]);
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
   return (
-    <div className="flex h-[91vh] overflow-hidden bg-white border-b border-gray-200">
-      {/* Connection Status */}
-      <div
-        className={`fixed top-2 right-2 z-50 px-3 py-1 rounded-full text-xs font-medium shadow-sm ${
-          isConnected
-            ? "bg-green-100 text-green-800"
-            : "bg-red-100 text-red-800"
-        }`}
-      >
-        {isConnected ? "Connected" : "Disconnected"}
-      </div>
+    <div className="flex md:h-[91vh] h-[84vh] overflow-hidden bg-white border-b border-gray-200">
       <button
         className="lg:hidden fixed top-4 left-4 z-20 p-2 bg-[#C8C1F5] text-black rounded-full shadow-md hover:bg-[#B0A8E0] transition-colors"
         onClick={toggleSidebar}
@@ -823,7 +890,7 @@ export default function ConversationPage() {
           showSidebar ? "translate-x-0" : "-translate-x-full"
         } lg:translate-x-0 fixed lg:static w-64 sm:w-72 lg:w-80 h-full bg-white border-r border-gray-200 flex flex-col transition-transform duration-300 ease-in-out z-10 lg:z-auto shadow-lg lg:shadow-none`}
       >
-        <div className="p-3 sm:p-4 border-b border-gray-200 bg-gradient-to-b from-white to-gray-50">
+        <div className="p-3 sm:p-4 border-b border-gray-200">
           <div className="flex items-center justify-between mb-3 sm:mb-4">
             <div className="relative flex-1 ml-2">
               <Search className="w-4 h-4 text-gray-400 absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2" />
@@ -967,7 +1034,7 @@ export default function ConversationPage() {
                   }`}
                 >
                   <div
-                    className={`max-w-[70%] sm:max-w-[60%] rounded-2xl sm:rounded-3xl p-3 sm:p-4 shadow-md
+                    className={`max-w-[90%] xs:max-w-[80%] sm:max-w-[70%] md:max-w-[60%] rounded-lg sm:rounded-xl p-2 sm:p-3 shadow-md
     ${
       msg.sender.id === currentUser?.user_id
         ? msg.message_type === "Offer" || msg.media
@@ -980,12 +1047,13 @@ export default function ConversationPage() {
                       <img
                         src={msg.media}
                         alt="message media"
-                        className="max-w-full h-auto rounded-xl"
+                        className="md:max-w-96 rounded-lg cursor-pointer"
+                        onClick={() => openImageModal(msg.media)}
                       />
                     )}
                     {msg.text && (
                       <p
-                        className={`text-xs sm:text-sm break-words ${
+                        className={`text-xs sm:text-sm ${
                           msg.media ? "mt-2" : ""
                         }`}
                       >
@@ -993,7 +1061,7 @@ export default function ConversationPage() {
                       </p>
                     )}
                     {msg.message_type === "Offer" && (
-                      <div className="p-2 bg-gray-100 rounded-xl max-w-96">
+                      <div className="p-3 bg-gray-100 rounded-lg max-w-96">
                         <h4 className="font-bold pb-2">Custom Offer Details</h4>
                         <p>
                           <span className="font-semibold">Description:</span>{" "}
@@ -1119,7 +1187,7 @@ export default function ConversationPage() {
                       </div>
                     )}
                     <div
-                      className={`text-xs mt-1 ${
+                      className={`text-xs mt-1 flex gap-3 items-center ${
                         msg?.sender?.id === currentUser?.user_id
                           ? "text-gray-700"
                           : "text-gray-500"
@@ -1129,11 +1197,16 @@ export default function ConversationPage() {
                         hour: "2-digit",
                         minute: "2-digit",
                       })}
+                      {msg?.sender?.id === currentUser?.user_id
+                          ? <CheckCheck className="w-3"/>
+                          : null
+                      }
                     </div>
                   </div>
                 </div>
               ))}
             </div>
+
             {/* Message Input */}
             <div className="p-3 sm:p-4 border-t border-gray-200 bg-white shadow-sm">
               {errorMessage && (
@@ -1160,11 +1233,11 @@ export default function ConversationPage() {
                     </div>
                   )}
 
-                  <input
-                    type="text"
+                  <textarea
+                    ref={textareaRef}
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    onKeyPress={(e) => e.key === "Enter" && handleSend()}
+                    onKeyDown={handleKeyDown}
                     placeholder={
                       isConnected ? "Type a message..." : "Connecting..."
                     }
@@ -1173,14 +1246,16 @@ export default function ConversationPage() {
                       !selectedConvoId ||
                       selectedConvoId === "new"
                     }
-                    className="w-full pl-3 sm:pl-4 pr-20 sm:pr-24 py-2 sm:py-3 bg-gray-100 rounded-full outline-none border border-gray-300 text-xs sm:text-sm disabled:opacity-50 focus:ring-2 focus:ring-[#C8C1F5] shadow-sm"
+                    className="w-full pl-3 sm:pl-4 pr-20 sm:pr-24 py-3 bg-gray-100 rounded-lg outline-none border border-gray-300 text-xs sm:text-sm disabled:opacity-50 shadow-sm overflow-hidden resize-none"
+                    rows={1}
+                    style={{ maxHeight: "100px" }} // Approx 5 lines
                   />
 
                   {/* Image upload and Create Offer buttons inside input */}
-                  <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                  <div className="absolute right-1 bottom-3 flex items-center gap-1">
                     {/* Image Upload Button */}
                     <label
-                      className={`cursor-pointer p-1.5 sm:p-2 hover:bg-gray-200 rounded-full transition-colors ${
+                      className={`cursor-pointer p-1.5 sm:p-2transition-colors ${
                         !selectedConvoId || selectedConvoId === "new"
                           ? "opacity-50 cursor-not-allowed"
                           : ""
@@ -1205,7 +1280,7 @@ export default function ConversationPage() {
                           !selectedConvoId ||
                           selectedConvoId === "new"
                         }
-                        className="p-1.5 hover:bg-gray-200 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 bg-gray-200"
+                        className="md:p-1.5 p-1 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 bg-gray-200"
                         title="Create Offer"
                       >
                         <Plus className="w-4 sm:w-5 h-4 sm:h-5 text-gray-600" />{" "}
@@ -1223,7 +1298,7 @@ export default function ConversationPage() {
                     !selectedConvoId ||
                     selectedConvoId === "new"
                   }
-                  className="bg-[#C8C1F5] disabled:bg-gray-300 disabled:cursor-not-allowed text-black p-2 sm:p-3 rounded-full hover:bg-[#B0A8E0] transition-colors shadow-sm"
+                  className="bg-[#C8C1F5] disabled:bg-gray-300 disabled:cursor-not-allowed text-black p-3 -mt-1.5 rounded-lg hover:bg-[#B0A8E0] transition-colors shadow-sm"
                 >
                   <Send className="w-4 sm:w-5 h-4 sm:h-5" />
                 </button>
@@ -1241,7 +1316,7 @@ export default function ConversationPage() {
       {/* Service Selection Modal */}
       {showServiceModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-xl w-1/3 max-h-[80vh] overflow-y-auto">
+          <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-md max-h-[80vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-semibold">Select Services</h2>
               <button onClick={() => setShowServiceModal(false)}>
@@ -1284,7 +1359,7 @@ export default function ConversationPage() {
       {/* Offer Creation Modal */}
       {showOfferModal && selectedService && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-xl w-1/3">
+          <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-md">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-semibold">{selectedService.title}</h2>
               <button onClick={() => setShowOfferModal(false)}>
@@ -1373,6 +1448,70 @@ export default function ConversationPage() {
                 className="w-full bg-[#C8C1F5] text-black py-2 rounded-full hover:bg-[#B0A8E0] transition-colors"
               >
                 Send Offer
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Image Modal */}
+      {isImageModalOpen && (
+        <div
+          className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4"
+          onClick={() => setIsImageModalOpen(false)}
+        >
+          <div
+            className="relative bg-neutral-900 rounded-xl shadow-xl w-full max-w-4xl h-[90vh] flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setIsImageModalOpen(false)}
+              className="absolute top-3 right-3 bg-black/20 backdrop-blur-lg  text-white p-1 rounded-full z-50 cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <div
+              className="flex-1 flex items-center justify-center p-4 overflow-hidden cursor-grab"
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
+              style={{ cursor: isDragging ? "grabbing" : "grab" }}
+            >
+              <img
+                src={selectedModalImage}
+                alt="Full view"
+                className="max-w-full max-h-full object-contain select-none pointer-events-none transition-transform duration-200"
+                style={{
+                  transform: `translate(${translateX}px, ${translateY}px) scale(${zoomLevel})`,
+                }}
+                onContextMenu={(e) => e.preventDefault()}
+              />
+            </div>
+            <div className="p-4 border-t flex justify-center gap-4">
+              <button
+                onClick={() => setZoomLevel((prev) => Math.min(prev + 0.2, 3))}
+                className="p-2 bg-white/10 text-white rounded-full cursor-pointer"
+              >
+                <ZoomIn className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() =>
+                  setZoomLevel((prev) => Math.max(prev - 0.2, 0.5))
+                }
+                className="p-2 bg-white/10 text-white rounded-full cursor-pointer"
+              >
+                <ZoomOut className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => {
+                  setZoomLevel(1);
+                  setTranslateX(0);
+                  setTranslateY(0);
+                }}
+                className="p-2 bg-white/10 text-white rounded-full cursor-pointer"
+              >
+                <RotateCcw className="w-4 h-4" />
               </button>
             </div>
           </div>

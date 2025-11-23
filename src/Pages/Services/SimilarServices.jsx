@@ -1,13 +1,13 @@
 import { Link, useNavigate } from "react-router-dom";
 import { RiStarFill } from "react-icons/ri";
 import { Heart } from "lucide-react";
-import useServicesList from "../../../hooks/useServicesList";
-import useSavedList from "../../../hooks/useSavedList";
 import Swal from "sweetalert2";
-import { useState } from "react";
-import useMe from "../../../hooks/useMe";
+import { useState, useMemo } from "react";
+import useServicesList from "../../hooks/useServicesList";
+import useSavedList from "../../hooks/useSavedList";
+import useMe from "../../hooks/useMe";
 
-const PopularServices = () => {
+const SimilarServices = () => {
   const { user } = useMe();
   const { services, loading: servicesLoading } = useServicesList([]);
   const {
@@ -19,12 +19,15 @@ const PopularServices = () => {
     createFolder,
   } = useSavedList();
 
-  console.log(services);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [selectedServiceId, setSelectedServiceId] = useState(null);
-  const filteredServices = services.filter((service) => service.service_type === "Service");
-  const displayedServices = filteredServices.slice(0, 8);
+
+  const shuffledServices = useMemo(() => {
+    return [...services].sort(() => Math.random() - 0.5);
+  }, [services]);
+
+  const displayedServices = shuffledServices.slice(0, 8);
   const navigate = useNavigate();
 
   const isServiceSaved = (serviceId) => {
@@ -84,7 +87,7 @@ const PopularServices = () => {
     if (folderName) {
       const newFolder = await createFolder(folderName);
       if (newFolder) {
-        await handleSaveToFolder(folderName); // Use the title string directly
+        await handleSaveToFolder(folderName);
       }
     }
   };
@@ -105,7 +108,7 @@ const PopularServices = () => {
 
       <div className="py-5 flex justify-between items-center">
         <h1 className="text-2xl md:text-4xl font-bold text-left text-gray-800">
-          Popular Services
+          Similar Services
         </h1>
         <Link
           to="/services"
@@ -180,7 +183,7 @@ const PopularServices = () => {
                 folders.map((folder) => (
                   <button
                     key={folder.id}
-                    onClick={() => handleSaveToFolder(folder.title)} // Use title string
+                    onClick={() => handleSaveToFolder(folder.title)}
                     className="w-full text-left p-3 rounded-lg hover:bg-gray-100 transition flex justify-between items-center"
                     disabled={saveLoading}
                   >
@@ -193,7 +196,7 @@ const PopularServices = () => {
               )}
             </div>
 
-            <div className="mt-6 pt-4 ">
+            <div className="mt-6 pt-4">
               <button
                 onClick={handleCreateAndSave}
                 className="w-full bg-[#1E40AF] text-white py-2.5 rounded-lg font-medium hover:bg-[#1E3A8A] transition"
@@ -238,4 +241,4 @@ const PopularServices = () => {
   );
 };
 
-export default PopularServices;
+export default SimilarServices;
