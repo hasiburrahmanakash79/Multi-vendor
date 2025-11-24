@@ -162,7 +162,7 @@ const AllService = () => {
   }
 
   return (
-    <div className="p-6">
+    <div className="">
       <SectionTitle
         title="All Services"
         description="Track, manage, and forecast your customers and orders."

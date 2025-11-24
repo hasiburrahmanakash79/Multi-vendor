@@ -3,7 +3,8 @@ import useUserOrder from "../../hooks/useUserOrder";
 import useModal from "../../components/modal/useModal";
 import Swal from "sweetalert2";
 import { useLocation } from "react-router";
-import { CloudHail } from "lucide-react";
+import { CloudHail, CheckCircle, ArrowRight, Loader2 } from "lucide-react";
+import apiClient from "../../lib/api-client";
 
 export default function OrderPage() {
   const { orders, isLoading } = useUserOrder();
@@ -27,6 +28,7 @@ export default function OrderPage() {
 
   const [selectedPayment, setSelectedPayment] = useState(null);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   /* ---------- FILTERS & COUNTS ---------- */
   const filteredOrders = orders?.filter((o) => o.status === activeTab) || [];
@@ -55,15 +57,30 @@ export default function OrderPage() {
   };
 
   const handleContinue = async () => {
-    closePaymentModal();
-    Swal.fire({
-      position: "top-end",
-      icon: "success",
-      title: "Payment successful!",
-      toast: true,
-      timer: 1500,
-      showConfirmButton: false,
-    });
+    if (!selectedPayment) return;
+
+    setIsProcessing(true);
+    try {
+      const response = await apiClient.post('/user/checkout', {
+        order_id: selectedOrderId,
+        payment_method_type: selectedPayment,
+      });
+
+      closePaymentModal();
+      window.location.href = response.data.checkout_url;
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Payment Error',
+        text: error.message || 'An error occurred during checkout',
+        toast: true,
+        position: "top-end",
+        timer: 3000,
+        showConfirmButton: false,
+      });
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   /* ---------- LOADING ---------- */
@@ -74,6 +91,8 @@ export default function OrderPage() {
       </div>
     );
   }
+
+  const selectedOrder = orders?.find(o => o.id === selectedOrderId);
 
   return (
     <div className="min-h-screen container mx-auto px-4 py-6 sm:px-6 lg:px-8">
@@ -152,67 +171,116 @@ export default function OrderPage() {
 
       {/* Payment Modal */}
       {showPaymentModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-md rounded-2xl bg-white p-6 sm:p-8">
-            <h2 className="mb-2 text-2xl font-bold text-gray-800">
-              Payment Method
-            </h2>
-            <p className="mb-6 text-gray-500">
-              Choose the type of payment you are looking for.
-            </p>
-
-            <div className="mb-8 space-y-4">
-              {["Stripe", "Paypal"].map((method) => (
-                <label
-                  key={method}
-                  className={`flex cursor-pointer items-center justify-between rounded-2xl border p-4 transition-colors ${
-                    selectedPayment === method
-                      ? method === "Stripe"
-                        ? "border-purple-600"
-                        : "border-blue-600"
-                      : "border-gray-200 hover:border-gray-300"
-                  }`}
-                  onClick={() => setSelectedPayment(method)}
-                >
-                  <div className="flex items-center space-x-3">
-                    <div
-                      className={`flex h-8 w-8 items-center justify-center rounded text-sm font-bold text-white ${
-                        method === "Stripe" ? "bg-purple-600" : "bg-blue-600"
-                      }`}
-                    >
-                      {method[0]}
-                    </div>
-                    <span className="font-medium text-gray-800">{method}</span>
-                  </div>
-                  <input
-                    type="radio"
-                    name="payment"
-                    checked={selectedPayment === method}
-                    onChange={() => setSelectedPayment(method)}
-                    className={`${
-                      method === "Stripe"
-                        ? "text-purple-600 focus:ring-purple-600"
-                        : "text-blue-600 focus:ring-blue-600"
-                    }`}
-                  />
-                </label>
-              ))}
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="w-full max-w-lg rounded-3xl bg-white shadow-2xl transform transition-all">
+            {/* Modal Header */}
+            <div className="bg-gradient-to-r from-slate-900 to-slate-800 text-white p-8 rounded-t-3xl">
+              <h2 className="text-3xl font-bold mb-2">
+                Payment Method
+              </h2>
+              <p className="text-slate-300">
+                Complete your order payment
+              </p>
             </div>
 
-            <div className="flex space-x-3">
-              <button
-                className="flex-1 rounded-full border border-gray-300 py-3 font-medium text-gray-700 transition hover:bg-gray-50"
-                onClick={closePaymentModal}
-              >
-                Cancel
-              </button>
-              <button
-                className="flex-1 rounded-full bg-gray-800 py-3 font-medium text-white transition hover:bg-gray-900 disabled:opacity-50"
-                onClick={handleContinue}
-                disabled={!selectedPayment}
-              >
-                Continue
-              </button>
+            <div className="p-8">
+              {/* Selected Order Summary */}
+              <div className="bg-slate-50 rounded-2xl p-6 mb-8">
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-slate-600 font-medium">Service</span>
+                  <span className="text-xl font-bold text-slate-900">{selectedOrder?.service.title}</span>
+                </div>
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-slate-600 font-medium">Event Date</span>
+                  <span className="text-slate-900 font-semibold">
+                    {new Date(selectedOrder?.event_date).toLocaleDateString("en-GB", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                    })}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-slate-600 font-medium">Event Time</span>
+                  <span className="text-slate-900 font-semibold">{formatTime(selectedOrder?.event_time)}</span>
+                </div>
+                <div className="flex items-center justify-between pt-4 border-t border-slate-200">
+                  <span className="text-slate-600 font-medium">Total Amount</span>
+                  <span className="text-3xl font-extrabold text-slate-900">${parseFloat(selectedOrder?.amount).toFixed(2)}</span>
+                </div>
+              </div>
+
+              {/* Payment Options */}
+              <div className="space-y-4 mb-8">
+                {[
+                  { name: "Stripe", icon: "S", color: "purple", desc: "Credit/Debit Card" },
+                  { name: "Paypal", icon: "P", color: "blue", desc: "PayPal Account" }
+                ].map((method) => (
+                  <label
+                    key={method.name}
+                    className={`flex cursor-pointer items-center justify-between rounded-2xl border-2 p-5 transition-all duration-200 ${
+                      selectedPayment === method.name
+                        ? method.color === "purple"
+                          ? "border-purple-500 bg-purple-50 shadow-lg shadow-purple-100"
+                          : "border-blue-500 bg-blue-50 shadow-lg shadow-blue-100"
+                        : "border-slate-200 hover:border-slate-300 hover:bg-slate-50"
+                    }`}
+                    onClick={() => setSelectedPayment(method.name)}
+                  >
+                    <div className="flex items-center space-x-4">
+                      <div
+                        className={`flex h-12 w-12 items-center justify-center rounded-xl text-lg font-bold text-white shadow-lg ${
+                          method.color === "purple" ? "bg-gradient-to-br from-purple-500 to-purple-600" : "bg-gradient-to-br from-blue-500 to-blue-600"
+                        }`}
+                      >
+                        {method.icon}
+                      </div>
+                      <div>
+                        <span className="block font-bold text-slate-800 text-lg">{method.name}</span>
+                        <span className="block text-sm text-slate-500">{method.desc}</span>
+                      </div>
+                    </div>
+                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                      selectedPayment === method.name
+                        ? method.color === "purple"
+                          ? "border-purple-500 bg-purple-500"
+                          : "border-blue-500 bg-blue-500"
+                        : "border-slate-300"
+                    }`}>
+                      {selectedPayment === method.name && (
+                        <CheckCircle className="w-5 h-5 text-white" />
+                      )}
+                    </div>
+                  </label>
+                ))}
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex space-x-4">
+                <button
+                  className="flex-1 rounded-2xl border-2 border-slate-300 py-4 font-semibold text-slate-700 transition hover:bg-slate-50 hover:border-slate-400"
+                  onClick={closePaymentModal}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="flex-1 rounded-2xl bg-gradient-to-r from-slate-900 to-slate-800 py-4 font-semibold text-white transition hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg flex items-center justify-center space-x-2"
+                  onClick={handleContinue}
+                  disabled={!selectedPayment || isProcessing}
+                >
+                  {isProcessing ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      <span>Processing...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Continue</span>
+                      <ArrowRight className="w-5 h-5" />
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
         </div>

@@ -37,6 +37,10 @@ import RequestDetails from "../Pages/AdminPages/ServiceRequest/RequestDetails";
 import SubscriberList from "../Pages/AdminPages/SubscriberList/SubscriberList";
 import Advertisement from "../Pages/AdminPages/SubscriberList/Advertisement";
 import Categories from "../Pages/AdminPages/Categories/Categories";
+import BoostingPage from "../Pages/SellerPages/BoostingPage";
+import { BoostPaymentSuccessPage } from "../Pages/Payment/BoostPaymentSuccess";
+import { BoostPaymentCancel } from "../Pages/Payment/BoostPaymentCancel";
+import BoostingManage from "../Pages/AdminPages/BoostingManage/BoostingManage";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -121,9 +125,24 @@ const router = createBrowserRouter([
         element: <MyServices />,
       },
       {
+        path: '/boosting/:id',
+        element: <BoostingPage/>
+      },
+      
+      {
+        path: '/payment-success',
+        element: <BoostPaymentSuccessPage/>
+      },
+      {
+        path: '/payment-cancel',
+        element: <BoostPaymentCancel/>
+      },
+      
+      {
         path: "/create-service",
         element: <AddServices />,
       },
+
     ],
   },
   {
@@ -181,6 +200,10 @@ const router = createBrowserRouter([
       {
         path: "content",
         element: <ContentPage />,
+      },
+      {
+        path: "boosting",
+        element: <BoostingManage />,
       },
       {
         path: "add-privacy",

@@ -49,6 +49,7 @@ const Dashboard = () => {
     { title: "Advertisement", path: "/admin/advertisement", icon: AdvertisementIcon },
     { title: "Category", path: "/admin/categories", icon: ShoppingIconSvg },
     { title: "Content", path: "/admin/content", icon: ContentIconSvg },
+    { title: "Boosting", path: "/admin/boosting", icon: ContentIconSvg },
     { title: "Privacy", path: "/admin/add-privacy", icon: PrivacyIconSvg },
   ];
 

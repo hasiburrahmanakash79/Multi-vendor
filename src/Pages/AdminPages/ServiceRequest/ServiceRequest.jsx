@@ -289,7 +289,7 @@ const ServiceRequest = () => {
   }
 
   return (
-    <div className="p-6">
+    <div className="">
       <SectionTitle
         title="Service Request"
         description="Track, manage, and forecast your customers and orders."

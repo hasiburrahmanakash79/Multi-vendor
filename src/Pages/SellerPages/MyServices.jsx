@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Edit, Trash2, X, Camera } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import useSellerServices from "../../hooks/useSellerServices";
 import apiClient from "../../lib/api-client";
@@ -17,7 +17,7 @@ const useModal = () => {
 };
 
 // Service Row Component
-const ServiceRow = ({ service, onEdit, onDelete }) => (
+const ServiceRow = ({ service, onEdit, onDelete, onBoost }) => (
   <div className="sm:grid sm:grid-cols-16 sm:gap-2 sm:p-3 sm:items-center sm:hover:bg-gray-50 sm:transition-colors sm:duration-300 flex flex-col bg-white rounded-xl shadow-md border border-gray-100 p-4 mb-3 sm:m-0 sm:shadow-none sm:border-0 sm:bg-transparent transition-all duration-200">
     {/* Service Info (Image, Title, Location) */}
     <div className="sm:col-span-4 flex items-start space-x-3 sm:items-center">
@@ -95,7 +95,7 @@ const ServiceRow = ({ service, onEdit, onDelete }) => (
     </div>
 
     {/* Price */}
-    <div className="sm:col-span-2 mt-4 sm:mt-0 sm:text-center">
+    <div className="sm:col-span-1 mt-4 sm:mt-0 sm:text-center">
       <span className="text-gray-600 text-xs sm:text-sm md:hidden flex font-semibold">
         Price
       </span>
@@ -123,6 +123,35 @@ const ServiceRow = ({ service, onEdit, onDelete }) => (
         </div>
       )}
     </div>
+
+    {/* Actions */}
+<div className="sm:col-span-1 mt-4 sm:mt-0 sm:text-center">
+  {service.status === "Active" ? (
+    <div className="flex items-center justify-start sm:justify-center space-x-3">
+
+      {/* Boost off → show Boost button */}
+      {!(service?.is_boosted === false) ? (
+        <button
+          onClick={() => onBoost(service)}
+          className="py-1 px-3 text-white bg-purple-500 rounded-full cursor-pointer"
+        >
+          Boost
+        </button>
+      ) : (
+        /* Boost on → show Boosting Running */
+        <button
+          className="py-1 px-3 text-white bg-green-500 rounded-full cursor-default"
+        >
+          Boosted
+        </button>
+      )}
+
+    </div>
+  ) : null}
+</div>
+
+
+
   </div>
 );
 
@@ -142,6 +171,7 @@ ServiceRow.propTypes = {
   }).isRequired,
   onEdit: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
+  onBoost: PropTypes.func.isRequired,
 };
 
 // Additional Item Component
@@ -1030,6 +1060,7 @@ export default function MyServices() {
   const itemsPerPage = 10;
   const editModal = useModal();
   const deleteModal = useModal();
+  const navigate = useNavigate();
 
   // Sync local services with serviceData
   useEffect(() => {
@@ -1338,6 +1369,10 @@ export default function MyServices() {
     }
   };
 
+  const handleBoost = (service) => {
+    navigate(`/boosting/${service.id}`);
+  };
+
   // Sync editedService with selectedService
   useEffect(() => {
     if (selectedService) {
@@ -1349,9 +1384,11 @@ export default function MyServices() {
       setUpdatedPortfolio(selectedService.portfolio_photos);
       setNewPortfolioFiles([]);
       setUpdatedAdditionals(
-        selectedService.additionals.map((a) => ({ ...a, newImage: null }))
+        selectedService.additionals?.map((a) => ({ ...a, newImage: null })) ?? []
       );
-      setUpdatedBenefits(selectedService.benefits.map((b) => ({ ...b })));
+      setUpdatedBenefits(
+        selectedService.benefits?.map((b) => ({ ...b })) ?? []
+      );
     }
   }, [selectedService]);
 
@@ -1403,8 +1440,9 @@ export default function MyServices() {
             <div className="sm:col-span-2 sm:text-center">Active Orders</div>
             <div className="sm:col-span-2 sm:text-center">Completed Orders</div>
             <div className="sm:col-span-2 sm:text-center">Available Time</div>
-            <div className="sm:col-span-2 sm:text-center">Price</div>
+            <div className="sm:col-span-1 sm:text-center">Price</div>
             <div className="sm:col-span-2 sm:text-center">Action</div>
+            <div className="sm:col-span-1 sm:text-center">Boost</div>
           </div>
 
           {/* Table Body */}
@@ -1419,6 +1457,7 @@ export default function MyServices() {
                     setSelectedService(s);
                     deleteModal.openModal();
                   }}
+                  onBoost={handleBoost}
                 />
               ))
             ) : (
