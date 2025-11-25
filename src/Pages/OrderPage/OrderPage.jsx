@@ -295,7 +295,7 @@ function DesktopRow({ order, formatTime, onPay, isPayable }) {
     <div className="grid grid-cols-12 gap-4 p-4 items-center">
       {/* Service */}
       <div className="col-span-3 flex items-center space-x-3">
-        <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg bg-gray-200">
+        <div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-gray-200">
           <img
             src={order.service.cover_photo}
             alt={order.service.title}
@@ -360,7 +360,7 @@ function MobileCard({ order, formatTime, onPay, isPayable }) {
     <div className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-200">
       {/* Service Header */}
       <div className="mb-3 flex items-start gap-3">
-        <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-gray-200">
+        <div className="h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-gray-200">
           <img
             src={order.service.cover_photo}
             alt={order.service.title}

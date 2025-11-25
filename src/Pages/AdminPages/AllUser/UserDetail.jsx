@@ -151,15 +151,15 @@ export default function UserDetailPage() {
 
               <div className="space-y-3 text-left">
                 <div className="flex items-center text-gray-600">
-                  <Mail className="w-4 h-4 mr-3 flex-shrink-0" />
+                  <Mail className="w-4 h-4 mr-3 shrink-0" />
                   <span className="text-sm">{user?.email_address}</span>
                 </div>
                 <div className="flex items-center text-gray-600">
-                  <MapPin className="w-4 h-4 mr-3 flex-shrink-0" />
+                  <MapPin className="w-4 h-4 mr-3 shrink-0" />
                   <span className="text-sm">{user.phone_number || "N/A"}</span>
                 </div>
                 <div className="flex items-center text-gray-600">
-                  <Calendar className="w-4 h-4 mr-3 flex-shrink-0" />
+                  <Calendar className="w-4 h-4 mr-3 shrink-0" />
                   <span className="text-sm">{user.created_at}</span>
                 </div>
               </div>

@@ -169,7 +169,7 @@ const AdminLogin = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-gradient-to-r from-[#C8C1F5] to-[#b6acf7] text-gray-800 py-3 rounded-md text-sm font-medium hover:from-[#b6acf7] hover:to-[#a19bf5] transition-all duration-300 disabled:opacity-50 flex items-center justify-center"
+              className="w-full bg-linear-to-r from-[#C8C1F5] to-[#b6acf7] text-gray-800 py-3 rounded-md text-sm font-medium hover:from-[#b6acf7] hover:to-[#a19bf5] transition-all duration-300 disabled:opacity-50 flex items-center justify-center"
             >
               {isSubmitting ? (
                 <svg

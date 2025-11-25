@@ -204,8 +204,8 @@ const MobileTopBar = ({ user, loading, error, mobileSearchRef, mobileSearchTerm,
                       className="px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-50 last:border-b-0"
                     >
                       <div className="flex items-start space-x-3">
-                        <div className="relative flex-shrink-0">
-                          <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-orange-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
+                        <div className="relative shrink-0">
+                          <div className="w-10 h-10 bg-linear-to-br from-pink-500 to-orange-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
                             {n.avatar}
                           </div>
                           {n.isOnline && (
@@ -348,7 +348,7 @@ const Navbar = () => {
       <nav className="hidden md:block fixed top-0 left-0 w-full bg-white shadow-md z-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
-            <div className="flex-shrink-0">
+            <div className="shrink-0">
               <Link to={user?.role === "Seller" ? "/seller-overview" : "/"}>
                 <img src={logo} alt="Logo" className="h-10 w-auto" />
               </Link>
@@ -419,8 +419,8 @@ const Navbar = () => {
                           {notifications.map((n) => (
                             <div key={n.id} className="px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-50 last:border-b-0">
                               <div className="flex items-start space-x-3">
-                                <div className="relative flex-shrink-0">
-                                  <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-orange-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
+                                <div className="relative shrink-0">
+                                  <div className="w-10 h-10 bg-linear-to-br from-pink-500 to-orange-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
                                     {n.avatar}
                                   </div>
                                   {n.isOnline && (

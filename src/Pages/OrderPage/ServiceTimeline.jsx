@@ -157,7 +157,7 @@ export default function ServiceTimeline() {
       </h2>
 
       {/* Order ID and Payment Info */}
-      <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg p-4 mb-8 border border-purple-200">
+      <div className="bg-linear-to-r from-purple-50 to-blue-50 rounded-lg p-4 mb-8 border border-purple-200">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <p className="text-sm text-gray-600">Order ID</p>
@@ -320,7 +320,7 @@ export default function ServiceTimeline() {
               </div>
 
               {orderData.status === "Active" && daysLeft !== null && (
-                <div className="flex justify-between items-center bg-gradient-to-r from-purple-50 to-blue-50 p-4 rounded-lg border border-purple-200">
+                <div className="flex justify-between items-center bg-linear-to-r from-purple-50 to-blue-50 p-4 rounded-lg border border-purple-200">
                   <span className="text-gray-700 font-medium">Days Left</span>
                   <span
                     className={`font-bold text-lg ${

@@ -9,7 +9,7 @@ const MobileAppSection = () => {
         backgroundImage: `url(${bg})`,
       }}
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-[#C8C1F5]/70 via-[#D8B4FE]/70 to-[#C8C1F5]/70 z-0"></div>
+      <div className="absolute inset-0 bg-linear-to-br from-[#C8C1F5]/70 via-[#D8B4FE]/70 to-[#C8C1F5]/70 z-0"></div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center min-h-[400px]">

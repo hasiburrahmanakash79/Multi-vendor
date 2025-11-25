@@ -19,7 +19,7 @@ const SubscriberList = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-purple-300 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-slate-600 text-lg">Loading subscribers...</p>
@@ -29,7 +29,7 @@ const SubscriberList = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         {/* Header Section */}
         <div className="mb-8">
@@ -68,20 +68,20 @@ const SubscriberList = () => {
               >
                 <div className="flex items-center gap-4">
                   {/* Avatar */}
-                  <div className="w-12 h-12 bg-gradient-to-br from-purple-300 to-purple-300 rounded-full flex items-center justify-center text-white font-semibold text-lg shadow-md group-hover:scale-110 transition-transform">
+                  <div className="w-12 h-12 bg-linear-to-br from-purple-300 to-purple-300 rounded-full flex items-center justify-center text-white font-semibold text-lg shadow-md group-hover:scale-110 transition-transform">
                     {getInitials(subscriber.email_address)}
                   </div>
 
                   {/* Content */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <Mail className="w-4 h-4 text-slate-400 flex-shrink-0" />
+                      <Mail className="w-4 h-4 text-slate-400 shrink-0" />
                       <p className="text-slate-900 font-medium truncate">
                         {subscriber.email_address}
                       </p>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4 text-slate-400 flex-shrink-0" />
+                      <Calendar className="w-4 h-4 text-slate-400 shrink-0" />
                       <p className="text-sm text-slate-500">
                         Joined {formatDate(subscriber.created_at)}
                       </p>
@@ -89,7 +89,7 @@ const SubscriberList = () => {
                   </div>
 
                   {/* Status Badge */}
-                  <div className="flex-shrink-0">
+                  <div className="shrink-0">
                     <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
                       Active
                     </span>

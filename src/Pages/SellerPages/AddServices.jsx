@@ -433,7 +433,7 @@ const AddServices = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4 sm:p-6">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4 sm:p-6">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-6xl mx-auto p-6 sm:p-8 transform transition-all duration-300">
         <div className="flex items-center justify-between border-b border-gray-200 pb-4 mb-6">
           <div className="flex items-center gap-4">
@@ -1325,7 +1325,7 @@ export default AddServices;
 //   const [isSubmitting, setIsSubmitting] = useState(false);
 
 //   return (
-//     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4 sm:p-6">
+//     <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4 sm:p-6">
 //       <div className="bg-white rounded-2xl shadow-xl w-full max-w-6xl mx-auto p-6 sm:p-8 transform transition-all duration-300">
 //         <div className="flex items-center justify-between border-b border-gray-200 pb-4 mb-6">
 //           <div className="flex items-center gap-4">
@@ -2272,7 +2272,7 @@ export default AddServices;
 //   const [isSubmitting, setIsSubmitting] = useState(false);
 
 //   return (
-//     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4 sm:p-6">
+//     <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4 sm:p-6">
 //       <div className="bg-white rounded-2xl shadow-xl w-full max-w-6xl mx-auto p-6 sm:p-8 transform transition-all duration-300">
 //         <div className="flex items-center justify-between border-b border-gray-200 pb-4 mb-6">
 //           <div className="flex items-center gap-4">

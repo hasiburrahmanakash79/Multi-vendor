@@ -829,7 +829,7 @@ export default Chatting;
 //           showSidebar ? "translate-x-0" : "-translate-x-full"
 //         } lg:translate-x-0 fixed lg:static w-64 sm:w-72 lg:w-80 h-full bg-white border-r border-gray-200 flex flex-col transition-transform duration-300 ease-in-out z-10 lg:z-auto shadow-lg lg:shadow-none`}
 //       >
-//         <div className="p-3 sm:p-4 border-b border-gray-200 bg-gradient-to-b from-white to-gray-50">
+//         <div className="p-3 sm:p-4 border-b border-gray-200 bg-linear-to-b from-white to-gray-50">
 //           <div className="flex items-center justify-between mb-3 sm:mb-4">
 //             <div className="relative flex-1 ml-2">
 //               <Search className="w-4 h-4 text-gray-400 absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2" />
@@ -868,7 +868,7 @@ export default Chatting;
 //                   <img
 //                     src={convo.chat_with.photo}
 //                     alt={convo.chat_with.full_name}
-//                     className="w-8 sm:w-10 h-8 sm:h-10 rounded-full flex-shrink-0 shadow-sm"
+//                     className="w-8 sm:w-10 h-8 sm:h-10 rounded-full shrink-0 shadow-sm"
 //                     onError={(e) => {
 //                       e.target.onerror = null;
 //                       e.target.src = "https://via.placeholder.com/40"; // Fallback
@@ -1804,7 +1804,7 @@ export default Chatting;
 //           showSidebar ? "translate-x-0" : "-translate-x-full"
 //         } lg:translate-x-0 fixed lg:static w-64 sm:w-72 lg:w-80 h-full bg-white border-r border-gray-200 flex flex-col transition-transform duration-300 ease-in-out z-10 lg:z-auto shadow-lg lg:shadow-none`}
 //       >
-//         <div className="p-3 sm:p-4 border-b border-gray-200 bg-gradient-to-b from-white to-gray-50">
+//         <div className="p-3 sm:p-4 border-b border-gray-200 bg-linear-to-b from-white to-gray-50">
 //           <div className="flex items-center justify-between mb-3 sm:mb-4">
 //             <div className="relative flex-1 ml-2">
 //               <Search className="w-4 h-4 text-gray-400 absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2" />
@@ -1843,7 +1843,7 @@ export default Chatting;
 //                   <img
 //                     src={convo.chat_with.photo}
 //                     alt={convo.chat_with.full_name}
-//                     className="w-8 sm:w-10 h-8 sm:h-10 rounded-full flex-shrink-0 shadow-sm"
+//                     className="w-8 sm:w-10 h-8 sm:h-10 rounded-full shrink-0 shadow-sm"
 //                     onError={(e) => {
 //                       e.target.onerror = null;
 //                       e.target.src = "https://via.placeholder.com/40"; // Fallback
@@ -2700,7 +2700,7 @@ export default Chatting;
 //           showSidebar ? "translate-x-0" : "-translate-x-full"
 //         } lg:translate-x-0 fixed lg:static w-64 sm:w-72 lg:w-80 h-full bg-white border-r border-gray-200 flex flex-col transition-transform duration-300 ease-in-out z-10 lg:z-auto shadow-lg lg:shadow-none`}
 //       >
-//         <div className="p-3 sm:p-4 border-b border-gray-200 bg-gradient-to-b from-white to-gray-50">
+//         <div className="p-3 sm:p-4 border-b border-gray-200 bg-linear-to-b from-white to-gray-50">
 //           <div className="flex items-center justify-between mb-3 sm:mb-4">
 //             <div className="relative flex-1 ml-2">
 //               <Search className="w-4 h-4 text-gray-400 absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2" />
@@ -2739,7 +2739,7 @@ export default Chatting;
 //                   <img
 //                     src={convo.chat_with.photo}
 //                     alt={convo.chat_with.full_name}
-//                     className="w-8 sm:w-10 h-8 sm:h-10 rounded-full flex-shrink-0 shadow-sm"
+//                     className="w-8 sm:w-10 h-8 sm:h-10 rounded-full shrink-0 shadow-sm"
 //                     onError={(e) => {
 //                       e.target.onerror = null;
 //                       e.target.src = "https://via.placeholder.com/40"; // Fallback

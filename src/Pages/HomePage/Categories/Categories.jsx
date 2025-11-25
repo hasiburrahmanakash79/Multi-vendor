@@ -129,7 +129,7 @@ const Categories = () => {
                 <Link
                   key={cat.id}
                   to={`/category/${cat.slug}`}
-                  className="flex-shrink-0 snap-start w-36 sm:w-44 md:w-56"
+                  className="shrink-0 snap-start w-36 sm:w-44 md:w-56"
                 >
                   <div
                     className={`${bgColor} rounded-2xl p-6 h-48 shadow-sm hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1`}

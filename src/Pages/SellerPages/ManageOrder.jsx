@@ -380,7 +380,7 @@ const ManageOrder = () => {
         className="w-full h-full object-cover"
         onError={(e) => (e.target.src = "https://via.placeholder.com/800x300")}
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+      <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent"></div>
       <button
         onClick={() => setDetailsModalOpen(false)}
         className="absolute top-3 right-3 sm:top-4 sm:right-4 p-2 bg-white/90 hover:bg-white rounded-full transition-colors shadow-lg"
@@ -522,7 +522,7 @@ function DesktopRow({ order, getStatusColor, openDetailsModal, openEditModal }) 
     >
       {/* Service */}
       <div className="col-span-3 flex items-center space-x-3">
-        <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg bg-gray-200">
+        <div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-gray-200">
           <img
             src={order.bannerImage}
             alt={order.service}
@@ -606,7 +606,7 @@ function MobileCard({ order, getStatusColor, openDetailsModal, openEditModal }) 
     >
       {/* Service Header */}
       <div className="mb-3 flex items-start gap-3">
-        <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-gray-200">
+        <div className="h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-gray-200">
           <img
             src={order.bannerImage}
             alt={order.service}

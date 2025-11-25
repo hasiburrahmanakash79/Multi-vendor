@@ -103,9 +103,9 @@ export default function BoostingPage() {
 
   const getPlanColor = (index) => {
     const colors = [
-      { bg: "bg-gradient-to-br from-purple-500 to-purple-600", text: "text-purple-600", border: "border-purple-200", ring: "ring-purple-100" },
-      { bg: "bg-gradient-to-br from-blue-500 to-blue-600", text: "text-blue-600", border: "border-blue-200", ring: "ring-blue-100" },
-      { bg: "bg-gradient-to-br from-amber-500 to-amber-600", text: "text-amber-600", border: "border-amber-200", ring: "ring-amber-100" },
+      { bg: "bg-linear-to-br from-purple-500 to-purple-600", text: "text-purple-600", border: "border-purple-200", ring: "ring-purple-100" },
+      { bg: "bg-linear-to-br from-blue-500 to-blue-600", text: "text-blue-600", border: "border-blue-200", ring: "ring-blue-100" },
+      { bg: "bg-linear-to-br from-amber-500 to-amber-600", text: "text-amber-600", border: "border-amber-200", ring: "ring-amber-100" },
     ];
     return colors[index % colors.length];
   };
@@ -114,7 +114,7 @@ export default function BoostingPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-slate-300 border-t-slate-700 mb-4"></div>
           <p className="text-slate-600 font-medium">Loading boosting plans...</p>
@@ -125,7 +125,7 @@ export default function BoostingPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -141,7 +141,7 @@ export default function BoostingPage() {
 
   if (plans.length === 0) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
           <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <Star className="w-8 h-8 text-slate-400" />
@@ -154,9 +154,9 @@ export default function BoostingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-50">
+    <div className="min-h-screen bg-linear-to-br from-slate-50 via-slate-100 to-slate-50">
       {/* Header Section */}
-      <div className="bg-gradient-to-r from-slate-900 to-slate-800 text-white py-16 px-4">
+      <div className="bg-linear-to-r from-slate-900 to-slate-800 text-white py-16 px-4">
         <div className="container mx-auto max-w-6xl">
           <div className="flex items-center justify-center mb-4">
             <div className="bg-white/10 p-3 rounded-2xl backdrop-blur-sm">
@@ -276,7 +276,7 @@ export default function BoostingPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
           <div className="w-full max-w-lg rounded-3xl bg-white shadow-2xl transform transition-all">
             {/* Modal Header */}
-            <div className="bg-gradient-to-r from-slate-900 to-slate-800 text-white p-8 rounded-t-3xl">
+            <div className="bg-linear-to-r from-slate-900 to-slate-800 text-white p-8 rounded-t-3xl">
               <h2 className="text-3xl font-bold mb-2">
                 Payment Method
               </h2>
@@ -322,7 +322,7 @@ export default function BoostingPage() {
                     <div className="flex items-center space-x-4">
                       <div
                         className={`flex h-12 w-12 items-center justify-center rounded-xl text-lg font-bold text-white shadow-lg ${
-                          method.color === "purple" ? "bg-gradient-to-br from-purple-500 to-purple-600" : "bg-gradient-to-br from-blue-500 to-blue-600"
+                          method.color === "purple" ? "bg-linear-to-br from-purple-500 to-purple-600" : "bg-linear-to-br from-blue-500 to-blue-600"
                         }`}
                       >
                         {method.icon}
@@ -356,7 +356,7 @@ export default function BoostingPage() {
                   Cancel
                 </button>
                 <button
-                  className="flex-1 rounded-2xl bg-gradient-to-r from-slate-900 to-slate-800 py-4 font-semibold text-white transition hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg flex items-center justify-center space-x-2"
+                  className="flex-1 rounded-2xl bg-linear-to-r from-slate-900 to-slate-800 py-4 font-semibold text-white transition hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg flex items-center justify-center space-x-2"
                   onClick={handleContinue}
                   disabled={!selectedPayment || isProcessing}
                 >

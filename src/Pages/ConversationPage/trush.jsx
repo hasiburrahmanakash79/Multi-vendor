@@ -306,7 +306,7 @@
 //                   selectedContact === contact.id ? "bg-gray-50" : ""
 //                 }`}
 //               >
-//                 <div className="w-8 sm:w-10 h-8 sm:h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex-shrink-0 flex items-center justify-center text-white text-xs sm:text-sm font-medium">
+//                 <div className="w-8 sm:w-10 h-8 sm:h-10 bg-linear-to-br from-blue-500 to-purple-500 rounded-full shrink-0 flex items-center justify-center text-white text-xs sm:text-sm font-medium">
 //                   {contact.avatar}
 //                 </div>
 //                 <div className="ml-2 sm:ml-3 flex-1 min-w-0">
@@ -367,7 +367,7 @@
 //                   >
 //                     <Menu className="w-5 h-5" />
 //                   </button>
-//                   <div className="w-8 sm:w-10 h-8 sm:h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white text-xs sm:text-sm font-medium">
+//                   <div className="w-8 sm:w-10 h-8 sm:h-10 bg-linear-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white text-xs sm:text-sm font-medium">
 //                     {currentContact.avatar}
 //                   </div>
 //                   <div>
@@ -463,7 +463,7 @@
 //                               This message relates to:
 //                             </div>
 //                             <div className="bg-gray-50 rounded-lg p-2 sm:p-3 flex items-center gap-2 sm:gap-3">
-//                               <div className="w-8 sm:w-12 h-8 sm:h-12 bg-gradient-to-br from-pink-500 to-orange-500 rounded-lg flex items-center justify-center text-black">
+//                               <div className="w-8 sm:w-12 h-8 sm:h-12 bg-linear-to-br from-pink-500 to-orange-500 rounded-lg flex items-center justify-center text-black">
 //                                 {currentContact.business.icon}
 //                               </div>
 //                               <div>
@@ -555,7 +555,7 @@
 //                   }}
 //                   className="flex items-center gap-3 p-3 hover:bg-gray-50 cursor-pointer rounded-lg border-b border-gray-100 last:border-b-0"
 //                 >
-//                   <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-orange-500 rounded-lg flex items-center justify-center">
+//                   <div className="w-12 h-12 bg-linear-to-br from-pink-500 to-orange-500 rounded-lg flex items-center justify-center">
 //                     <Camera className="w-6 h-6 text-white" />
 //                   </div>
 //                   <div className="flex-1">

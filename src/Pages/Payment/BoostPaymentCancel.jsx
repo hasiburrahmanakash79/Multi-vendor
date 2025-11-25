@@ -3,12 +3,12 @@ import { XCircle } from "lucide-react";
 // Payment Cancel Page Component
 export function BoostPaymentCancel() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 via-orange-50 to-amber-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-linear-to-br from-red-50 via-orange-50 to-amber-50 flex items-center justify-center p-4">
       <div className="max-w-2xl w-full">
         {/* Cancel Card */}
         <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
           {/* Header Section */}
-          <div className="bg-gradient-to-r from-red-500 to-orange-600 text-white p-8 text-center">
+          <div className="bg-linear-to-r from-red-500 to-orange-600 text-white p-8 text-center">
             <div className="inline-flex items-center justify-center w-20 h-20 bg-white rounded-full mb-6">
               <XCircle className="w-12 h-12 text-red-500" />
             </div>

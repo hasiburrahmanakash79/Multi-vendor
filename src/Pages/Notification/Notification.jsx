@@ -63,8 +63,8 @@ const Notification = () => {
               className="px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-50 last:border-b-0"
             >
               <div className="flex items-start space-x-3">
-                <div className="relative flex-shrink-0">
-                  <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-orange-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
+                <div className="relative shrink-0">
+                  <div className="w-10 h-10 bg-linear-to-br from-pink-500 to-orange-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
                     {notification.avatar}
                   </div>
                   {notification.isOnline && (

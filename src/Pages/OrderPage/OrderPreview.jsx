@@ -159,7 +159,7 @@ const OrderPreview = () => {
         </h1>
 
         <div className="">
-          <div className="relative h-[200px] sm:h-[300px] md:h-[400px] lg:h-[500px] bg-gradient-to-r from-orange-200 to-orange-300 rounded-2xl">
+          <div className="relative h-[200px] sm:h-[300px] md:h-[400px] lg:h-[500px] bg-linear-to-r from-orange-200 to-orange-300 rounded-2xl">
             <img
               src={service.coverPhoto || "https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"}
               alt={service.title || "Service image"}

@@ -37,7 +37,7 @@ const StatCard = ({ icon, label, value, highlight = false }) => (
 
 const ActiveOrderCard = ({ order }) => (
   <div className="flex items-center space-x-3 hover:bg-gray-50 p-3 rounded-lg transition-colors duration-300">
-    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg overflow-hidden flex-shrink-0">
+    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg overflow-hidden shrink-0">
       <img
         src={order.cover_photo}
         alt={order.title}
@@ -52,7 +52,7 @@ const ActiveOrderCard = ({ order }) => (
         Total orders: {order.total_orders}
       </p>
     </div>
-    <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-purple-500 flex items-center justify-center flex-shrink-0">
+    <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-purple-500 flex items-center justify-center shrink-0">
       <span className="text-white text-[10px] sm:text-xs font-bold">
         {order.total_orders}
       </span>

@@ -118,7 +118,7 @@ const BoostingManage = () => {
                 Manage your service boosting plans and pricing
               </p>
             </div>
-            {/* <button className="bg-gradient-to-r from-slate-900 to-slate-800 text-white px-6 py-2 rounded-xl font-semibold hover:opacity-90 transition-all shadow-lg flex items-center space-x-2">
+            {/* <button className="bg-linear-to-r from-slate-900 to-slate-800 text-white px-6 py-2 rounded-xl font-semibold hover:opacity-90 transition-all shadow-lg flex items-center space-x-2">
               <Plus className="w-5 h-5" />
               <span>Add New Plan</span>
             </button> */}

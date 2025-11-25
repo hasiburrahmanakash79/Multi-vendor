@@ -929,7 +929,7 @@ export default function ConversationPage() {
                   <img
                     src={convo.chat_with.photo}
                     alt={convo.chat_with.full_name}
-                    className="w-8 sm:w-10 h-8 sm:h-10 rounded-full flex-shrink-0 shadow-sm"
+                    className="w-8 sm:w-10 h-8 sm:h-10 rounded-full shrink-0 shadow-sm"
                     onError={(e) => {
                       e.target.onerror = null;
                       e.target.src = "https://via.placeholder.com/40"; // Fallback
