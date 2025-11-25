@@ -1,6 +1,6 @@
 import { useState } from "react";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
+import MDEditor from '@uiw/react-md-editor';
+import { marked } from 'marked';
 import apiClient from "../../../lib/api-client";
 import Swal from "sweetalert2";
 
@@ -8,7 +8,7 @@ const Advertisement = () => {
   const [formData, setFormData] = useState({
     target_audience: "All",
     subject: "",
-    body: "",
+    body: "", // This will store Markdown
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -32,7 +32,7 @@ const Advertisement = () => {
   const handleBodyChange = (value) => {
     setFormData((prev) => ({
       ...prev,
-      body: value,
+      body: value || "",
     }));
     setError("");
   };
@@ -46,19 +46,22 @@ const Advertisement = () => {
       setError("Subject is required");
       return;
     }
-    if (!formData.body.trim() || formData.body === "<p><br></p>") {
+    if (!formData.body.trim()) {
       setError("Email body is required");
       return;
     }
 
-    console.log(formData);
+    // Convert Markdown to HTML
+    const htmlBody = marked(formData.body);
+
+    console.log({ ...formData, body: htmlBody });
     setLoading(true);
 
     try {
       await apiClient.post("/administration/marketing/send-emails", {
         target_audience: formData.target_audience,
         subject: formData.subject.trim(),
-        body: formData.body,
+        body: htmlBody,
       });
 
       Swal.fire({
@@ -90,17 +93,6 @@ const Advertisement = () => {
     }
   };
 
-  const modules = {
-    toolbar: [
-      [{ header: [1, 2, 3, false] }],
-      ["bold", "italic", "underline", "strike"],
-      [{ list: "ordered" }, { list: "bullet" }],
-      [{ color: [] }, { background: [] }],
-      ["link"],
-      ["clean"],
-    ],
-  };
-
   return (
     <div className="">
       <h1 className="text-2xl font-bold text-gray-900 mb-6">
@@ -108,7 +100,7 @@ const Advertisement = () => {
       </h1>
 
       {error && (
-        <div className="mb-4 p-3 bg-red-50(border border-red-200) text-red-700 rounded-lg text-sm">
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
           {error}
         </div>
       )}
@@ -159,20 +151,19 @@ const Advertisement = () => {
           />
         </div>
 
-        {/* Body (Rich Text) */}
+        {/* Body (Markdown Editor) */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Email Body <span className="text-red-600">*</span>
           </label>
-          <div className="rounded-md">
-            <ReactQuill
-              theme="snow"
+          <div className="rounded-md" data-color-mode="light">
+            <MDEditor
               value={formData.body}
               onChange={handleBodyChange}
-              modules={modules}
-              placeholder="Write your email content..."
-              className="h-64 mb-12" // mb-12 to push toolbar up
-              readOnly={loading}
+              preview="live"
+              height={256} // Equivalent to h-64 (64*4=256px, assuming tailwind's rem=16px)
+              readonly={loading}
+              placeholder="Write your email content in Markdown..."
             />
           </div>
         </div>

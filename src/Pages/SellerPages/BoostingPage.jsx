@@ -110,21 +110,7 @@ export default function BoostingPage() {
     return colors[index % colors.length];
   };
 
-  const getPlanFeatures = (duration) => {
-    const baseFeatures = [
-      "Top search ranking",
-      "Priority listing",
-      "Enhanced visibility",
-    ];
-    
-    if (duration <= 7) {
-      return [...baseFeatures ];
-    } else if (duration <= 30) {
-      return [...baseFeatures, "Email notifications"];
-    } else {
-      return [...baseFeatures, "Email notifications", "Priority support", "Featured badge"];
-    }
-  };
+
 
   if (loading) {
     return (
@@ -220,7 +206,6 @@ export default function BoostingPage() {
           {plans.map((plan, index) => {
             const colorScheme = getPlanColor(index);
             const isPopular = index === 1 || plan.priority_score > 10;
-            const features = getPlanFeatures(plan.duration);
             
             return (
               <div
@@ -267,16 +252,6 @@ export default function BoostingPage() {
                   <p className="text-slate-600 mb-6 min-h-[48px]">
                     {plan.description}
                   </p>
-
-                  {/* Features */}
-                  <div className="space-y-3 mb-8">
-                    {features.map((feature, idx) => (
-                      <div key={idx} className="flex items-center space-x-3">
-                        <CheckCircle className={`w-5 h-5 ${colorScheme.text} flex-shrink-0`} />
-                        <span className="text-slate-700 text-sm">{feature}</span>
-                      </div>
-                    ))}
-                  </div>
 
                   {/* Button */}
                   <button

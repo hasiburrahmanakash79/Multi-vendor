@@ -3,7 +3,7 @@ import useUserOrder from "../../hooks/useUserOrder";
 import useModal from "../../components/modal/useModal";
 import Swal from "sweetalert2";
 import { useLocation } from "react-router";
-import { CloudHail, CheckCircle, ArrowRight, Loader2 } from "lucide-react";
+import {  CheckCircle, ArrowRight, Loader2 } from "lucide-react";
 import apiClient from "../../lib/api-client";
 
 export default function OrderPage() {
@@ -174,7 +174,7 @@ export default function OrderPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
           <div className="w-full max-w-lg rounded-3xl bg-white shadow-2xl transform transition-all">
             {/* Modal Header */}
-            <div className="bg-gradient-to-r from-slate-900 to-slate-800 text-white p-8 rounded-t-3xl">
+            <div className="bg-linear-to-r from-slate-900 to-slate-800 text-white p-8 rounded-t-3xl">
               <h2 className="text-3xl font-bold mb-2">
                 Payment Method
               </h2>
@@ -230,7 +230,7 @@ export default function OrderPage() {
                     <div className="flex items-center space-x-4">
                       <div
                         className={`flex h-12 w-12 items-center justify-center rounded-xl text-lg font-bold text-white shadow-lg ${
-                          method.color === "purple" ? "bg-gradient-to-br from-purple-500 to-purple-600" : "bg-gradient-to-br from-blue-500 to-blue-600"
+                          method.color === "purple" ? "bg-linear-to-br from-purple-500 to-purple-600" : "bg-linear-to-br from-blue-500 to-blue-600"
                         }`}
                       >
                         {method.icon}
@@ -264,7 +264,7 @@ export default function OrderPage() {
                   Cancel
                 </button>
                 <button
-                  className="flex-1 rounded-2xl bg-gradient-to-r from-slate-900 to-slate-800 py-4 font-semibold text-white transition hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg flex items-center justify-center space-x-2"
+                  className="flex-1 rounded-2xl bg-linear-to-r from-slate-900 to-slate-800 py-4 font-semibold text-white transition hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg flex items-center justify-center space-x-2"
                   onClick={handleContinue}
                   disabled={!selectedPayment || isProcessing}
                 >
