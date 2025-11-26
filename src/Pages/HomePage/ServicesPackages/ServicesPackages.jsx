@@ -9,7 +9,6 @@ import useMe from "../../../hooks/useMe";
 
 const ServicesPackages = () => {
   const { user } = useMe();
-  console.log(user);
   const { services, loading: servicesLoading } = useServicesList([]);
   const {
     savedServices,

@@ -68,10 +68,7 @@ const OrderPreview = () => {
         event_date: updatedBookingDetails.event_date,
         event_location: updatedBookingDetails.event_location,
       };
-
       const response = await apiClient.post('/user/book-service', payload);
-      console.log('Booking successful:', response.data);
-
       Swal.fire({
         position: "top-end",
         icon: "success",
@@ -150,7 +147,6 @@ const OrderPreview = () => {
   }
 
 
-  console.log(updatedBookingDetails);
   return (
     <div className="min-h-screen py-6 sm:py-8 container mx-auto">
       <div className="px-4 sm:px-6 lg:px-8">

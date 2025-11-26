@@ -46,7 +46,6 @@ apiClient.interceptors.response.use(
     return response;
   },
   async (error) => {
-    console.error("API Response Error:", error.response?.data || error.message);
     if (error?.response?.data?.message.includes("You are not authorized")) {
       console.error("Invalid token detected, clearing auth state");
       removeAuthTokens();

@@ -42,7 +42,6 @@ const ServiceDetailPage = () => {
         setLoading(true);
         const response = await apiClient.get(`/site/service/details/${id}`);
         setService(response.data);
-        console.log(response.data, "service details-------------------");
         setLoading(false);
         // Initialize booking time to the earliest available time
         if (response.data.time_from) {
@@ -229,8 +228,6 @@ const ServiceDetailPage = () => {
   }
   if (error) return <div>{error}</div>;
   if (!service) return <div>No service found</div>;
-
-  console.log(service, "service details");
 
   return (
     <div className="min-h-screen">

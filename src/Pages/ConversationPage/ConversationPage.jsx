@@ -33,10 +33,12 @@ if (!crypto.randomUUID) {
   };
 }
 export default function ConversationPage() {
-  const { user, loading } = useMe();
+ const { user, loading } = useMe();
 
-  const { service } = useSellerServices([]);
-  console.log(service);
+const isSeller = user?.role === "Seller";
+
+const { service } = useSellerServices(isSeller);
+
   const activeServices = service?.filter((s) => s.status === "Approved");
 
   const [conversations, setConversations] = useState([]);
@@ -519,10 +521,8 @@ export default function ConversationPage() {
         }
       };
       ws.onerror = (error) => {
-        console.error("WebSocket error:", error);
         setIsConnected(false);
         setErrorMessage("Connection error occurred.");
-        console.log(error);
       };
       ws.onclose = (event) => {
         console.log(
@@ -717,7 +717,6 @@ export default function ConversationPage() {
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
   };
-  console.log(messages, "messages ----------------------------710");
 
   const filteredConversations = conversations.filter((convo) => {
     const matchesSearch = convo.chat_with.full_name
@@ -806,10 +805,6 @@ export default function ConversationPage() {
     console.log(payload, "Payload --------- 790");
     socket.send(JSON.stringify(payload));
   };
-  console.log(
-    selectedConvoId,
-    " selectedConvoId ---------------------------------- 793"
-  );
 
   // Open image modal
   const openImageModal = (imageUrl) => {

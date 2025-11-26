@@ -11,8 +11,6 @@ export default function OrderPage() {
   const [activeTab, setActiveTab] = useState("Active");
   const location = useLocation();
   const initialTab = location.state?.activeTab;
-  console.log("Initial Tab:", initialTab);
-  console.log(orders, "order");
 
   useEffect(()=>{
     if (initialTab) {

@@ -12,10 +12,6 @@ const SellerProfile = () => {
   const [seller, setSeller] = useState(null);
   const [conversations, setConversations] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  console.log(conversations, "conversations ------");
-  console.log(seller, "seller ------");
-
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -26,7 +22,6 @@ const SellerProfile = () => {
         setLoading(true);
         const response = await apiClient.get(`/user/view-seller/${id}`);
         setSeller(response.data);
-        console.log(response.data, "Seller details-------------------");
       } catch (err) {
         console.error("Error fetching seller:", err);
       }
@@ -118,7 +113,7 @@ const SellerProfile = () => {
                 <p>Reviews</p>
               </div>
             </div>
-            {user?.role !== "Seller" && (
+            {!user || user?.role !== "Seller" && (
               <button
                 onClick={handleMessage}
                 className="text-gray-700 px-4 py-2 rounded-full hover:bg-gray-200 transition-colors flex gap-2 bg-gray-100 text-sm sm:text-base"

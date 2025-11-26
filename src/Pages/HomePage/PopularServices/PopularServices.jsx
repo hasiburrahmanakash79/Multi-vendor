@@ -19,7 +19,6 @@ const PopularServices = () => {
     createFolder,
   } = useSavedList();
 
-  console.log(services);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [selectedServiceId, setSelectedServiceId] = useState(null);

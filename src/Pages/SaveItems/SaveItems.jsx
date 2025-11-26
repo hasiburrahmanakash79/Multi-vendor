@@ -7,7 +7,6 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 
 const SaveItems = () => {
   const { savedServices, loading, error, removeSavedService, refetch } = useSavedList();
-  console.log(savedServices, "savedServices");
 
   const [openCategories, setOpenCategories] = useState({});
 

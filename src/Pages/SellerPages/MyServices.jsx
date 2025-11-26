@@ -610,7 +610,7 @@ const EditModal = ({
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-purple-600 focus:border-purple-600 text-sm"
               />
             </div>
-            <div>
+            {/* <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Status
               </label>
@@ -624,7 +624,7 @@ const EditModal = ({
                 <option value="Pending">Pending</option>
                 <option value="Suspended">Suspended</option>
               </select>
-            </div>
+            </div> */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Cover Photo
@@ -870,7 +870,6 @@ EditModal.propTypes = {
     time_from: PropTypes.string,
     time_to: PropTypes.string,
     price: PropTypes.string,
-    status: PropTypes.string,
     cover_photo: PropTypes.string,
     overview_video: PropTypes.string,
     portfolio_photos: PropTypes.array,
