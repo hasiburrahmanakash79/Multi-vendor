@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 import { MapContainer, TileLayer, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
+
 // Modal hook for managing open/close state
 const useModal = () => {
   const [isOpen, setIsOpen] = useState(false);

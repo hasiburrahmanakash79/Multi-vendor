@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
 import apiClient from '../lib/api-client';
 
-const useSellerServices = (shouldFetch) => {
+const useSellerServices = () => {
   const [service, setServices] = useState(null);
   const [loading, setLoading] = useState(false); 
   const [error, setError] = useState(null);
 
   const fetchServices = useCallback(async () => {
-    if (!shouldFetch) return; // ❌ Seller na hole fetch hobe na
+
 
     try {
       setLoading(true);
@@ -20,7 +20,7 @@ const useSellerServices = (shouldFetch) => {
     } finally {
       setLoading(false);
     }
-  }, [shouldFetch]);
+  }, []);
 
   useEffect(() => {
     fetchServices();
@@ -28,5 +28,7 @@ const useSellerServices = (shouldFetch) => {
 
   return { service, loading, error, refetch: fetchServices };
 };
+
+  
 
 export default useSellerServices;

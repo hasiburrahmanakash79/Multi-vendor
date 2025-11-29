@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { getCookie } from "../../lib/cookie-utils";
+import userImage from "../../assets/images/user.png";
 import {
   Send,
   X,
@@ -33,14 +34,10 @@ if (!crypto.randomUUID) {
   };
 }
 export default function ConversationPage() {
- const { user, loading } = useMe();
-
-const isSeller = user?.role === "Seller";
-
-const { service } = useSellerServices(isSeller);
-
+  const { user, loading } = useMe();
+  const isSeller = user?.role === "Seller";
+  const { service } = useSellerServices(isSeller);
   const activeServices = service?.filter((s) => s.status === "Approved");
-
   const [conversations, setConversations] = useState([]);
   const [messages, setMessages] = useState({});
   const [currentUser, setCurrentUser] = useState(null);
@@ -59,10 +56,8 @@ const { service } = useSellerServices(isSeller);
   const navigate = useNavigate();
   const location = useLocation(); // To access state for new conversations
   const { id } = useParams();
-
   const [selectedImage, setSelectedImage] = useState(null);
   const [imageFile, setImageFile] = useState(null);
-
   const [showServiceModal, setShowServiceModal] = useState(false);
   const [showOfferModal, setShowOfferModal] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
@@ -71,7 +66,6 @@ const { service } = useSellerServices(isSeller);
   const [eventDate, setEventDate] = useState("");
   const [eventTime, setEventTime] = useState("");
   const [price, setPrice] = useState("");
-
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [selectedModalImage, setSelectedModalImage] = useState(null);
   const [zoomLevel, setZoomLevel] = useState(1);
@@ -80,9 +74,8 @@ const { service } = useSellerServices(isSeller);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [startY, setStartY] = useState(0);
-
   const textareaRef = useRef(null);
-
+  const [pendingMessage, setPendingMessage] = useState("");
   // Handle image upload
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -92,7 +85,6 @@ const { service } = useSellerServices(isSeller);
         alert("Image size should be less than 5MB");
         return;
       }
-
       // Create preview
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -102,13 +94,11 @@ const { service } = useSellerServices(isSeller);
       reader.readAsDataURL(file);
     }
   };
-
   // Remove image
   const removeImage = () => {
     setSelectedImage(null);
     setImageFile(null);
   };
-
   // Send image
   const sendImage = async () => {
     if (!imageFile || !selectedConvoId || selectedConvoId === "new") return;
@@ -169,12 +159,10 @@ const { service } = useSellerServices(isSeller);
       );
     }
   };
-
   // Handle create offer
   const handleCreateOffer = () => {
     setShowServiceModal(true);
   };
-
   // Send offer
   const sendOffer = async () => {
     if (!selectedConvoId || selectedConvoId === "new" || !selectedService)
@@ -253,10 +241,9 @@ const { service } = useSellerServices(isSeller);
       );
     }
   };
-
   // Handle send (text or image)
   const handleSend = async () => {
-    if (!isConnected || !selectedConvoId || selectedConvoId === "new") return;
+    if (!isConnected || !selectedConvoId) return;
     if (imageFile) {
       await sendImage();
       removeImage();
@@ -346,6 +333,7 @@ const { service } = useSellerServices(isSeller);
         try {
           const result = JSON.parse(event.data);
           const data = result.data;
+          console.log("WebSocket message received:", result, data);
           if (
             result.type === "message.field_error" ||
             result.type === "chat.error" ||
@@ -374,7 +362,7 @@ const { service } = useSellerServices(isSeller);
               );
             }
             // New: For new conversations, add the new convo locally and navigate
-            if (data.conversation_id && id === "new") {
+            if (data.conversation_id) {
               const receiver = location.state?.receiver;
               if (receiver) {
                 const newConvo = {
@@ -391,8 +379,11 @@ const { service } = useSellerServices(isSeller);
                   },
                   last_message: null, // No message yet
                 };
-                setConversations((prev) =>
-                  [...prev, newConvo].sort((a, b) => {
+                setConversations((prev) => {
+                  if (prev.find((c) => c.id === data.conversation)) {
+                    return prev;
+                  }
+                  return [...prev, newConvo].sort((a, b) => {
                     const timeA = a.last_message
                       ? new Date(a.last_message.created_at).getTime()
                       : 0;
@@ -400,8 +391,8 @@ const { service } = useSellerServices(isSeller);
                       ? new Date(b.last_message.created_at).getTime()
                       : 0;
                     return timeB - timeA;
-                  })
-                );
+                  });
+                });
                 setSelectedConvoId(data.conversation); // Select the new one
                 setJoinedConvos(
                   (prev) => new Set([...prev, data.conversation])
@@ -503,12 +494,13 @@ const { service } = useSellerServices(isSeller);
               console.error("No conversation ID in message data:", data);
             }
           } else if (result.type === "chat.update_offer") {
-            const { message_id, status } = result;
+            const { id } = result.data;
+            const status = result.data.offer.status;
             setMessages((prev) => {
               const newMessages = { ...prev };
               Object.keys(newMessages).forEach((convoId) => {
                 newMessages[convoId] = newMessages[convoId].map((msg) =>
-                  msg.id === message_id
+                  msg.id === id
                     ? { ...msg, offer: { ...msg.offer, status } }
                     : msg
                 );
@@ -525,14 +517,6 @@ const { service } = useSellerServices(isSeller);
         setErrorMessage("Connection error occurred.");
       };
       ws.onclose = (event) => {
-        console.log(
-          "Disconnected. Code:",
-          event.code,
-          "Reason:",
-          event.reason,
-          "Clean close?",
-          event.wasClean
-        );
         setIsConnected(false);
         if (!event.wasClean) {
           reconnectInterval = setTimeout(connect, 5000);
@@ -544,19 +528,27 @@ const { service } = useSellerServices(isSeller);
       if (ws) ws.close();
       if (reconnectInterval) clearTimeout(reconnectInterval);
     };
-  }, [token, id, location.state, currentUser]); // Added dependencies
-  // New: Auto-join for new conversations when id === 'new'
+  }, [token, id, location.state, currentUser]); // Removed conversations from dependencies
+  // Check for existing conversation when id === 'new'
   useEffect(() => {
     if (
       id === "new" &&
-      location.state?.createNew &&
       location.state?.receiver &&
+      conversations.length > 0 &&
       socket &&
       isConnected
     ) {
-      joinConversation(location.state.receiver.id);
+      const receiverId = location.state.receiver.id;
+      const existingConvo = conversations.find(
+        (c) => c.chat_with.id === receiverId
+      );
+      if (existingConvo) {
+        navigate(`/conversation/${existingConvo.conversation_id}`);
+      } else {
+        joinConversation(receiverId);
+      }
     }
-  }, [id, location.state, socket, isConnected]);
+  }, [id, location.state, conversations, socket, isConnected, navigate]);
   // Fetch full message history when selecting a conversation
   useEffect(() => {
     if (selectedConvoId && id !== "new" && selectedConvoId !== "new") {
@@ -571,7 +563,6 @@ const { service } = useSellerServices(isSeller);
               },
             }
           );
-          console.log(res);
           if (res.ok) {
             const data = await res.json();
             setMessages((prev) => ({ ...prev, [selectedConvoId]: data }));
@@ -639,16 +630,83 @@ const { service } = useSellerServices(isSeller);
       setMessages((prev) => ({ ...prev, new: [] }));
     }
   }, [id]);
+  // Send pending message after conversation creation and navigation
+  useEffect(() => {
+    if (
+      pendingMessage &&
+      selectedConvoId &&
+      selectedConvoId !== "new" &&
+      socket &&
+      isConnected
+    ) {
+      const convo = conversations.find((c) => c.id === selectedConvoId);
+      if (convo) {
+        const payload = {
+          type: "chat.message",
+          text: pendingMessage,
+          receiver: convo.chat_with.id,
+          message_type: "Text",
+          conversation: selectedConvoId,
+        };
+        socket.send(JSON.stringify(payload));
+        // Optimistic add with temp ID
+        const tempId = `temp-${Date.now()}`;
+        const newMsg = {
+          ...payload,
+          sender: currentUser
+            ? { id: currentUser.user_id, full_name: currentUser.full_name }
+            : { id: -1, full_name: "Me" },
+          receiver: convo.chat_with,
+          created_at: new Date().toISOString(),
+          id: tempId, // For dedupe
+        };
+        setMessages((prev) => ({
+          ...prev,
+          [selectedConvoId]: [...(prev[selectedConvoId] || []), newMsg],
+        }));
+        // Update preview
+        setConversations((prev) =>
+          prev
+            .map((c) =>
+              c.id === selectedConvoId
+                ? {
+                    ...c,
+                    last_message: newMsg,
+                    preview: pendingMessage,
+                    time: newMsg.created_at,
+                  }
+                : c
+            )
+            .sort((a, b) => {
+              const timeA = a.last_message
+                ? new Date(a.last_message.created_at).getTime()
+                : 0;
+              const timeB = b.last_message
+                ? new Date(b.last_message.created_at).getTime()
+                : 0;
+              return timeB - timeA;
+            })
+        );
+        setPendingMessage("");
+      }
+    }
+  }, [
+    pendingMessage,
+    selectedConvoId,
+    socket,
+    isConnected,
+    conversations,
+    currentUser,
+    id,
+  ]);
   // New: Join conversation function (for new or existing)
   const joinConversation = (receiverId) => {
     if (socket && isConnected) {
       let generatedId = "";
-      if (id === "new") {
-        // Generate new UUID for new conversation
-        const uuid1 = crypto.randomUUID().replace(/-/g, "");
-        const uuid2 = crypto.randomUUID().replace(/-/g, "");
-        generatedId = uuid1 + uuid2;
-      }
+      // Generate new UUID for new conversation
+      const uuid1 = crypto.randomUUID().replace(/-/g, "");
+      const uuid2 = crypto.randomUUID().replace(/-/g, "");
+      generatedId = uuid1 + uuid2;
       const payload = {
         type: "chat.join",
         data: { conversation_id: generatedId },
@@ -660,7 +718,27 @@ const { service } = useSellerServices(isSeller);
     }
   };
   const sendMessage = () => {
-    if (selectedConvoId === "new") return; // Prevent sending in temp new state
+    if (selectedConvoId === "new") {
+      const receiverId = location.state?.receiver?.id;
+      if (!receiverId) {
+        setErrorMessage("No receiver specified for new conversation.");
+        return;
+      }
+      const existingConvo = conversations.find(
+        (c) => c.chat_with.id === receiverId
+      );
+      if (existingConvo) {
+        setSelectedConvoId(existingConvo.id);
+        navigate(`/conversation/${existingConvo.conversation_id}`);
+        setPendingMessage(message.trim());
+        setMessage("");
+        return;
+      }
+      setPendingMessage(message.trim());
+      joinConversation(receiverId);
+      setMessage("");
+      return;
+    }
     if (message.trim() && socket && isConnected && selectedConvoId) {
       const convo = conversations.find((c) => c.id === selectedConvoId);
       if (!convo) return;
@@ -714,10 +792,12 @@ const { service } = useSellerServices(isSeller);
       setErrorMessage("");
     }
   };
+
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
   };
 
+  console.log(conversations);
   const filteredConversations = conversations.filter((convo) => {
     const matchesSearch = convo.chat_with.full_name
       .toLowerCase()
@@ -751,6 +831,7 @@ const { service } = useSellerServices(isSeller);
           : msg
       );
       console.log(updatedMsgs, "Update Message____");
+      // socket.send(JSON.stringify(payload));
       return { ...prev, [selectedConvoId]: updatedMsgs };
     });
     // Send via socket
@@ -772,6 +853,7 @@ const { service } = useSellerServices(isSeller);
           ? { ...msg, offer: { ...msg.offer, status: "Declined" } }
           : msg
       );
+      // socket.send(JSON.stringify(payload));
       return { ...prev, [selectedConvoId]: updatedMsgs };
     });
     // Send via socket
@@ -793,6 +875,7 @@ const { service } = useSellerServices(isSeller);
           ? { ...msg, offer: { ...msg.offer, status: "Withdrawn" } }
           : msg
       );
+      // socket.send(JSON.stringify(payload));
       console.log(updatedMsgs, "------------Update message");
       return { ...prev, [selectedConvoId]: updatedMsgs };
     });
@@ -868,7 +951,7 @@ const { service } = useSellerServices(isSeller);
       handleSend();
     }
   };
-
+  console.log(currentConvo);
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -922,7 +1005,13 @@ const { service } = useSellerServices(isSeller);
               >
                 <div className="relative">
                   <img
-                    src={convo.chat_with.photo}
+                    src={
+                      convo.chat_with.photo === null ||
+                      convo.chat_with.photo === "" ||
+                      !convo.chat_with.photo
+                        ? userImage
+                        : convo.chat_with.photo
+                    }
                     alt={convo.chat_with.full_name}
                     className="w-8 sm:w-10 h-8 sm:h-10 rounded-full shrink-0 shadow-sm"
                     onError={(e) => {
@@ -939,26 +1028,27 @@ const { service } = useSellerServices(isSeller);
                     <h3 className="text-xs sm:text-sm font-semibold text-gray-900 truncate">
                       {convo.chat_with.full_name}
                     </h3>
-                    <div className="flex items-center gap-1">
-                      <span className="text-xs text-gray-500">
-                        {convo.last_message
-                          ? new Date(
-                              convo.last_message.created_at
-                            ).toLocaleTimeString([], {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })
-                          : ""}
-                      </span>
-                    </div>
+
+                    <span className="text-xs text-gray-500">
+                      {convo.last_message
+                        ? new Date(
+                            convo.last_message.created_at
+                          ).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })
+                        : "N/A"}
+                    </span>
                   </div>
+
                   <p className="text-xs sm:text-sm text-gray-500 truncate mt-1">
-                    {convo.last_message?.text
-                      ? convo.last_message.text +
-                        (convo.last_message?.media ? " [Image]" : "")
-                      : convo.last_message?.media
-                      ? "Image"
-                      : ""}
+                    {convo.last_message?.message_type === "Offer"
+                      ? "Send Offer"
+                      : convo.last_message?.message_type === "Media"
+                      ? " Send Image"
+                      : convo.last_message?.message_type === "Text"
+                      ? convo.last_message?.text || ""
+                      : "No messages start yet."}
                   </p>
                 </div>
               </div>
@@ -985,7 +1075,13 @@ const { service } = useSellerServices(isSeller);
                   </button>
                   <div className="relative">
                     <img
-                      src={currentConvo.chat_with.photo}
+                      src={
+                        currentConvo.chat_with.photo === null ||
+                        currentConvo.chat_with.photo === "" ||
+                        !currentConvo.chat_with.photo
+                          ? userImage
+                          : currentConvo.chat_with.photo
+                      }
                       alt={currentConvo.chat_with.full_name}
                       className="w-8 sm:w-10 h-8 sm:h-10 rounded-full shadow-sm"
                       onError={(e) => {
@@ -993,6 +1089,7 @@ const { service } = useSellerServices(isSeller);
                         e.target.src = "https://via.placeholder.com/40";
                       }}
                     />
+
                     {currentConvo.chat_with.is_online && (
                       <span className="absolute bottom-0 right-0 w-2 h-2 bg-green-500 rounded-full border border-white"></span>
                     )}
@@ -1192,21 +1289,19 @@ const { service } = useSellerServices(isSeller);
                         hour: "2-digit",
                         minute: "2-digit",
                       })}
-                      {msg?.sender?.id === currentUser?.user_id
-                          ? <CheckCheck className="w-3"/>
-                          : null
-                      }
+                      {msg?.sender?.id === currentUser?.user_id ? (
+                        <CheckCheck className="w-3" />
+                      ) : null}
                     </div>
                   </div>
                 </div>
               ))}
             </div>
-
             {/* Message Input */}
             <div className="p-3 sm:p-4 border-t border-gray-200 bg-white shadow-sm">
-              {errorMessage && (
+              {/* {errorMessage && (
                 <div className="text-red-500 text-sm mb-2">{errorMessage}</div>
-              )}
+              )} */}
               <div className="flex items-center gap-2 sm:gap-3">
                 <div className="flex-1 relative">
                   {/* Image preview */}
@@ -1236,11 +1331,11 @@ const { service } = useSellerServices(isSeller);
                     placeholder={
                       isConnected ? "Type a message..." : "Connecting..."
                     }
-                    disabled={
-                      !isConnected ||
-                      !selectedConvoId ||
-                      selectedConvoId === "new"
-                    }
+                    // disabled={
+                    //   !isConnected ||
+                    //   !selectedConvoId ||
+                    //   selectedConvoId === "new"
+                    // }
                     className="w-full pl-3 sm:pl-4 pr-20 sm:pr-24 py-3 bg-gray-100 rounded-lg outline-none border border-gray-300 text-xs sm:text-sm disabled:opacity-50 shadow-sm overflow-hidden resize-none"
                     rows={1}
                     style={{ maxHeight: "100px" }} // Approx 5 lines
@@ -1287,12 +1382,12 @@ const { service } = useSellerServices(isSeller);
 
                 <button
                   onClick={handleSend}
-                  disabled={
-                    !(message.trim() || imageFile) ||
-                    !isConnected ||
-                    !selectedConvoId ||
-                    selectedConvoId === "new"
-                  }
+                  // disabled={
+                  //   !(message.trim() || imageFile) ||
+                  //   !isConnected ||
+                  //   !selectedConvoId ||
+                  //   selectedConvoId === "new"
+                  // }
                   className="bg-[#C8C1F5] disabled:bg-gray-300 disabled:cursor-not-allowed text-black p-3 -mt-1.5 rounded-lg hover:bg-[#B0A8E0] transition-colors shadow-sm"
                 >
                   <Send className="w-4 sm:w-5 h-4 sm:h-5" />

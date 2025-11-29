@@ -1,32 +1,33 @@
-import { useState, useEffect } from 'react';
-import { DollarSign, Edit2, Eye, LogOut, Wallet } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { removeAuthTokens } from '../../lib/cookie-utils';
-import useMe from '../../hooks/useMe';
-import apiClient from '../../lib/api-client';
-import { toast } from 'react-toastify';
-import Swal from 'sweetalert2';
+import { useState, useEffect } from "react";
+import userImage from "../../assets/images/user.png";
+import { DollarSign, Edit2, Eye, LogOut, Wallet } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { removeAuthTokens } from "../../lib/cookie-utils";
+import useMe from "../../hooks/useMe";
+import apiClient from "../../lib/api-client";
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 
 export default function AccountSettings() {
   const { user, loading, refetch } = useMe();
-  console.log(user, 'user from useMe');
+  console.log(user, "user from useMe");
   const navigate = useNavigate();
-  const [activeSection, setActiveSection] = useState('Account Settings');
+  const [activeSection, setActiveSection] = useState("Account Settings");
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [editingName, setEditingName] = useState(false);
   const [editingPhone, setEditingPhone] = useState(false);
   const [editingPassword, setEditingPassword] = useState(false);
   const [editingImage, setEditingImage] = useState(false);
-  const [fullName, setFullName] = useState('');
-  const [phone, setPhone] = useState('');
+  const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState('');
+  const [imagePreview, setImagePreview] = useState("");
   const [passwords, setPasswords] = useState({
-    current: '',
-    new: '',
-    confirm: '',
+    current: "",
+    new: "",
+    confirm: "",
   });
-  const [passwordError, setPasswordError] = useState('');
+  const [passwordError, setPasswordError] = useState("");
   // const [notifications, setNotifications] = useState({
   //   popup: true,
   //   chat: true,
@@ -35,22 +36,23 @@ export default function AccountSettings() {
 
   // Update fullName, phone, and image preview states when user data changes
   useEffect(() => {
-    setFullName(user?.full_name || '');
-    setPhone(user?.phone_number || '');
-    setImagePreview(user?.photo || '');
+    setFullName(user?.full_name || "");
+    setPhone(user?.phone_number || "");
+    setImagePreview(user?.photo || "");
   }, [user]);
 
-  const userRole = user?.role?.toLowerCase() || localStorage.getItem("userRole");
+  const userRole =
+    user?.role?.toLowerCase() || localStorage.getItem("userRole");
 
-  let menuItems = ['Account Settings', 'Privacy & Policy', 'Log Out'];
+  let menuItems = ["Account Settings", "Privacy & Policy", "Log Out"];
   if (userRole === "buyer") {
-    menuItems.splice(2, 0, 'Payment History');
+    menuItems.splice(2, 0, "Payment History");
   } else if (userRole === "seller") {
-    menuItems.splice(2, 0, 'Payment & Withdraw');
+    menuItems.splice(2, 0, "Payment & Withdraw");
   }
 
   const handleMenuClick = (item) => {
-    if (item === 'Log Out') {
+    if (item === "Log Out") {
       setShowLogoutModal(true);
     } else {
       setActiveSection(item);
@@ -70,8 +72,8 @@ export default function AccountSettings() {
       ...prev,
       [name]: value,
     }));
-    if (name === 'new' || name === 'confirm') {
-      setPasswordError('');
+    if (name === "new" || name === "confirm") {
+      setPasswordError("");
     }
   };
 
@@ -79,13 +81,19 @@ export default function AccountSettings() {
     const file = e.target.files[0];
     if (file) {
       // Validate file type (only allow images)
-      if (!file.type.startsWith('image/')) {
-        toast.error('Please select a valid image file', { position: 'top-end', autoClose: 3000 });
+      if (!file.type.startsWith("image/")) {
+        toast.error("Please select a valid image file", {
+          position: "top-end",
+          autoClose: 3000,
+        });
         return;
       }
       // Validate file size (e.g., max 5MB)
       if (file.size > 5 * 1024 * 1024) {
-        toast.error('Image size must be less than 5MB', { position: 'top-end', autoClose: 3000 });
+        toast.error("Image size must be less than 5MB", {
+          position: "top-end",
+          autoClose: 3000,
+        });
         return;
       }
       setSelectedImage(file);
@@ -95,14 +103,17 @@ export default function AccountSettings() {
 
   const handleImageSave = async () => {
     if (!selectedImage) {
-      toast.error('Please select an image to upload', { position: 'top-end', autoClose: 3000 });
+      toast.error("Please select an image to upload", {
+        position: "top-end",
+        autoClose: 3000,
+      });
       return;
     }
     try {
       const formData = new FormData();
-      formData.append('photo', selectedImage);
-      await apiClient.put('/user/update', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+      formData.append("photo", selectedImage);
+      await apiClient.put("/user/update", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
       refetch();
       Swal.fire({
@@ -116,8 +127,8 @@ export default function AccountSettings() {
       setEditingImage(false);
       setSelectedImage(null);
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to update image', {
-        position: 'top-end',
+      toast.error(err.response?.data?.message || "Failed to update image", {
+        position: "top-end",
         autoClose: 3000,
       });
     }
@@ -125,11 +136,14 @@ export default function AccountSettings() {
 
   const handleNameSave = async () => {
     if (!fullName.trim()) {
-      toast.error('Full name is required', { position: 'top-end', autoClose: 3000 });
+      toast.error("Full name is required", {
+        position: "top-end",
+        autoClose: 3000,
+      });
       return;
     }
     try {
-      await apiClient.put('/user/update', { full_name: fullName });
+      await apiClient.put("/user/update", { full_name: fullName });
       refetch();
       Swal.fire({
         position: "top-end",
@@ -141,8 +155,8 @@ export default function AccountSettings() {
       });
       setEditingName(false);
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to update name', {
-        position: 'top-end',
+      toast.error(err.response?.data?.message || "Failed to update name", {
+        position: "top-end",
         autoClose: 3000,
       });
     }
@@ -150,15 +164,21 @@ export default function AccountSettings() {
 
   const handlePhoneSave = async () => {
     if (!phone.trim()) {
-      toast.error('Phone number is required', { position: 'top-end', autoClose: 3000 });
+      toast.error("Phone number is required", {
+        position: "top-end",
+        autoClose: 3000,
+      });
       return;
     }
     if (!/^\+?\d{10,}$/.test(phone)) {
-      toast.error('Please enter a valid phone number', { position: 'top-end', autoClose: 3000 });
+      toast.error("Please enter a valid phone number", {
+        position: "top-end",
+        autoClose: 3000,
+      });
       return;
     }
     try {
-      await apiClient.put('/user/update', { phone_number: phone });
+      await apiClient.put("/user/update", { phone_number: phone });
       refetch();
       Swal.fire({
         position: "top-end",
@@ -170,28 +190,31 @@ export default function AccountSettings() {
       });
       setEditingPhone(false);
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to update phone number', {
-        position: 'top-end',
-        autoClose: 3000,
-      });
+      toast.error(
+        err.response?.data?.message || "Failed to update phone number",
+        {
+          position: "top-end",
+          autoClose: 3000,
+        }
+      );
     }
   };
 
   const handlePasswordSave = async () => {
     if (passwords.new !== passwords.confirm) {
-      setPasswordError('New password and confirm password must match');
+      setPasswordError("New password and confirm password must match");
       return;
     }
     if (!passwords.current || !passwords.new || !passwords.confirm) {
-      setPasswordError('All password fields are required');
+      setPasswordError("All password fields are required");
       return;
     }
     if (passwords.new.length < 8) {
-      setPasswordError('New password must be at least 8 characters long');
+      setPasswordError("New password must be at least 8 characters long");
       return;
     }
     try {
-      await apiClient.put('/user/update', {
+      await apiClient.put("/user/update", {
         current_password: passwords.current,
         new_password: passwords.new,
       });
@@ -204,10 +227,12 @@ export default function AccountSettings() {
         toast: true,
       });
       setEditingPassword(false);
-      setPasswords({ current: '', new: '', confirm: '' });
-      setPasswordError('');
+      setPasswords({ current: "", new: "", confirm: "" });
+      setPasswordError("");
     } catch (err) {
-      setPasswordError(err.response?.data?.message || 'Failed to update password');
+      setPasswordError(
+        err.response?.data?.message || "Failed to update password"
+      );
     }
   };
 
@@ -219,19 +244,29 @@ export default function AccountSettings() {
 
   const renderContent = () => {
     switch (activeSection) {
-      case 'Account Settings':
+      case "Account Settings":
         return (
           <div className="space-y-8">
             {/* Profile image section */}
             {editingImage ? (
               <div>
-                <h3 className="text-lg font-medium text-gray-800 mb-2">Profile Image</h3>
-                <p className="text-gray-600 text-sm mb-4">Upload a new profile image</p>
+                <h3 className="text-lg font-medium text-gray-800 mb-2">
+                  Profile Image
+                </h3>
+                <p className="text-gray-600 text-sm mb-4">
+                  Upload a new profile image
+                </p>
                 <div className="space-y-4 shadow-xl p-4 rounded-2xl">
                   <div className="flex items-center space-x-4">
                     <div className="w-16 h-16 rounded-full overflow-hidden">
                       <img
-                        src={imagePreview || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPyGNr2qL63Sfugk2Z1-KBEwMGOfycBribew&s"}
+                        src={
+                          imagePreview === null ||
+                          imagePreview === "" ||
+                          !imagePreview
+                            ? userImage
+                            : imagePreview
+                        }
                         alt="Profile Preview"
                         className="w-full h-full object-cover"
                       />
@@ -248,7 +283,7 @@ export default function AccountSettings() {
                       onClick={() => {
                         setEditingImage(false);
                         setSelectedImage(null);
-                        setImagePreview(user?.photo || '');
+                        setImagePreview(user?.photo || "");
                       }}
                       className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors duration-300"
                     >
@@ -266,33 +301,47 @@ export default function AccountSettings() {
             ) : (
               <div className="flex justify-between items-start">
                 <div>
-                  <h3 className="text-lg font-medium text-gray-800">Profile Image</h3>
+                  <h3 className="text-lg font-medium text-gray-800">
+                    Profile Image
+                  </h3>
                   <div className="w-16 h-16 rounded-full overflow-hidden mt-2">
                     <img
-                      src={user?.photo || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPyGNr2qL63Sfugk2Z1-KBEwMGOfycBribew&s"}
+                      src={
+                        user?.photo === null ||
+                        user?.photo === "" ||
+                        !user?.photo
+                          ? userImage
+                          : user?.photo
+                      }
                       alt={user?.full_name || "User Avatar"}
                       className="w-full h-full object-cover"
                     />
                   </div>
                 </div>
-                  <button
-                    onClick={() => setEditingImage(true)}
-                    className="flex items-center space-x-1 text-gray-600 hover:text-purple-600 transition-colors duration-300"
-                  >
-                    <Edit2 className="w-4 h-4" />
-                    <span>Edit</span>
-                  </button>
+                <button
+                  onClick={() => setEditingImage(true)}
+                  className="flex items-center space-x-1 text-gray-600 hover:text-purple-600 transition-colors duration-300"
+                >
+                  <Edit2 className="w-4 h-4" />
+                  <span>Edit</span>
+                </button>
               </div>
             )}
 
             {/* Your name section */}
             {editingName ? (
               <div>
-                <h3 className="text-lg font-medium text-gray-800 mb-2">Your name</h3>
-                <p className="text-gray-600 text-sm mb-4">Make sure this matches the name on your gov. ID</p>
+                <h3 className="text-lg font-medium text-gray-800 mb-2">
+                  Your name
+                </h3>
+                <p className="text-gray-600 text-sm mb-4">
+                  Make sure this matches the name on your gov. ID
+                </p>
                 <div className="space-y-4 shadow-xl p-4 rounded-2xl">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Full name</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Full name
+                    </label>
                     <input
                       type="text"
                       value={fullName}
@@ -301,13 +350,15 @@ export default function AccountSettings() {
                       placeholder="Enter your full name"
                       maxLength={32}
                     />
-                    <p className="text-right text-sm text-gray-500 mt-1">Text limit {fullName.length}/32</p>
+                    <p className="text-right text-sm text-gray-500 mt-1">
+                      Text limit {fullName.length}/32
+                    </p>
                   </div>
                   <div className="flex space-x-4">
                     <button
                       onClick={() => {
                         setEditingName(false);
-                        setFullName(user?.full_name || '');
+                        setFullName(user?.full_name || "");
                       }}
                       className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors duration-300"
                     >
@@ -325,8 +376,12 @@ export default function AccountSettings() {
             ) : (
               <div className="flex justify-between items-start">
                 <div>
-                  <h3 className="text-lg font-medium text-gray-800">Your name</h3>
-                  <p className="text-gray-600">{user?.full_name || 'Not set'}</p>
+                  <h3 className="text-lg font-medium text-gray-800">
+                    Your name
+                  </h3>
+                  <p className="text-gray-600">
+                    {user?.full_name || "Not set"}
+                  </p>
                 </div>
                 <button
                   onClick={() => setEditingName(true)}
@@ -341,11 +396,17 @@ export default function AccountSettings() {
             {/* Phone number section */}
             {editingPhone ? (
               <div>
-                <h3 className="text-lg font-medium text-gray-800 mb-2">Phone number</h3>
-                <p className="text-gray-600 text-sm mb-4">Enter a valid phone number</p>
+                <h3 className="text-lg font-medium text-gray-800 mb-2">
+                  Phone number
+                </h3>
+                <p className="text-gray-600 text-sm mb-4">
+                  Enter a valid phone number
+                </p>
                 <div className="space-y-4 shadow-xl p-4 rounded-2xl">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Phone number</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Phone number
+                    </label>
                     <input
                       type="tel"
                       value={phone}
@@ -358,7 +419,7 @@ export default function AccountSettings() {
                     <button
                       onClick={() => {
                         setEditingPhone(false);
-                        setPhone(user?.phone_number || '');
+                        setPhone(user?.phone_number || "");
                       }}
                       className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors duration-300"
                     >
@@ -376,8 +437,12 @@ export default function AccountSettings() {
             ) : (
               <div className="flex justify-between items-start">
                 <div>
-                  <h3 className="text-lg font-medium text-gray-800">Phone number</h3>
-                  <p className="text-gray-600">{user?.phone_number || 'Not set'}</p>
+                  <h3 className="text-lg font-medium text-gray-800">
+                    Phone number
+                  </h3>
+                  <p className="text-gray-600">
+                    {user?.phone_number || "Not set"}
+                  </p>
                 </div>
                 <button
                   onClick={() => setEditingPhone(true)}
@@ -393,11 +458,11 @@ export default function AccountSettings() {
             <div className="flex justify-between items-start">
               <div>
                 <h3 className="text-lg font-medium text-gray-800">Email</h3>
-                <p className="text-gray-600">{user?.email_address || 'Not set'}</p>
+                <p className="text-gray-600">
+                  {user?.email_address || "Not set"}
+                </p>
               </div>
-              <button
-                className="flex items-center space-x-1 text-gray-600 hover:text-purple-600 transition-colors duration-300"
-              >
+              <button className="flex items-center space-x-1 text-gray-600 hover:text-purple-600 transition-colors duration-300">
                 <Eye className="w-4 h-4" />
                 <span>View</span>
               </button>
@@ -406,11 +471,17 @@ export default function AccountSettings() {
             {/* Password section */}
             {editingPassword ? (
               <div>
-                <h3 className="text-lg font-medium text-gray-800 mb-2">Change password</h3>
-                <p className="text-gray-600 text-sm mb-4">Enter your current and new password</p>
+                <h3 className="text-lg font-medium text-gray-800 mb-2">
+                  Change password
+                </h3>
+                <p className="text-gray-600 text-sm mb-4">
+                  Enter your current and new password
+                </p>
                 <div className="space-y-4 shadow-xl p-4 rounded-2xl">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Current password</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Current password
+                    </label>
                     <input
                       type="password"
                       name="current"
@@ -421,7 +492,9 @@ export default function AccountSettings() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">New password</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      New password
+                    </label>
                     <input
                       type="password"
                       name="new"
@@ -432,7 +505,9 @@ export default function AccountSettings() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Confirm new password</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Confirm new password
+                    </label>
                     <input
                       type="password"
                       name="confirm"
@@ -449,8 +524,8 @@ export default function AccountSettings() {
                     <button
                       onClick={() => {
                         setEditingPassword(false);
-                        setPasswords({ current: '', new: '', confirm: '' });
-                        setPasswordError('');
+                        setPasswords({ current: "", new: "", confirm: "" });
+                        setPasswordError("");
                       }}
                       className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors duration-300"
                     >
@@ -468,7 +543,9 @@ export default function AccountSettings() {
             ) : (
               <div className="flex justify-between items-start">
                 <div>
-                  <h3 className="text-lg font-medium text-gray-800">Password</h3>
+                  <h3 className="text-lg font-medium text-gray-800">
+                    Password
+                  </h3>
                   <p className="text-gray-600">•••••••••••••</p>
                 </div>
                 <button
@@ -483,59 +560,93 @@ export default function AccountSettings() {
           </div>
         );
 
-      case 'Privacy & Policy':
+      case "Privacy & Policy":
         return (
           <div className="space-y-8">
             <div>
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">1. Information We Collect</h3>
-              <p className="text-gray-600 mb-4">We may collect the following information:</p>
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                1. Information We Collect
+              </h3>
+              <p className="text-gray-600 mb-4">
+                We may collect the following information:
+              </p>
               <ul className="space-y-2 text-gray-600 ml-4">
-                <li>• Personal information: Name, email address, phone number, billing/shipping address.</li>
-                <li>• Account Details: Username, password, vendor profile details.</li>
+                <li>
+                  • Personal information: Name, email address, phone number,
+                  billing/shipping address.
+                </li>
+                <li>
+                  • Account Details: Username, password, vendor profile details.
+                </li>
                 <li>• Transaction Information: Orders, payments, refunds.</li>
-                <li>• Usage Data: IP address, browser type, device information, and site activity.</li>
+                <li>
+                  • Usage Data: IP address, browser type, device information,
+                  and site activity.
+                </li>
               </ul>
             </div>
 
             <div>
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">2. How We Use Your Information</h3>
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                2. How We Use Your Information
+              </h3>
               <p className="text-gray-600 mb-4">We use your information to:</p>
               <ul className="space-y-2 text-gray-600 ml-4">
                 <li>• Process orders and payments.</li>
                 <li>• Manage vendor and customer accounts.</li>
                 <li>• Provide customer support.</li>
                 <li>• Improve platform features and security.</li>
-                <li>• Send updates, promotions, and important notifications.</li>
+                <li>
+                  • Send updates, promotions, and important notifications.
+                </li>
               </ul>
             </div>
 
             <div>
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">3. Information Sharing</h3>
-              <p className="text-gray-600 mb-4">We may share information with:</p>
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                3. Information Sharing
+              </h3>
+              <p className="text-gray-600 mb-4">
+                We may share information with:
+              </p>
               <ul className="space-y-2 text-gray-600 ml-4">
                 <li>• Vendors, to fulfill your orders.</li>
                 <li>• Payment processors, for secure transactions.</li>
-                <li>• Service providers (e.g., shipping companies, IT services).</li>
+                <li>
+                  • Service providers (e.g., shipping companies, IT services).
+                </li>
                 <li>• Law enforcement, if required by law.</li>
               </ul>
-              <p className="text-gray-600 mt-4">We do <strong>not</strong> sell your personal data to third parties.</p>
+              <p className="text-gray-600 mt-4">
+                We do <strong>not</strong> sell your personal data to third
+                parties.
+              </p>
             </div>
 
             <div>
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">4. Data Security</h3>
-              <p className="text-gray-600">We implement industry-standard security measures to protect your data. However, no online transmission is 100% secure.</p>
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                4. Data Security
+              </h3>
+              <p className="text-gray-600">
+                We implement industry-standard security measures to protect your
+                data. However, no online transmission is 100% secure.
+              </p>
             </div>
           </div>
         );
 
-      case 'Payment History':
+      case "Payment History":
         return (
           <div className="space-y-6">
             <div className="bg-gray-50 rounded-lg p-6 hover:shadow-md transition-shadow duration-300">
               <div className="flex justify-between items-center mb-4">
                 <div>
-                  <h3 className="font-semibold text-gray-800">Wedding Photography</h3>
-                  <p className="text-gray-600 text-sm">Order #12345 • March 15, 2025</p>
+                  <h3 className="font-semibold text-gray-800">
+                    Wedding Photography
+                  </h3>
+                  <p className="text-gray-600 text-sm">
+                    Order #12345 • March 15, 2025
+                  </p>
                 </div>
                 <span className="text-green-600 font-semibold">Paid</span>
               </div>
@@ -552,8 +663,12 @@ export default function AccountSettings() {
             <div className="bg-gray-50 rounded-lg p-6 hover:shadow-md transition-shadow duration-300">
               <div className="flex justify-between items-center mb-4">
                 <div>
-                  <h3 className="font-semibold text-gray-800">Wedding Venue Booking</h3>
-                  <p className="text-gray-600 text-sm">Order #12346 • March 10, 2025</p>
+                  <h3 className="font-semibold text-gray-800">
+                    Wedding Venue Booking
+                  </h3>
+                  <p className="text-gray-600 text-sm">
+                    Order #12346 • March 10, 2025
+                  </p>
                 </div>
                 <span className="text-orange-600 font-semibold">Pending</span>
               </div>
@@ -569,7 +684,7 @@ export default function AccountSettings() {
           </div>
         );
 
-      case 'Payment & Withdraw':
+      case "Payment & Withdraw":
         return (
           <div className="">
             <div className="bg-white rounded-lg shadow-xl p-4 w-96">
@@ -583,7 +698,9 @@ export default function AccountSettings() {
               <div className="mb-6 p-3 rounded-lg bg-gray-100">
                 <div className="flex items-center mb-2 gap-2">
                   <DollarSign />
-                  <h2 className="text-lg font-semibold">Total Income (This Month)</h2>
+                  <h2 className="text-lg font-semibold">
+                    Total Income (This Month)
+                  </h2>
                 </div>
                 <p className="text-2xl font-bold">$2,788 USD</p>
               </div>
@@ -614,14 +731,20 @@ export default function AccountSettings() {
         <div className="flex items-center space-x-4 mb-8">
           <div className="w-16 h-16 rounded-full overflow-hidden">
             <img
-              src={user?.photo || "https://encrypted-tbn0.gstatic.com/images?q=tbn:tbnpng&s"}
+              src={
+                user?.photo === null || user?.photo === "" || !user?.photo
+                  ? userImage
+                  : user?.photo
+              }
               alt={user?.full_name || "User Avatar"}
               className="w-full h-full object-cover"
             />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-gray-800">{user?.full_name || 'User'}</h1>
-            <p className="text-gray-600">{user?.role || 'Unknown Role'}</p>
+            <h1 className="text-2xl font-bold text-gray-800">
+              {user?.full_name || "User"}
+            </h1>
+            <p className="text-gray-600">{user?.role || "Unknown Role"}</p>
           </div>
         </div>
 
@@ -635,11 +758,11 @@ export default function AccountSettings() {
                   onClick={() => handleMenuClick(item)}
                   className={`w-full text-left px-4 py-3 rounded-lg transition duration-300 ease-in-out flex items-center space-x-3 ${
                     activeSection === item
-                      ? 'bg-gray-200 text-gray-900 font-medium shadow-sm'
-                      : 'text-gray-600 hover:bg-gray-100 hover:shadow-sm'
+                      ? "bg-gray-200 text-gray-900 font-medium shadow-sm"
+                      : "text-gray-600 hover:bg-gray-100 hover:shadow-sm"
                   }`}
                 >
-                  {item === 'Log Out' && <LogOut className="w-5 h-5" />}
+                  {item === "Log Out" && <LogOut className="w-5 h-5" />}
                   <span>{item}</span>
                 </button>
               ))}
@@ -649,7 +772,9 @@ export default function AccountSettings() {
           {/* Main Content */}
           <div className="lg:col-span-3">
             <div className="bg-white rounded-lg p-8 shadow-sm">
-              <h2 className="text-xl font-semibold text-gray-800 mb-8">{activeSection}</h2>
+              <h2 className="text-xl font-semibold text-gray-800 mb-8">
+                {activeSection}
+              </h2>
               {renderContent()}
             </div>
           </div>
@@ -660,8 +785,12 @@ export default function AccountSettings() {
       {showLogoutModal && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 max-w-sm w-full mx-4">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">Log Out</h3>
-            <p className="text-gray-600 mb-6">Are you sure you want to log out?</p>
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">
+              Log Out
+            </h3>
+            <p className="text-gray-600 mb-6">
+              Are you sure you want to log out?
+            </p>
             <div className="flex space-x-4">
               <button
                 onClick={() => setShowLogoutModal(false)}

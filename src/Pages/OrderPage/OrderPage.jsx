@@ -3,7 +3,7 @@ import useUserOrder from "../../hooks/useUserOrder";
 import useModal from "../../components/modal/useModal";
 import Swal from "sweetalert2";
 import { useLocation } from "react-router";
-import {  CheckCircle, ArrowRight, Loader2 } from "lucide-react";
+import { CheckCircle, ArrowRight, Loader2 } from "lucide-react";
 import apiClient from "../../lib/api-client";
 
 export default function OrderPage() {
@@ -12,11 +12,11 @@ export default function OrderPage() {
   const location = useLocation();
   const initialTab = location.state?.activeTab;
 
-  useEffect(()=>{
+  useEffect(() => {
     if (initialTab) {
       setActiveTab(initialTab);
     }
-  },[initialTab])
+  }, [initialTab]);
 
   const {
     isOpen: showPaymentModal,
@@ -59,7 +59,7 @@ export default function OrderPage() {
 
     setIsProcessing(true);
     try {
-      const response = await apiClient.post('/user/checkout', {
+      const response = await apiClient.post("/user/checkout", {
         order_id: selectedOrderId,
         payment_method_type: selectedPayment,
       });
@@ -68,9 +68,9 @@ export default function OrderPage() {
       window.location.href = response.data.checkout_url;
     } catch (error) {
       Swal.fire({
-        icon: 'error',
-        title: 'Payment Error',
-        text: error.message || 'An error occurred during checkout',
+        icon: "error",
+        title: "Payment Error",
+        text: error.message || "An error occurred during checkout",
         toast: true,
         position: "top-end",
         timer: 3000,
@@ -90,7 +90,7 @@ export default function OrderPage() {
     );
   }
 
-  const selectedOrder = orders?.find(o => o.id === selectedOrderId);
+  const selectedOrder = orders?.find((o) => o.id === selectedOrderId);
 
   return (
     <div className="min-h-screen container mx-auto px-4 py-6 sm:px-6 lg:px-8">
@@ -101,19 +101,21 @@ export default function OrderPage() {
 
       {/* Tabs – scrollable on mobile */}
       <div className="mb-6 -mx-4 overflow-x-auto whitespace-nowrap px-4 sm:mx-0 sm:overflow-visible">
-        {["Active", "Accepted", "Pending", "Completed", "Cancelled"].map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`inline-block pb-2 mr-6 font-medium transition-colors ${
-              activeTab === tab
-                ? "text-purple-600 border-b-2 border-purple-600"
-                : "text-gray-500 hover:text-gray-700"
-            }`}
-          >
-            {tab} ({counts[tab]})
-          </button>
-        ))}
+        {["Active", "Accepted", "Pending", "Completed", "Cancelled"].map(
+          (tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`inline-block pb-2 mr-6 font-medium transition-colors ${
+                activeTab === tab
+                  ? "text-purple-600 border-b-2 border-purple-600"
+                  : "text-gray-500 hover:text-gray-700"
+              }`}
+            >
+              {tab} ({counts[tab]})
+            </button>
+          )
+        )}
       </div>
 
       {/* Desktop Table */}
@@ -173,12 +175,8 @@ export default function OrderPage() {
           <div className="w-full max-w-lg rounded-3xl bg-white shadow-2xl transform transition-all">
             {/* Modal Header */}
             <div className="bg-linear-to-r from-slate-900 to-slate-800 text-white p-8 rounded-t-3xl">
-              <h2 className="text-3xl font-bold mb-2">
-                Payment Method
-              </h2>
-              <p className="text-slate-300">
-                Complete your order payment
-              </p>
+              <h2 className="text-3xl font-bold mb-2">Payment Method</h2>
+              <p className="text-slate-300">Complete your order payment</p>
             </div>
 
             <div className="p-8">
@@ -186,33 +184,52 @@ export default function OrderPage() {
               <div className="bg-slate-50 rounded-2xl p-6 mb-8">
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-slate-600 font-medium">Service</span>
-                  <span className="text-xl font-bold text-slate-900">{selectedOrder?.service.title}</span>
-                </div>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-slate-600 font-medium">Event Date</span>
-                  <span className="text-slate-900 font-semibold">
-                    {new Date(selectedOrder?.event_date).toLocaleDateString("en-GB", {
-                      day: "numeric",
-                      month: "short",
-                      year: "numeric",
-                    })}
+                  <span className="text-xl font-bold text-slate-900">
+                    {selectedOrder?.service.title}
                   </span>
                 </div>
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-slate-600 font-medium">Event Time</span>
-                  <span className="text-slate-900 font-semibold">{formatTime(selectedOrder?.event_time)}</span>
+                  <span className="text-slate-600 font-medium">
+                    Event Date
+                  </span>
+                  <span className="text-slate-900 font-semibold">
+                    {new Date(selectedOrder?.event_date).toLocaleDateString(
+                      "en-GB",
+                      {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      }
+                    )}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-slate-600 font-medium">
+                    Event Time
+                  </span>
+                  <span className="text-slate-900 font-semibold">
+                    {formatTime(selectedOrder?.event_time)}
+                  </span>
                 </div>
                 <div className="flex items-center justify-between pt-4 border-t border-slate-200">
-                  <span className="text-slate-600 font-medium">Total Amount</span>
-                  <span className="text-3xl font-extrabold text-slate-900">${parseFloat(selectedOrder?.amount).toFixed(2)}</span>
+                  <span className="text-slate-600 font-medium">
+                    Total Amount
+                  </span>
+                  <span className="text-3xl font-extrabold text-slate-900">
+                    ${parseFloat(selectedOrder?.amount).toFixed(2)}
+                  </span>
                 </div>
               </div>
 
               {/* Payment Options */}
               <div className="space-y-4 mb-8">
                 {[
-                  { name: "Stripe", icon: "S", color: "purple", desc: "Credit/Debit Card" },
-                  { name: "Paypal", icon: "P", color: "blue", desc: "PayPal Account" }
+                  {
+                    name: "Paypal",
+                    icon: "P",
+                    color: "blue",
+                    desc: "PayPal Account",
+                  },
                 ].map((method) => (
                   <label
                     key={method.name}
@@ -228,23 +245,31 @@ export default function OrderPage() {
                     <div className="flex items-center space-x-4">
                       <div
                         className={`flex h-12 w-12 items-center justify-center rounded-xl text-lg font-bold text-white shadow-lg ${
-                          method.color === "purple" ? "bg-linear-to-br from-purple-500 to-purple-600" : "bg-linear-to-br from-blue-500 to-blue-600"
+                          method.color === "purple"
+                            ? "bg-linear-to-br from-purple-500 to-purple-600"
+                            : "bg-linear-to-br from-blue-500 to-blue-600"
                         }`}
                       >
                         {method.icon}
                       </div>
                       <div>
-                        <span className="block font-bold text-slate-800 text-lg">{method.name}</span>
-                        <span className="block text-sm text-slate-500">{method.desc}</span>
+                        <span className="block font-bold text-slate-800 text-lg">
+                          {method.name}
+                        </span>
+                        <span className="block text-sm text-slate-500">
+                          {method.desc}
+                        </span>
                       </div>
                     </div>
-                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-                      selectedPayment === method.name
-                        ? method.color === "purple"
-                          ? "border-purple-500 bg-purple-500"
-                          : "border-blue-500 bg-blue-500"
-                        : "border-slate-300"
-                    }`}>
+                    <div
+                      className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                        selectedPayment === method.name
+                          ? method.color === "purple"
+                            ? "border-purple-500 bg-purple-500"
+                            : "border-blue-500 bg-blue-500"
+                          : "border-slate-300"
+                      }`}
+                    >
                       {selectedPayment === method.name && (
                         <CheckCircle className="w-5 h-5 text-white" />
                       )}
@@ -410,7 +435,6 @@ function MobileCard({ order, formatTime, onPay, isPayable }) {
 
       {/* Footer */}
       <div className="mt-4">
-        
         {isPayable && (
           <button
             onClick={() => onPay(order.id)}

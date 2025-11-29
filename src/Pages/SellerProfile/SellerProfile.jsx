@@ -53,7 +53,7 @@ const SellerProfile = () => {
     } else {
       // New: Navigate to chatting route and pass state to create new conversation
       navigate("/conversation/new", { 
-        state: { receiver: { id: seller.user_id, full_name: seller.full_name, photo: seller.photo }, createNew: true } 
+        state: { receiver: { id: seller.user_id, full_name: seller.full_name, photo: seller.photo }, createNew: false } 
       });
     }
   };

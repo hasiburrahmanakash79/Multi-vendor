@@ -113,7 +113,11 @@ const router = createBrowserRouter([
         element: <AccountSettings />,
       },
       {
-        path: "/successful",
+        path: "/payment-successful",
+        element: <PaymentSuccess />,
+      },
+      {
+        path: "/payment-cancel",
         element: <PaymentSuccess />,
       },
       {
@@ -130,11 +134,11 @@ const router = createBrowserRouter([
       },
       
       {
-        path: '/payment-success',
+        path: '/boosting-success',
         element: <BoostPaymentSuccessPage/>
       },
       {
-        path: '/payment-cancel',
+        path: '/boosting-cancel',
         element: <BoostPaymentCancel/>
       },
       

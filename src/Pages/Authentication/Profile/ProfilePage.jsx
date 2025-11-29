@@ -1,7 +1,17 @@
 import { useState, useEffect } from "react";
-import { Camera, Edit2, Save, X, Mail, Phone, Calendar, Shield } from "lucide-react";
+import {
+  Camera,
+  Edit2,
+  Save,
+  X,
+  Mail,
+  Phone,
+  Calendar,
+  Shield,
+} from "lucide-react";
 import useMe from "../../../hooks/useMe";
 import apiClient from "../../../lib/api-client";
+import userImage from "../../../assets/images/user.png";
 
 const ProfilePage = () => {
   const { user, loading, refetch } = useMe();
@@ -11,8 +21,6 @@ const ProfilePage = () => {
   const [coverPhoto, setCoverPhoto] = useState("");
   const [isUploadingProfile, setIsUploadingProfile] = useState(false);
   const [isUploadingCover, setIsUploadingCover] = useState(false);
-  const [bio, setBio] = useState("");
-  const [isEditingBio, setIsEditingBio] = useState(false);
   const [error, setError] = useState("");
   const [profileError, setProfileError] = useState(false);
   const [coverError, setCoverError] = useState(false);
@@ -23,7 +31,6 @@ const ProfilePage = () => {
       setEditedName(user.full_name || "");
       setProfilePhoto(user.photo || "");
       setCoverPhoto(user.cover_photo || "");
-      setBio(user.bio || "");
     }
   }, [user]);
 
@@ -103,23 +110,12 @@ const ProfilePage = () => {
     }
   };
 
-  const handleBioChange = (e) => setBio(e.target.value);
-
-  const saveBio = async () => {
-    try {
-      await apiClient.put("/user/update", { bio });
-      setIsEditingBio(false);
-      refetch();
-    } catch (err) {
-      setError("Failed to update bio.");
-    }
-  };
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   };
 
@@ -142,10 +138,10 @@ const ProfilePage = () => {
             <div
               className="w-full h-full transition-all duration-300"
               style={{
-                backgroundImage: coverError ? 'none' : `url(${coverPhoto})`,
+                backgroundImage: coverError ? "none" : `url(${coverPhoto})`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
-                backgroundColor: coverError ? '#e5e7eb' : 'transparent',
+                backgroundColor: coverError ? "#e5e7eb" : "transparent",
               }}
             >
               {coverError && (
@@ -154,7 +150,7 @@ const ProfilePage = () => {
                 </div>
               )}
             </div>
-            
+
             <label className="absolute bottom-4 right-4 bg-white hover:bg-gray-50 p-3 rounded-full cursor-pointer shadow-lg transition-all duration-200 transform hover:scale-105">
               <Camera className="w-5 h-5 text-gray-700" />
               <input
@@ -180,11 +176,18 @@ const ProfilePage = () => {
               <div className="flex flex-col sm:flex-row sm:items-end gap-6 -mt-16">
                 <div className="relative">
                   <img
-                    src={profilePhoto}
+                    src={
+                      profilePhoto === null ||
+                      profilePhoto === "" ||
+                      !profilePhoto
+                        ? userImage
+                        : profilePhoto
+                    }
                     alt={user?.full_name}
                     onError={(e) => {
                       e.target.onerror = null;
-                      e.target.src = "https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png";
+                      e.target.src =
+                        "https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png";
                       setProfileError(true);
                     }}
                     onLoad={() => setProfileError(false)}
@@ -217,17 +220,17 @@ const ProfilePage = () => {
                         className="text-2xl sm:text-3xl font-bold border-2 border-indigo-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                         autoFocus
                       />
-                      <button 
-                        onClick={saveName} 
+                      <button
+                        onClick={saveName}
                         className="p-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors"
                       >
                         <Save className="w-5 h-5" />
                       </button>
-                      <button 
+                      <button
                         onClick={() => {
                           setIsEditingName(false);
                           setEditedName(user?.full_name);
-                        }} 
+                        }}
                         className="p-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg transition-colors"
                       >
                         <X className="w-5 h-5" />
@@ -238,8 +241,8 @@ const ProfilePage = () => {
                       <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
                         {user?.full_name}
                       </h1>
-                      <button 
-                        onClick={() => setIsEditingName(true)} 
+                      <button
+                        onClick={() => setIsEditingName(true)}
                         className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
                       >
                         <Edit2 className="w-5 h-5 text-gray-500" />
@@ -272,14 +275,16 @@ const ProfilePage = () => {
                   <p className="text-sm font-medium">{user?.email_address}</p>
                 </div>
               </div>
-              
+
               <div className="flex items-center gap-3 text-gray-700">
                 <div className="p-2 bg-indigo-50 rounded-lg">
                   <Phone className="w-5 h-5 text-indigo-600" />
                 </div>
                 <div>
                   <p className="text-xs text-gray-500 font-medium">Phone</p>
-                  <p className="text-sm font-medium">{user?.phone_number || "Not provided"}</p>
+                  <p className="text-sm font-medium">
+                    {user?.phone_number || "Not provided"}
+                  </p>
                 </div>
               </div>
 
@@ -288,8 +293,12 @@ const ProfilePage = () => {
                   <Calendar className="w-5 h-5 text-indigo-600" />
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500 font-medium">Member Since</p>
-                  <p className="text-sm font-medium">{formatDate(user?.created_at)}</p>
+                  <p className="text-xs text-gray-500 font-medium">
+                    Member Since
+                  </p>
+                  <p className="text-sm font-medium">
+                    {formatDate(user?.created_at)}
+                  </p>
                 </div>
               </div>
 
@@ -298,62 +307,17 @@ const ProfilePage = () => {
                   <Shield className="w-5 h-5 text-indigo-600" />
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500 font-medium">Account Type</p>
-                  <p className="text-sm font-medium">{user?.is_individual ? "Individual" : "Business"}</p>
+                  <p className="text-xs text-gray-500 font-medium">
+                    Account Type
+                  </p>
+                  <p className="text-sm font-medium">
+                    {user?.is_individual ? "Individual" : "Business"}
+                  </p>
                 </div>
               </div>
             </div>
           </div>
         </div>
-
-        {/* Bio Section */}
-        {/* <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-bold text-gray-900">About</h2>
-            {isEditingBio ? (
-              <div className="flex gap-2">
-                <button 
-                  onClick={saveBio} 
-                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
-                >
-                  <Save className="w-4 h-4" />
-                  Save
-                </button>
-                <button 
-                  onClick={() => {
-                    setIsEditingBio(false);
-                    setBio(user?.bio || "");
-                  }} 
-                  className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg font-medium transition-colors flex items-center gap-2"
-                >
-                  <X className="w-4 h-4" />
-                  Cancel
-                </button>
-              </div>
-            ) : (
-              <button 
-                onClick={() => setIsEditingBio(true)} 
-                className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors flex items-center gap-2"
-              >
-                <Edit2 className="w-4 h-4" />
-                Edit
-              </button>
-            )}
-          </div>
-          
-          {isEditingBio ? (
-            <textarea
-              value={bio}
-              onChange={handleBioChange}
-              className="w-full h-40 border-2 border-gray-300 rounded-lg p-4 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none text-gray-700"
-              placeholder="Tell us about yourself..."
-            />
-          ) : (
-            <p className="text-gray-700 leading-relaxed whitespace-pre-line">
-              {bio || "No bio available. Click edit to add information about yourself."}
-            </p>
-          )}
-        </div> */}
       </div>
     </div>
   );

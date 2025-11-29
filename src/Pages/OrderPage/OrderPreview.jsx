@@ -69,6 +69,7 @@ const OrderPreview = () => {
         event_location: updatedBookingDetails.event_location,
       };
       const response = await apiClient.post('/user/book-service', payload);
+      console.log(response);
       Swal.fire({
         position: "top-end",
         icon: "success",

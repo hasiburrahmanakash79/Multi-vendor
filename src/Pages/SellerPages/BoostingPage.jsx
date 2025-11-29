@@ -6,8 +6,6 @@ import Swal from "sweetalert2";
 
 export default function BoostingPage() {
   const { id } = useParams();
-  const location = useLocation();
-  const navigate = useNavigate();
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -20,6 +18,7 @@ export default function BoostingPage() {
     const fetchPlans = async () => {
       try {
         const response = await apiClient.get("/site/boosting-plan/list");
+        console.log(response, "Payment response 23");
         setPlans(response.data.filter(plan => plan.active));
       } catch (err) {
         setError(err.response?.data?.message || err.message || "Failed to fetch boosting plans.");
@@ -31,30 +30,6 @@ export default function BoostingPage() {
 
     fetchPlans();
   }, []);
-
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const token = params.get('token');
-    if (token) {
-      confirmPayment(token);
-    }
-  }, [location.search]);
-
-  const confirmPayment = async (order_id) => {
-    try {
-      const response = await apiClient.post("/payment/paypal/boosting/confirm", { order_id });
-      if (response.data.success) {
-        // Navigate to success page instead of Swal
-        navigate('/payment-success', { replace: true });
-      }
-    } catch (err) {
-      Swal.fire({
-        icon: "error",
-        title: "Payment confirmation failed",
-        text: err.response?.data?.message || err.message || 'Unknown error',
-      });
-    }
-  };
 
   const handleSelectPlan = (plan) => {
     setSelectedPlan(plan);
@@ -69,6 +44,7 @@ export default function BoostingPage() {
           plan: selectedPlan.id,
           service: parseInt(id)
         });
+        console.log(response);
         const checkout_url = response.data.checkout_url;
         window.location.href = checkout_url;
       } catch (err) {

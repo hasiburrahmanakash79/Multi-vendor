@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.evola.app",
+      "sha256_cert_fingerprints": [
+        "FC:F5:19:71:2C:57:78:05:D3:95:55:34:40:8B:68:00:12:C8:D6:FE:33:56:B7:8F:CF:1C:5C:8C:A8:99:B4:C6"
+      ]
+    }
+  }
+]
